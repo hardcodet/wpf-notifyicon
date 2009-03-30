@@ -1,0 +1,147 @@
+﻿<Window
+  x:Class="Sample_Project.Window1"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:tb="http://www.hardcodet.net/taskbar" 
+Title="Window1" Height="480" Width="579">
+	<Window.Resources>
+		<Storyboard x:Key="OnTaskbarIconLeftMouseUp1">
+			<BooleanAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="popup" Storyboard.TargetProperty="(Popup.IsOpen)">
+				<DiscreteBooleanKeyFrame KeyTime="00:00:00" Value="True"/>
+				<DiscreteBooleanKeyFrame KeyTime="00:00:02" Value="False"/>
+			</BooleanAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="ellipse" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="74"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="26"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:02" Value="0"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="ellipse" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="106"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="151"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:02" Value="0"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="popup" Storyboard.TargetProperty="(UIElement.Opacity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0.1"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:02" Value="1"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="ellipse" Storyboard.TargetProperty="(UIElement.Opacity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0.47"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="1"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01.5000000" Value="1"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:02" Value="0.685"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="border" Storyboard.TargetProperty="(UIElement.Opacity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="0.515"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+	</Window.Resources>
+	<Window.Triggers>
+		<EventTrigger RoutedEvent="tb:TaskbarIcon.TaskbarIconLeftMouseUp" SourceName="tb">
+			<BeginStoryboard Storyboard="{StaticResource OnTaskbarIconLeftMouseUp1}"/>
+		</EventTrigger>
+	</Window.Triggers>
+    <Grid>
+    <Grid.Resources>
+
+      <Border
+        x:Key="yb"
+        Background="Yellow">
+        <Button
+          Width="200"
+          Height="200"
+          Content="CONTENT" />
+      </Border>
+
+        <ToolTip x:Key="borderToolTip">
+        <Border
+          Background="Red"
+          Opacity="0.75">
+          <TextBlock
+            Text="hello world" />
+        </Border>
+      </ToolTip>
+    </Grid.Resources>
+      <tb:TaskbarIcon
+      x:Name="tb" 
+        ToolTip="{StaticResource yb}" Height="23" VerticalAlignment="Top"
+      >
+      
+      <tb:TaskbarIcon.TaskbarIconPopup>
+        <Popup StaysOpen="False">
+          <Border
+            Width="200"
+            Height="200"
+            Background="Orange">
+            <TextBlock
+              Text="POPUP!" />
+          </Border>
+        </Popup>
+      </tb:TaskbarIcon.TaskbarIconPopup>
+        
+      <tb:TaskbarIcon.ContextMenu>
+        <ContextMenu>
+          <MenuItem
+            Header="Open" />
+          <MenuItem
+            Header="Quite" />
+        </ContextMenu>
+      </tb:TaskbarIcon.ContextMenu>
+
+
+        <!--      <tb:TaskbarIcon.ToolTip>-->
+<!--          <Border Background="Yellow">-->
+<!--            <TextBlock-->
+<!--              Text="PopupToolTip" />-->
+<!--          </Border>-->
+<!--      </tb:TaskbarIcon.ToolTip>-->
+    </tb:TaskbarIcon>
+      
+    <Button
+      x:Name="btn"
+      Click="OnClick"
+      Content="Click me"
+      Height="24"
+      Margin="12,33,66,0"
+      VerticalAlignment="Top" />
+    <Button
+      Height="23"
+      HorizontalAlignment="Right"
+      Margin="0,91,64,0"
+      Name="button1"
+      VerticalAlignment="Top"
+      Width="75">Button</Button>
+    <TextBox
+      Text="{Binding ElementName=tb, Path=ToolTipText}"
+      Height="23"
+      Margin="13,91,0,0"
+      Name="textBox1"
+      VerticalAlignment="Top"
+      HorizontalAlignment="Left"
+      Width="120" />
+    <Popup x:Name="popup">
+    	<Grid Width="180" Height="227">
+    		<Border CornerRadius="10,10,10,10" x:Name="border">
+    			<Border.Background>
+    				<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+    					<GradientStop Color="#FFF4B569" Offset="0"/>
+    					<GradientStop Color="#FFFFFFFF" Offset="1"/>
+    				</LinearGradientBrush>
+    			</Border.Background>
+    		</Border>
+    		<Ellipse Fill="#FFC13E3E" Stroke="#FF000000" VerticalAlignment="Top" Height="58" Margin="51,19,75,0" x:Name="ellipse" RenderTransformOrigin="0.5,0.5">
+    			<Ellipse.RenderTransform>
+    				<TransformGroup>
+    					<ScaleTransform ScaleX="1" ScaleY="1"/>
+    					<SkewTransform AngleX="0" AngleY="0"/>
+    					<RotateTransform Angle="0"/>
+    					<TranslateTransform X="0" Y="0"/>
+    				</TransformGroup>
+    			</Ellipse.RenderTransform>
+    		</Ellipse>
+    	</Grid>
+    </Popup>
+  </Grid>
+</Window>
