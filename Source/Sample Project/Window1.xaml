@@ -68,8 +68,8 @@ Title="Window1" Height="480" Width="579">
       x:Name="tb" 
         ToolTip="{StaticResource yb}" Height="23" VerticalAlignment="Top"
       >
-      
-      <tb:TaskbarIcon.TaskbarIconPopup>
+
+        <tb:TaskbarIcon.TaskbarIconPopup>
         <Popup StaysOpen="False">
           <Border
             Width="200"

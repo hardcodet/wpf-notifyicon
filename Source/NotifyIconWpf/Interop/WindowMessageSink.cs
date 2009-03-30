@@ -24,6 +24,14 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// </summary>
     public NotifyIconVersion Version { get; set; }
 
+
+    /// <summary>
+    /// Used to track whether a mouse-up event is just
+    /// the aftermath of a double-click and therefore needs
+    /// to be suppressed.
+    /// </summary>
+    private bool isDoubleClick;
+
     #endregion
 
 
@@ -47,7 +55,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     public event Action<bool> BallonToolTipChanged;
 
     /// <summary>
-    /// Fired if the taskbar was created. Requires the taskbar
+    /// Fired if the taskbar was created or restarted. Requires the taskbar
     /// icon to be reset.
     /// </summary>
     public event Action TaskbarCreated;
@@ -119,11 +127,16 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
         case 0x202:
           Debug.WriteLine("left up");
-          MouseEventReceived(MouseEvent.IconLeftMouseUp);
+          if (!isDoubleClick)
+          {
+            MouseEventReceived(MouseEvent.IconLeftMouseUp);
+          }
+          isDoubleClick = false;
           break;
 
         case 0x203:
           Debug.WriteLine("left click 2");
+          isDoubleClick = true;
           MouseEventReceived(MouseEvent.IconDoubleClick);
           break;
 

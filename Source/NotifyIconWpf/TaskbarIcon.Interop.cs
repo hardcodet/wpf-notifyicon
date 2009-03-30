@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 
 namespace Hardcodet.Wpf.TaskbarNotification
@@ -27,39 +23,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
     private readonly Timer singleClickTimer;
 
 
-    #region SetVersion
+    #region Update ToolTip Settings
 
     /// <summary>
-    /// Sets the version flag for the <see cref="iconData"/>.
-    /// </summary>
-    private void SetVersion()
-    {
-      iconData.VersionOrTimeout = (uint) NotifyIconVersion.Vista;
-      bool status = WinApi.Shell_NotifyIcon(NotifyCommand.SetVersion, ref iconData);
-     
-      if (!status)
-      {
-        iconData.VersionOrTimeout = (uint) NotifyIconVersion.Win2000;
-        status = Util.WriteIconData(ref iconData, NotifyCommand.SetVersion);
-      }
-
-      if (!status)
-      {
-        iconData.VersionOrTimeout = (uint)NotifyIconVersion.Win95;
-        status = Util.WriteIconData(ref iconData, NotifyCommand.SetVersion);
-      }
-
-      if (!status)
-      {
-        Debug.Fail("Could not set version");
-      }
-    }
-
-    #endregion
-
-
-    /// <summary>
-    /// Sets tooltip settings for the class.
+    /// Sets tooltip settings for the class depending on defined
+    /// dependency properties and OS support.
     /// </summary>
     private void WriteToolTipSettings()
     {
@@ -86,6 +54,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       Util.WriteIconData(ref iconData, NotifyCommand.Modify, flags);
     }
 
+    #endregion
 
     #region Show / Hide Balloon ToolTip
 
@@ -98,7 +67,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <param name="icon">Indicates the severity.</param>
     public void ShowBalloonTip(string title, string message, BalloonIcon icon)
     {
-      lock(this)
+      lock (this)
       {
         ShowBalloonTip(title, message, icon.GetBalloonFlag(), IntPtr.Zero);
       }
@@ -118,12 +87,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       if (customIcon == null) throw new ArgumentNullException("customIcon");
 
-      lock(this)
+      lock (this)
       {
         ShowBalloonTip(title, message, BalloonFlags.User, customIcon.Handle);
       }
     }
-
 
 
     /// <summary>
@@ -148,7 +116,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
 
-
     /// <summary>
     /// Hides a balloon ToolTip, if any is displayed.
     /// </summary>
@@ -163,7 +130,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-
     #region Single Click Timer event
 
     /// <summary>
@@ -174,6 +140,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
     private void DoSingleClickAction(object state)
     {
       if (IsDisposed) return;
+
+      Console.Out.WriteLine("TIMER EVENT");
 
       //run action
       Action action = delayedTimerAction;
@@ -188,7 +156,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
-
 
     #region Show Tray Popup / Context Menu
 
@@ -232,10 +199,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
         //raise preview event
         var args = RaisePreviewTaskbarIconContextMenuOpenEvent();
         if (args.Handled) return;
-        
+
         //CreateActivationWindow();
         ContextMenu.IsOpen = true;
-        
+
         //activate the message window to track deactivation - otherwise, the context menu
         //does not close if the user clicks somewhere else
         WinApi.SetForegroundWindow(messageSink.MessageWindowHandle);

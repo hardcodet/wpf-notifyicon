@@ -35,13 +35,15 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// </summary>
     private WindowProcedureHandler messageHandler;
 
+
     /// <summary>
     /// Creates the helper message window that is used
     /// to receive messages from the taskbar icon.
     /// </summary>
     private void CreateMessageWindow()
     {
-      WindowId = "WPFTaskbarIcon_" + Guid.NewGuid().ToString();
+      //generate a unique ID for the window
+      WindowId = "WPFTaskbarIcon_" + DateTime.Now.Ticks;
 
       //register window message handler
       messageHandler = OnWindowMessageReceived;
@@ -86,13 +88,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     {      
       if (messageId == taskbarRestartMessageId)
       {
-        //recreate the icon if the taskbar was restarted
-        //TODO refresh icon
+        //recreate the icon if the taskbar was restarted (e.g. due to Win Explorer shutdown)
+        TaskbarCreated();
       }
 
+      //forward message
       ProcessWindowMessage(messageId, wparam, lparam);
-
-      //handle mouse clicks...
 
       // Pass the message to the default window procedure
       return WinApi.DefWindowProc(hwnd, messageId, wparam, lparam);

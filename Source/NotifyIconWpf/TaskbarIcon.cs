@@ -1,47 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
-using Rect=Hardcodet.Wpf.TaskbarNotification.Interop.Rect;
+
+
 
 namespace Hardcodet.Wpf.TaskbarNotification
 {
-  internal class MyClass
-  {
-    public void Test()
-    {
-      TaskbarIcon icon = new TaskbarIcon();
-      icon.Icon = Properties.Resources.DefaultTrayIcon;
-      Console.Out.WriteLine("DISPLAY NOW...");
-      Thread.CurrentThread.Join(1500);
-      //icon.ShowBalloonTip("some title", "hello world", Properties.Resources.DefaultTrayIcon);
-      //Console.Out.WriteLine("status = {0}", status);
-      Thread.CurrentThread.Join(5000);
-    }
-
-    public void Test2()
-    {
-      var tbInfo = TrayLocator.GetTaskbarInformation();
-      var w = new Window();
-      w.Background = Brushes.Red;
-      w.WindowStyle = WindowStyle.None;
-      
-      Rect rect = tbInfo.Rectangle;
-      w.Width = Math.Max(20, rect.right - rect.left);
-      w.Height = Math.Max(20, rect.bottom - rect.top);
-      w.Left = rect.left;
-      w.Top = rect.top - 100;
-      w.ShowDialog();
-    }
-  }
-
   /// <summary>
-  /// Represent a taskbar icon that sits in the system
-  /// tray.
+  /// A WPF proxy to for a taskbar icon (NotifyIcon) that sits in the system's
+  /// taskbar notification area ("system tray").
   /// </summary>
   public partial class TaskbarIcon : FrameworkElement, IDisposable
   {
@@ -62,7 +33,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
 
     /// <summary>
-    /// Indicates whether custom tooltips are supported.
+    /// Indicates whether custom tooltips are supported, which depends
+    /// on the OS. Windows Vista or higher is required in order to
+    /// support this feature.
     /// </summary>
     public bool SupportsCustomToolTips
     {
@@ -102,10 +75,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
       //init single click timer
       singleClickTimer = new Timer(DoSingleClickAction);
 
-
       //register listener in order to get notified when the application closes
       if (Application.Current != null) Application.Current.Exit += OnExit;
-
     }
 
 
@@ -124,6 +95,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       switch(me)
       {
         case MouseEvent.MouseMove:
+          RaiseTaskbarIconMouseMoveEvent();
           break;
         case MouseEvent.IconRightMouseDown:
           RaiseTaskbarIconRightMouseDownEvent();
@@ -138,16 +110,19 @@ namespace Hardcodet.Wpf.TaskbarNotification
           RaiseTaskbarIconLeftMouseUpEvent();
           break;
         case MouseEvent.IconMiddleMouseDown:
+          RaiseTaskbarIconMiddleMouseDownEvent();
           break;
         case MouseEvent.IconMiddleMouseUp:
+          RaiseTaskbarIconMiddleMouseUpEvent();
           break;
         case MouseEvent.IconDoubleClick:
-          
           //cancel single click timer
           singleClickTimer.Change(Timeout.Infinite, Timeout.Infinite);
-
+          //bubble event
+          RaiseTaskbarIconMouseDoubleClickEvent();
           break;
         case MouseEvent.BalloonToolTipClicked:
+          RaiseTaskbarIconBalloonTipClickedEvent();
           break;
         default:
           throw new ArgumentOutOfRangeException("me", "Missing handler for mouse event flag: " + me);
@@ -191,22 +166,91 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
 
 
+    /// <summary>
+    /// Displays a custom tooltip, if available. This functionality
+    /// is only available for Windows Vista and above.
+    /// </summary>
+    /// <param name="visible">Whether to show or hide the tooltip.</param>
     private void OnToolTipChange(bool visible)
     {
       //if we have a custom tooltip, show it now
       if (ToolTip == null) return;
 
+
       ToolTip tt = (ToolTip)ToolTip;
-      tt.IsOpen = visible;
+
+      if (visible)
+      {
+        var args = RaisePreviewTaskbarIconToolTipOpenEvent();
+        if (args.Handled) return;
+
+        tt.IsOpen = true;
+        RaiseTaskbarIconToolTipOpenEvent();
+      }
+      else
+      {
+        var args = RaisePreviewTaskbarIconToolTipCloseEvent();
+        if (args.Handled) return;
+
+        tt.IsOpen = false;
+        RaiseTaskbarIconToolTipCloseEvent();
+      }
     }
 
 
+    /// <summary>
+    /// Bubbles events if a balloon ToolTip was displayed
+    /// or removed.
+    /// </summary>
+    /// <param name="visible">Whether the ToolTip was just displayed
+    /// or removed.</param>
     private void OnBalloonToolTipChanged(bool visible)
     {
-      //TODO just raise event
+      if (visible)
+      {
+        RaiseTaskbarIconBalloonTipShownEvent();   
+      }
+      else
+      {
+        RaiseTaskbarIconBalloonTipClosedEvent();
+      }
     }
 
 
+
+
+    #region SetVersion
+
+    /// <summary>
+    /// Sets the version flag for the <see cref="iconData"/>.
+    /// </summary>
+    private void SetVersion()
+    {
+      iconData.VersionOrTimeout = (uint)NotifyIconVersion.Vista;
+      bool status = WinApi.Shell_NotifyIcon(NotifyCommand.SetVersion, ref iconData);
+
+      if (!status)
+      {
+        iconData.VersionOrTimeout = (uint)NotifyIconVersion.Win2000;
+        status = Util.WriteIconData(ref iconData, NotifyCommand.SetVersion);
+      }
+
+      if (!status)
+      {
+        iconData.VersionOrTimeout = (uint)NotifyIconVersion.Win95;
+        status = Util.WriteIconData(ref iconData, NotifyCommand.SetVersion);
+      }
+
+      if (!status)
+      {
+        Debug.Fail("Could not set version");
+      }
+    }
+
+    #endregion
+
+
+    #region Create / Remove Taskbar Icon
 
     /// <summary>
     /// Recreates the taskbar icon if the whole taskbar was
@@ -218,12 +262,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
       CreateTaskbarIcon();
     }
 
-
-
-
-
-
-    #region create / remove taskbar icon
 
     /// <summary>
     /// Creates the taskbar icon. This message is invoked during initialization,
