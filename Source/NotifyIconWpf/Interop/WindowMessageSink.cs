@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
@@ -19,11 +20,10 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     public const int CallbackMessageId = 0x400;
 
     /// <summary>
-    /// The version of the underlying icon. Defines how
-    /// incoming messages are interpreted.
+    /// The ID of the message that is being received if the
+    /// taskbar is (re)started.
     /// </summary>
-    public NotifyIconVersion Version { get; set; }
-
+    private uint taskbarRestartMessageId;
 
     /// <summary>
     /// Used to track whether a mouse-up event is just
@@ -31,6 +31,30 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// to be suppressed.
     /// </summary>
     private bool isDoubleClick;
+
+    /// <summary>
+    /// A delegate that processes messages of the hidden
+    /// native window that receives window messages. Storing
+    /// this reference makes sure we don't loose our reference
+    /// to the message window.
+    /// </summary>
+    private WindowProcedureHandler messageHandler;
+
+    /// <summary>
+    /// Window class ID.
+    /// </summary>
+    internal string WindowId { get; private set; }
+
+    /// <summary>
+    /// Handle for the message window.
+    /// </summary
+    internal IntPtr MessageWindowHandle { get; private set; }
+
+    /// <summary>
+    /// The version of the underlying icon. Defines how
+    /// incoming messages are interpreted.
+    /// </summary>
+    public NotifyIconVersion Version { get; set; }
 
     #endregion
 
@@ -100,7 +124,74 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     #endregion
 
 
-    #region Process Window Messages
+    #region CreateMessageWindow
+
+    /// <summary>
+    /// Creates the helper message window that is used
+    /// to receive messages from the taskbar icon.
+    /// </summary>
+    private void CreateMessageWindow()
+    {
+      //generate a unique ID for the window
+      WindowId = "WPFTaskbarIcon_" + DateTime.Now.Ticks;
+
+      //register window message handler
+      messageHandler = OnWindowMessageReceived;
+
+      // Create a simple window class which is reference through
+      //the messageHandler delegate
+      WindowClass wc;
+
+      wc.style = 0;
+      wc.lpfnWndProc = messageHandler;
+      wc.cbClsExtra = 0;
+      wc.cbWndExtra = 0;
+      wc.hInstance = IntPtr.Zero;
+      wc.hIcon = IntPtr.Zero;
+      wc.hCursor = IntPtr.Zero;
+      wc.hbrBackground = IntPtr.Zero;
+      wc.lpszMenuName = "";
+      wc.lpszClassName = WindowId;
+
+      // Register the window class
+      WinApi.RegisterClass(ref wc);
+
+      // Get the message used to indicate the taskbar has been restarted
+      // This is used to re-add icons when the taskbar restarts
+      taskbarRestartMessageId = WinApi.RegisterWindowMessage("TaskbarCreated");
+
+      // Create the message window
+      MessageWindowHandle = WinApi.CreateWindowEx(0, WindowId, "", 0, 0, 0, 1, 1, 0, 0, 0, 0);
+
+      if (MessageWindowHandle == IntPtr.Zero)
+      {
+        throw new Win32Exception();
+      }
+    }
+
+    #endregion
+
+
+    #region Handle Window Messages
+
+    /// <summary>
+    /// Callback method that receives messages from the taskbar area.
+    /// </summary>
+    private long OnWindowMessageReceived(IntPtr hwnd, uint messageId, uint wparam, uint lparam)
+    {
+      if (messageId == taskbarRestartMessageId)
+      {
+        //recreate the icon if the taskbar was restarted (e.g. due to Win Explorer shutdown)
+        TaskbarCreated();
+      }
+
+      //forward message
+      ProcessWindowMessage(messageId, wparam, lparam);
+
+      // Pass the message to the default window procedure
+      return WinApi.DefWindowProc(hwnd, messageId, wparam, lparam);
+    }
+
 
     /// <summary>
     /// Processes incoming system messages.
@@ -204,7 +295,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     }
 
     #endregion
-
 
 
     #region Dispose

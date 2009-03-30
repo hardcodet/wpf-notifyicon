@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="BalloonIcon.cs" />
     <Compile Include="Interop\TrayLocator.cs" />
-    <Compile Include="Interop\WindowMessageSink.Handle.cs" />
     <Compile Include="Interop\WindowClass.cs" />
     <Compile Include="PopupActivationMode.cs" />
     <Compile Include="RoutedEventHelper.cs" />
