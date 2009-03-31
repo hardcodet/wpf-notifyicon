@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,7 +15,106 @@ namespace Hardcodet.Wpf.TaskbarNotification
   /// </summary>
   partial class TaskbarIcon
   {
+    /// <summary>
+    /// Category name that is set on designer properties.
+    /// </summary>
+    public const string CategoryName = "NotifyIcon";
+
+    /// <summary>
+    /// A <see cref="ToolTip"/> control that was created
+    /// in order to display either <see cref="TaskbarIconToolTip"/>
+    /// or <see cref="ToolTipText"/>.
+    /// </summary>
+    internal ToolTip CustomToolTip { get; private set; }
+
+    /// <summary>
+    /// A <see cref="Popup"/> which is either the
+    /// <see cref="TaskbarIconPopup"/> control itself or a
+    /// <see cref="Popup"/> that wraps it.
+    /// </summary>
+    internal Popup CustomPopup { get; private set; }
+
+
     //DEPENDENCY PROPERTIES
+
+    #region Icon property / IconSource dependency property
+
+    private Icon icon;
+
+    /// <summary>
+    /// Gets or sets the icon to be displayed. This is not a
+    /// dependency property - if you want to assign the property
+    /// through XAML, please use the <see cref="IconSource"/>
+    /// dependency property.
+    /// </summary>
+    [Browsable(false)]
+    public Icon Icon
+    {
+      get { return icon; }
+      set
+      {
+        icon = value;
+        iconData.IconHandle = value == null ? IntPtr.Zero : icon.Handle;
+
+        Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Icon);
+      }
+    }
+
+
+    /// <summary>
+    /// Resolves an image source and updates the <see cref="Icon" /> property accordingly.
+    /// </summary>
+    public static readonly DependencyProperty IconSourceProperty =
+        DependencyProperty.Register("IconSource",
+                                    typeof(ImageSource),
+                                    typeof(TaskbarIcon),
+                                    new FrameworkPropertyMetadata(null, IconSourcePropertyChanged));
+
+    /// <summary>
+    /// A property wrapper for the <see cref="IconSourceProperty"/>
+    /// dependency property:<br/>
+    /// Resolves an image source and updates the <see cref="Icon" /> property accordingly.
+    /// </summary>
+    [Category(CategoryName)]
+    [Description("Sets the displayed taskbar icon.")]
+    public ImageSource IconSource
+    {
+      get { return (ImageSource)GetValue(IconSourceProperty); }
+      set { SetValue(IconSourceProperty, value); }
+    }
+
+
+    /// <summary>
+    /// A static callback listener which is being invoked if the
+    /// <see cref="IconSourceProperty"/> dependency property has
+    /// been changed. Invokes the <see cref="OnIconSourcePropertyChanged"/>
+    /// instance method of the changed instance.
+    /// </summary>
+    /// <param name="d">The currently processed owner of the property.</param>
+    /// <param name="e">Provides information about the updated property.</param>
+    private static void IconSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      TaskbarIcon owner = (TaskbarIcon)d;
+      owner.OnIconSourcePropertyChanged(e);
+    }
+
+
+    /// <summary>
+    /// Handles changes of the <see cref="IconSourceProperty"/> dependency property. As
+    /// WPF internally uses the dependency property system and bypasses the
+    /// <see cref="IconSource"/> property wrapper, updates of the property's value
+    /// should be handled here.
+    /// </summary
+    /// <param name="e">Provides information about the updated property.</param>
+    private void OnIconSourcePropertyChanged(DependencyPropertyChangedEventArgs e)
+    {
+      ImageSource newValue = (ImageSource)e.NewValue;
+
+      //resolving the ImageSource at design time probably won't work
+      if (!Util.IsDesignMode) Icon = newValue.ToIcon();
+    }
+
+    #endregion
 
     #region ToolTipText dependency property
 
@@ -35,6 +135,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// A tooltip text that is being displayed if no custom <see cref="ToolTip"/>
     /// was set or if custom tooltips are not supported.
     /// </summary>
+    [Category(CategoryName)]
+    [Description("Alternative to a fully blown ToolTip, which is only displayed on Vista and above.")]
     public string ToolTipText
     {
       get { return (string) GetValue(ToolTipTextProperty); }
@@ -66,128 +168,77 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <param name="e">Provides information about the updated property.</param>
     private void OnToolTipTextPropertyChanged(DependencyPropertyChangedEventArgs e)
     {
-      string newValue = (string) e.NewValue;
-
-      iconData.ToolTipText = newValue ?? String.Empty;
+      //only recreate tooltip if we're not using a custom control
+      if (CustomToolTip == null || CustomToolTip.Content is string)
+      {
+        CreateCustomToolTip();
+      }
+      
       WriteToolTipSettings();
     }
 
     #endregion
 
-    #region ToolTip dependency property override
+    #region TaskbarIconToolTip dependency property
 
     /// <summary>
-    /// A static callback listener which is being invoked if the
-    /// <see cref="FrameworkElement.ToolTipProperty"/> dependency property has
-    /// been changed. Invokes the <see cref="OnToolTipPropertyChanged"/>
-    /// instance method of the changed instance.
+    /// A custom UI element that is displayed as a tooltip if the user hovers over the taskbar icon.
+    /// Works only with Vista and above. Accordingly, you should make sure that
+    /// the <see cref="ToolTipText"/> property is set as well.
     /// </summary>
-    /// <param name="d">The currently processed owner of the property.</param>
-    /// <param name="e">Provides information about the updated property.</param>
-    private static void ToolTipPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      TaskbarIcon owner = (TaskbarIcon) d;
-      owner.OnToolTipPropertyChanged(e);
-    }
-
-
-    /// <summary>
-    /// Handles changes of the <see cref="FrameworkElement.ToolTipProperty"/> dependency property. As
-    /// WPF internally uses the dependency property system and bypasses the
-    /// <see cref="ToolTip"/> property wrapper, updates of the property's value
-    /// should be handled here.
-    /// </summary
-    /// <param name="e">Provides information about the updated property.</param>
-    private void OnToolTipPropertyChanged(DependencyPropertyChangedEventArgs e)
-    {
-      if (e.NewValue != null)
-      {
-        ToolTip tt = e.NewValue as ToolTip;
-        if (tt == null)
-        {
-          tt = new ToolTip();
-          tt.Content = e.NewValue;
-
-          ToolTip = tt;
-          return;
-        }
-      }
-
-      WriteToolTipSettings();
-    }
-
-    #endregion
-
-    #region Icon property / IconSource dependency property
-
-    private Icon icon;
-
-    /// <summary>
-    /// Gets or sets the icon to be displayed. This is not a
-    /// dependency property - if you want to assign the property
-    /// through XAML, please use the <see cref="IconSource"/>
-    /// dependency property.
-    /// </summary>
-    public Icon Icon
-    {
-      get { return icon; }
-      set
-      {
-        icon = value;
-        iconData.IconHandle = value == null ? IntPtr.Zero : icon.Handle;
-
-        Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Icon);
-      }
-    }
-
-
-    /// <summary>
-    /// Resolves an image source and updates the <see cref="Icon" /> property accordingly.
-    /// </summary>
-    public static readonly DependencyProperty IconSourceProperty =
-        DependencyProperty.Register("IconSource",
-                                    typeof (ImageSource),
+    public static readonly DependencyProperty TaskbarIconToolTipProperty =
+        DependencyProperty.Register("TaskbarIconToolTip",
+                                    typeof (UIElement),
                                     typeof (TaskbarIcon),
-                                    new FrameworkPropertyMetadata(null, IconSourcePropertyChanged));
+                                    new FrameworkPropertyMetadata(null, TaskbarIconToolTipPropertyChanged));
 
     /// <summary>
-    /// A property wrapper for the <see cref="IconSourceProperty"/>
+    /// A property wrapper for the <see cref="TaskbarIconToolTipProperty"/>
     /// dependency property:<br/>
-    /// Resolves an image source and updates the <see cref="Icon" /> property accordingly.
+    /// A custom UI element that is displayed as a tooltip if the user hovers over the taskbar icon.
+    /// Works only with Vista and above. Accordingly, you should make sure that
+    /// the <see cref="ToolTipText"/> property is set as well.
     /// </summary>
-    public ImageSource IconSource
+    [Category(CategoryName)]
+    [Description("Custom UI element that is displayed as a tooltip. Only on Vista and above")]
+    public UIElement TaskbarIconToolTip
     {
-      get { return (ImageSource) GetValue(IconSourceProperty); }
-      set { SetValue(IconSourceProperty, value); }
+      get { return (UIElement) GetValue(TaskbarIconToolTipProperty); }
+      set { SetValue(TaskbarIconToolTipProperty, value); }
     }
 
 
     /// <summary>
     /// A static callback listener which is being invoked if the
-    /// <see cref="IconSourceProperty"/> dependency property has
-    /// been changed. Invokes the <see cref="OnIconSourcePropertyChanged"/>
+    /// <see cref="TaskbarIconToolTipProperty"/> dependency property has
+    /// been changed. Invokes the <see cref="OnTaskbarIconToolTipPropertyChanged"/>
     /// instance method of the changed instance.
     /// </summary>
     /// <param name="d">The currently processed owner of the property.</param>
     /// <param name="e">Provides information about the updated property.</param>
-    private static void IconSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void TaskbarIconToolTipPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       TaskbarIcon owner = (TaskbarIcon) d;
-      owner.OnIconSourcePropertyChanged(e);
+      owner.OnTaskbarIconToolTipPropertyChanged(e);
     }
 
 
     /// <summary>
-    /// Handles changes of the <see cref="IconSourceProperty"/> dependency property. As
+    /// Handles changes of the <see cref="TaskbarIconToolTipProperty"/> dependency property. As
     /// WPF internally uses the dependency property system and bypasses the
-    /// <see cref="IconSource"/> property wrapper, updates of the property's value
+    /// <see cref="TaskbarIconToolTip"/> property wrapper, updates of the property's value
     /// should be handled here.
     /// </summary
     /// <param name="e">Provides information about the updated property.</param>
-    private void OnIconSourcePropertyChanged(DependencyPropertyChangedEventArgs e)
+    private void OnTaskbarIconToolTipPropertyChanged(DependencyPropertyChangedEventArgs e)
     {
-      ImageSource newValue = (ImageSource) e.NewValue;
-      Icon = newValue.ToIcon();
+      //recreate tooltip control
+      CreateCustomToolTip();
+
+      //udpate tooltip settings - needed to make sure a string is set, even
+      //if the ToolTipText property is not set. Otherwise, the event that
+      //triggers tooltip display is never fired.
+      WriteToolTipSettings();
     }
 
     #endregion
@@ -195,22 +246,24 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #region TaskbarIconPopup dependency property
 
     /// <summary>
-    /// A custom popup that is displayed when the taskbar icon is clicked.
+    /// A control that is displayed as a popup when the taskbar icon is clicked.
     /// </summary>
     public static readonly DependencyProperty TaskbarIconPopupProperty =
         DependencyProperty.Register("TaskbarIconPopup",
-                                    typeof (Popup),
+                                    typeof(UIElement),
                                     typeof (TaskbarIcon),
                                     new FrameworkPropertyMetadata(null, TaskbarIconPopupPropertyChanged));
 
     /// <summary>
     /// A property wrapper for the <see cref="TaskbarIconPopupProperty"/>
     /// dependency property:<br/>
-    /// A custom popup that is displayed when the taskbar icon is clicked.
+    /// A control that is displayed as a popup when the taskbar icon is clicked.
     /// </summary>
-    public Popup TaskbarIconPopup
+    [Category(CategoryName)]
+    [Description("Displayed as a Popup if the user clicks on the taskbar icon.")]
+    public UIElement TaskbarIconPopup
     {
-      get { return (Popup) GetValue(TaskbarIconPopupProperty); }
+      get { return (UIElement)GetValue(TaskbarIconPopupProperty); }
       set { SetValue(TaskbarIconPopupProperty, value); }
     }
 
@@ -240,10 +293,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
     private void OnTaskbarIconPopupPropertyChanged(DependencyPropertyChangedEventArgs e)
     {
       //currently not needed
+      CreatePopup();
     }
 
     #endregion
 
+    
     #region MenuActivation dependency property
 
     /// <summary>
@@ -262,6 +317,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// Defines what mouse events display the context menu.
     /// Defaults to <see cref="PopupActivationMode.RightClick"/>.
     /// </summary>
+    [Category(CategoryName)]
+    [Description("Defines what mouse events display the context menu.")]
     public PopupActivationMode MenuActivation
     {
       get { return (PopupActivationMode) GetValue(MenuActivationProperty); }
@@ -316,6 +373,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// Defines what mouse events trigger the <see cref="TaskbarIconPopup" />.
     /// Default is <see cref="PopupActivationMode.LeftClick" />.
     /// </summary>
+    [Category(CategoryName)]
+    [Description("Defines what mouse events display the TaskbarIconPopup.")]
     public PopupActivationMode PopupActivation
     {
       get { return (PopupActivationMode) GetValue(PopupActivationProperty); }
@@ -351,6 +410,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
+
 
     #region Visibility dependency property override
 
@@ -439,6 +499,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <summary>
     /// Occurs when the user presses the left mouse button.
     /// </summary>
+    [Category(CategoryName)]
     public event RoutedEventHandler TaskbarIconLeftMouseDown
     {
       add { AddHandler(TaskbarIconLeftMouseDownEvent, value); }
@@ -1212,11 +1273,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
       //register change listener for the ContextMenu property
       md = new FrameworkPropertyMetadata(new PropertyChangedCallback(ContextMenuPropertyChanged));
       ContextMenuProperty.OverrideMetadata(typeof (TaskbarIcon), md);
-
-      //register change listener for the ToolTip property
-      md = new FrameworkPropertyMetadata(new PropertyChangedCallback(ToolTipPropertyChanged));
-      ToolTipProperty.OverrideMetadata(typeof(TaskbarIcon), md);
-
     }
   }
 }

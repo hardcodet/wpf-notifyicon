@@ -214,7 +214,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
         case PopupActivationMode.MiddleClick:
           return me == MouseEvent.IconMiddleMouseUp;
         case PopupActivationMode.All:
-          return true;
+          //return true for everything except mouse movements
+          return me != MouseEvent.MouseMove;
         default:
           throw new ArgumentOutOfRangeException("activationMode");
       }

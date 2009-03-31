@@ -4,5 +4,11 @@
     StartupUri="Window1.xaml">
     <Application.Resources>
          
+    	<ResourceDictionary>
+    		<ResourceDictionary.MergedDictionaries>
+    			<ResourceDictionary Source="TaskbarIconResources.xaml"/>
+    		</ResourceDictionary.MergedDictionaries>
+    	</ResourceDictionary>
+         
     </Application.Resources>
 </Application>

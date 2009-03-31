@@ -8,7 +8,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
   /// Receives messages from the taskbar icon through
   /// window messages of an underlying helper window.
   /// </summary>
-  public partial class WindowMessageSink : IDisposable
+  public class WindowMessageSink : IDisposable
   {
 
     #region members
@@ -196,10 +196,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// <summary>
     /// Processes incoming system messages.
     /// </summary>
-    /// <param name="msg"></param>
-    /// <param name="wParam"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="msg">Callback ID.</param>
+    /// <param name="wParam">If the version is <see cref="NotifyIconVersion.Vista"/>
+    /// or higher, this parameter can be used to resolve mouse coordinates.
+    /// Currently not in use.</param>
+    /// <param name="lParam">Provides information about the event.</param>
     private void ProcessWindowMessage(uint msg, uint wParam, uint lParam)
     {
       if (msg != CallbackMessageId) return;

@@ -74,7 +74,14 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// consider the mouse action a double-click.</returns>
     [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
     public static extern int GetDoubleClickTime();
- 
 
+
+    /// <summary>
+    /// Gets the screen coordinates of the current mouse position.
+    /// </summary>
+    /// <param name="lpPoint"></param>
+    /// <returns></returns>
+    [DllImport("USER32.DLL", SetLastError = true)]
+    public static extern bool GetCursorPos(ref Point lpPoint);
   }
 }

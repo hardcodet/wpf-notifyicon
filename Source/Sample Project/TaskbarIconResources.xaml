@@ -1,0 +1,142 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+	xmlns:Commands="clr-namespace:Sample_Project.Commands"
+  xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.Wpf.TaskbarNotification"
+  >
+	<LinearGradientBrush x:Key="MenuBackground" EndPoint="0.5,1" StartPoint="0.5,0">
+		<GradientStop Color="#FFFFD892" Offset="1"/>
+		<GradientStop Color="#FFFFF3DD" Offset="0.259"/>
+	</LinearGradientBrush>
+  
+  
+	<Style TargetType="{x:Type ContextMenu}">
+		<Setter Property="BorderThickness" Value="1,1,1,1"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ContextMenu}">
+					<Border Background="{DynamicResource MenuBackground}"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+						<ScrollViewer Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}" Uid="ScrollViewer_9" CanContentScroll="True">
+							<ItemsPresenter Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+						</ScrollViewer>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+ 
+  <!-- The taskbar context menu -->
+  <ContextMenu
+    x:Key="tbMenu">
+    <MenuItem
+      Header="Show Main Window"
+      Command="{Binding Source={x:Static Commands:TaskbarIconCommands.ShowMain}}">
+      <MenuItem.Icon>
+        <Image
+          Width="16"
+          Height="16"
+          Source="/Images/Add.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+    
+    <Separator />
+
+    <MenuItem
+      Header="Hide Main Window"
+      Command="{Binding Source={x:Static Commands:TaskbarIconCommands.HideMain}}">
+      <MenuItem.Icon>
+        <Image
+          Width="16"
+          Height="16"
+          Source="/Images/Remove.png" />
+      </MenuItem.Icon>
+    </MenuItem>
+  </ContextMenu>
+
+
+  <ToolTip
+    x:Key="tbToolTip"
+    Background="Transparent"
+    BorderThickness="0"
+    HasDropShadow="False"
+    VerticalOffset="-10"
+    >
+    <Grid
+    >
+    <Border
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch"
+      Width="Auto"
+      Height="Auto"
+      CornerRadius="6,6,6,6"
+      BorderThickness="3,3,3,3"
+      Margin="0,0,5,5">
+      <Border.Effect>
+        <DropShadowEffect
+          Color="#FF7A7A7A" />
+      </Border.Effect>
+      <Border.Background>
+        <LinearGradientBrush
+          EndPoint="0.5,1"
+          StartPoint="0.5,0">
+          <GradientStop
+            Color="#FFFFD283"
+            Offset="0" />
+          <GradientStop
+            Color="#FFFFFFFF"
+            Offset="1" />
+        </LinearGradientBrush>
+      </Border.Background>
+    </Border>
+    <Image
+      HorizontalAlignment="Left"
+      Margin="10,10,0,26"
+      Width="72"
+      Source="Images\Info.png"
+      Stretch="Fill"
+      VerticalAlignment="Top"
+      RenderTransformOrigin="0.792,0.486" />
+    <TextBlock
+      Margin="82,10,20,0"
+      TextWrapping="Wrap"
+      Height="32"
+      VerticalAlignment="Top"
+      FontSize="16"
+      FontWeight="Bold"
+      Foreground="#FF575757"><Run
+        Text="This is a fancy ToolTip..."
+        Language="de-ch" /></TextBlock>
+    <TextBlock
+      FontSize="12"
+      FontWeight="Normal"
+      Foreground="#FF141414"
+      TextWrapping="Wrap"
+      Margin="82,52,20,0"
+      VerticalAlignment="Top"
+      Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type tb:TaskbarIcon}}, Path=ToolTipText}"
+      />
+  </Grid>
+  </ToolTip>
+
+  <!-- 
+    As we don't declare the popup with the control, use
+    commands to trigger an action.
+  -->
+  <Popup
+    x:Key="tbPopupSimple"
+    PopupAnimation="Slide"
+    Placement="Mouse"
+    AllowsTransparency="True"
+    StaysOpen="False"
+    >
+    <Border
+      Width="200"
+      Height="200"
+      Background="Red">
+      <Button>Click me</Button>
+    </Border>
+  </Popup>
+
+
+</ResourceDictionary>

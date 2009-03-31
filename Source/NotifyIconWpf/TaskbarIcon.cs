@@ -1,11 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
-
+using Point=Hardcodet.Wpf.TaskbarNotification.Interop.Point;
 
 
 namespace Hardcodet.Wpf.TaskbarNotification
@@ -43,6 +47,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
 
+    #region Construction
+
     /// <summary>
     /// Inits the taskbar icon and registers a message listener
     /// in order to receive events from the taskbar area.
@@ -79,7 +85,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
       if (Application.Current != null) Application.Current.Exit += OnExit;
     }
 
+    #endregion
 
+
+    #region Handle Mouse Events
 
     /// <summary>
     /// Processes mouse events, which are bubbled
@@ -96,7 +105,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
       {
         case MouseEvent.MouseMove:
           RaiseTaskbarIconMouseMoveEvent();
-          break;
+          //immediately return - there's nothing left to evaluate
+          return;
         case MouseEvent.IconRightMouseDown:
           RaiseTaskbarIconRightMouseDownEvent();
           break;
@@ -130,19 +140,23 @@ namespace Hardcodet.Wpf.TaskbarNotification
       }
 
 
+      //get mouse coordinates
+      Point cursorPosition = new Point();
+      WinApi.GetCursorPos(ref cursorPosition);
+
       //show popup, if requested
       if (me.IsMatch(PopupActivation))
       {
         if (me == MouseEvent.IconLeftMouseUp)
         {
           //show popup once we are sure it's not a double click
-          delayedTimerAction = ShowTrayPopup;
+          delayedTimerAction = () => ShowTrayPopup(cursorPosition);
           singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
         }
         else
         {
           //show popup immediately
-          ShowTrayPopup();
+          ShowTrayPopup(cursorPosition);
         }
       }
 
@@ -153,47 +167,14 @@ namespace Hardcodet.Wpf.TaskbarNotification
         if (me == MouseEvent.IconLeftMouseUp)
         {
           //show context menu once we are sure it's not a double click
-          delayedTimerAction = ShowContextMenu;
+          delayedTimerAction = () => ShowContextMenu(cursorPosition);
           singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
         }
         else
         {
           //show context menu immediately
-          ShowContextMenu();
+          ShowContextMenu(cursorPosition);
         }
-      }
-    }
-
-
-
-    /// <summary>
-    /// Displays a custom tooltip, if available. This functionality
-    /// is only available for Windows Vista and above.
-    /// </summary>
-    /// <param name="visible">Whether to show or hide the tooltip.</param>
-    private void OnToolTipChange(bool visible)
-    {
-      //if we have a custom tooltip, show it now
-      if (ToolTip == null) return;
-
-
-      ToolTip tt = (ToolTip)ToolTip;
-
-      if (visible)
-      {
-        var args = RaisePreviewTaskbarIconToolTipOpenEvent();
-        if (args.Handled) return;
-
-        tt.IsOpen = true;
-        RaiseTaskbarIconToolTipOpenEvent();
-      }
-      else
-      {
-        var args = RaisePreviewTaskbarIconToolTipCloseEvent();
-        if (args.Handled) return;
-
-        tt.IsOpen = false;
-        RaiseTaskbarIconToolTipCloseEvent();
       }
     }
 
@@ -208,7 +189,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       if (visible)
       {
-        RaiseTaskbarIconBalloonTipShownEvent();   
+        RaiseTaskbarIconBalloonTipShownEvent();
       }
       else
       {
@@ -216,7 +197,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       }
     }
 
-
+    #endregion
 
 
     #region SetVersion

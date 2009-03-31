@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BalloonIcon.cs" />
+    <Compile Include="Interop\Point.cs" />
     <Compile Include="Interop\TrayLocator.cs" />
     <Compile Include="Interop\WindowClass.cs" />
     <Compile Include="PopupActivationMode.cs" />

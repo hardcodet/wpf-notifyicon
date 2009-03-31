@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -19,13 +20,11 @@ namespace Sample_Project
   /// </summary>
   public partial class Window1 : Window
   {
+
+
     public Window1()
     {
       InitializeComponent();
-
-      //set icon in code - setting the IconSource in XAML
-      //works just fine but breaks the VS designer
-      tb.Icon = Properties.Resources.Computers;
     }
 
     private void OnClick(object sender, RoutedEventArgs e)
