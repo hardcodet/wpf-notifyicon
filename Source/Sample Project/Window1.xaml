@@ -4,13 +4,13 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:tb="http://www.hardcodet.net/taskbar"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
-  Title="Window1"
-  Height="808"
+  Title="WPF NotifyIcon Sample"
+  Height="833"
   Width="769"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   mc:Ignorable="d"
-  xmlns:local="clr-namespace:Sample_Project">
+  xmlns:local="clr-namespace:Sample_Project" MinWidth="750" MinHeight="800">
   <Window.Resources>
 
     <BooleanToVisibilityConverter
@@ -25,13 +25,36 @@
           TypeName="tb:PopupActivationMode" />
       </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
-    <Storyboard x:Key="FadeToolTip"/>
+
   </Window.Resources>
-	<Window.Triggers>
-		<EventTrigger RoutedEvent="tb:TaskbarIcon.TaskbarIconToolTipOpen" SourceName="tb"/>
-	</Window.Triggers>
+  <Window.Background>
+    <LinearGradientBrush
+      EndPoint="0.5,1"
+      StartPoint="0.5,0">
+      <GradientStop
+        Color="#FFFFFFFF"
+        Offset="0" />
+      <GradientStop
+        Color="#FFFFE7D1"
+        Offset="1" />
+    </LinearGradientBrush>
+  </Window.Background>
+  <Window.Triggers>
+    <EventTrigger
+      RoutedEvent="tb:TaskbarIcon.TrayToolTipOpen"
+      SourceName="tb" />
+  </Window.Triggers>
 
   <Grid>
+
+    
+    
+    <!--
+      THE TASKBARICON ELEMENT WAS DECLARED INLINE IN ORDER TO USE DATABINDING
+      FOR ITS PROPERTIES. IN  A REAL-LIFE APP, YOU'D PROBABLY RATHER CREATE IT THROUGH
+      CODE OR DECLARE IT IN A RESOURCE DICTIONARY.    
+    -->
+    
     <tb:TaskbarIcon
       x:Name="tb"
       VerticalAlignment="Top"
@@ -42,55 +65,39 @@
       MenuActivation="{Binding Path=SelectedItem, ElementName=lstMenuTrigger, Mode=Default}"
       PopupActivation="{Binding Path=SelectedItem, ElementName=lstPopupTrigger, Mode=Default}">
 
-      <tb:TaskbarIcon.TaskbarIconPopup>
+      <tb:TaskbarIcon.TrayPopup>
         <!-- the control will be put into a popup with an explicit DataContext -->
         <local:FancyPopup />
-      </tb:TaskbarIcon.TaskbarIconPopup>
-      
-      <tb:TaskbarIcon.TaskbarIconToolTip>
+      </tb:TaskbarIcon.TrayPopup>
+
+      <tb:TaskbarIcon.TrayToolTip>
         <!-- the control will be put into a tooltip with an explicit DataContext -->
         <local:FancyToolTip
           Opacity="0.85"
           InfoText="{Binding Path=ToolTipText}" />
-      </tb:TaskbarIcon.TaskbarIconToolTip>
-      
+      </tb:TaskbarIcon.TrayToolTip>
+
     </tb:TaskbarIcon>
+
+
 
     
     
-    
+
     <!-- EVERYTHING BELOW IS JUST PLUMBING FOR THE SAMPLE -->
     
     
-    
-    <Button
-      x:Name="btn"
-      Click="OnClick"
-      Content="Click me"
-      Height="24"
-      Margin="0,70,68,0"
-      VerticalAlignment="Top"
-      Width="73"
-      HorizontalAlignment="Right" />
-    <Button
-      Height="23"
-      HorizontalAlignment="Right"
-      Margin="0,116,66,0"
-      x:Name="button1"
-      VerticalAlignment="Top"
-      Width="75"
-      Content="Button" />
     <CheckBox
       HorizontalAlignment="Left"
-      Margin="8,116,0,0"
+      Margin="12,64.04,0,0"
       VerticalAlignment="Top"
       Width="155.42"
-      Content="Taskbar Icon Visible"
+      Content="NotifyIcon Visible"
       x:Name="iconVisibility"
       IsChecked="True" />
     <ListBox
       HorizontalAlignment="Left"
-      Margin="8,171,0,0"
+      Margin="12,122,0,0"
       Width="123"
       IsSynchronizedWithCurrentItem="True"
       Height="51"
@@ -111,7 +118,7 @@
     </ListBox>
     <TextBlock
       HorizontalAlignment="Left"
-      Margin="8,149,0,0"
+      Margin="12,100,0,0"
       VerticalAlignment="Top"
       Width="Auto"
       Height="22"
@@ -119,9 +126,9 @@
         Text="Taskbar Icon:"
         Language="de-ch" /></TextBlock>
     <Grid
-      Margin="0,0,10,24"
-      VerticalAlignment="Bottom"
-      Height="242"
+      Margin="0,544.58,10,0"
+      VerticalAlignment="Top"
+      Height="210"
       Width="358"
       HorizontalAlignment="Right"
       x:Name="Balloons">
@@ -131,13 +138,13 @@
         BorderBrush="#FF000000"
         BorderThickness="2,2,2,2" />
       <TextBox
-        Margin="127,20,15,0"
+        Margin="125,0,17,133"
         x:Name="txtBalloonTitle"
-        VerticalAlignment="Top"
+        VerticalAlignment="Bottom"
         Height="23" />
       <TextBox
-        Margin="127,65,15,97"
-        x:Name="txtBalloonText" />
+        Margin="125,0,17,76"
+        x:Name="txtBalloonText" AcceptsReturn="True" Height="47" VerticalAlignment="Bottom" d:LayoutOverrides="VerticalAlignment" />
       <RadioButton
         HorizontalAlignment="Left"
         Margin="14,0,0,54"
@@ -145,23 +152,22 @@
         Width="111"
         Height="22"
         Content="Show as Info"
-        IsChecked="True" />
+        IsChecked="True"
+        x:Name="rbInfo" />
       <TextBlock
         HorizontalAlignment="Left"
-        Margin="14,20,0,0"
-        VerticalAlignment="Top"
+        Margin="14,0,0,133"
+        VerticalAlignment="Bottom"
         Width="85"
         Height="23"
         TextWrapping="Wrap"><Run
           Text="Balloon Title"
           Language="de-ch" /></TextBlock>
       <TextBlock
-        Margin="14,65,0,0"
-        VerticalAlignment="Top"
-        Height="23"
+        Margin="14,0,0,100"
         TextWrapping="Wrap"
         HorizontalAlignment="Left"
-        Width="85"><Run
+        Width="85" Height="23" VerticalAlignment="Bottom" d:LayoutOverrides="VerticalAlignment"><Run
           Text="Balloon Text"
           Language="de-ch" /></TextBlock>
       <RadioButton
@@ -170,27 +176,46 @@
         Height="22"
         Content="Show as Error"
         HorizontalAlignment="Left"
-        Width="111" />
+        Width="111"
+        x:Name="rbError" />
       <RadioButton
         Margin="14,0,0,10"
         VerticalAlignment="Bottom"
         Height="22"
         Content="Show Custom Icon"
         HorizontalAlignment="Left"
-        Width="130" />
+        Width="130"
+        x:Name="rbCustomIcon" />
       <Button
         HorizontalAlignment="Right"
-        Margin="0,0,21,12.52"
+        Margin="0,0,17,43"
         x:Name="showBalloonTip"
         Width="120"
         Content="Show Balloon Tip"
         VerticalAlignment="Bottom"
-        Height="23" />
+        Height="23"
+        Click="showBalloonTip_Click" />
+      <TextBlock
+        Margin="14,10,17,0"
+        VerticalAlignment="Top"
+        Height="33"
+        TextWrapping="Wrap"><Run
+          Text="Standard balloon tips. You can use custom icons under all OS versions."
+          Language="de-ch" /></TextBlock>
+      <Button
+        HorizontalAlignment="Right"
+        Margin="0,0,17,12.52"
+        x:Name="hideBalloonTip"
+        Width="120"
+        Content="Hide Balloon Tip"
+        VerticalAlignment="Bottom"
+        Height="23"
+        Click="hideBalloonTip_Click" />
     </Grid>
     <Grid
       HorizontalAlignment="Left"
-      Margin="12,0,0,24"
-      VerticalAlignment="Bottom"
+      Margin="12,512.58,0,0"
+      VerticalAlignment="Top"
       Width="307"
       Height="242"
       x:Name="Popups">
@@ -205,70 +230,91 @@
         ItemsSource="{Binding Mode=OneWay, Source={StaticResource ActivationModes}}"
         Margin="14,115,97,10"
         SelectedIndex="0" />
-      <RadioButton
-        HorizontalAlignment="Left"
-        Margin="14,19,0,0"
-        VerticalAlignment="Top"
-        Width="Auto"
-        Height="22"
-        Content="Use simple Popup"
-        IsChecked="True" />
-      <RadioButton
-        Margin="14,41,97,0"
-        VerticalAlignment="Top"
-        Height="22"
-        Content="Use Popup with Storyboard" />
       <TextBlock
-        Margin="14,83,106,0"
+        Margin="14,10,10,0"
         TextWrapping="Wrap"
         VerticalAlignment="Top"
-        Height="22"><Run
-          Text="Display Popup on:"
+        Height="105"><Run
+          Text="If the user clicks on the Taskbar Icon, a popup can be opened and displayed. Unlike custom ToolTips, this works under Windows xp as well. In case left-clicks are used, popups are displayed with a delay to ensure the user does not double-click. Trigger is determined by the "
+          Language="de-ch" /><Run
+          FontStyle="Italic"
+          FontWeight="Bold"
+          Text="PopupActivation "
+          Language="de-ch" /><Run
+          Text="property."
           Language="de-ch" /></TextBlock>
     </Grid>
     <Grid
-      Margin="0,323,10,276"
+      Margin="0,166.38,10,0"
       Width="358"
       HorizontalAlignment="Right"
-      x:Name="ToolTips">
+      x:Name="ToolTips" Height="271" VerticalAlignment="Top">
       <Border
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         BorderBrush="#FF000000"
         BorderThickness="2,2,2,2" />
-      <RadioButton
-        Margin="14,38,10,42"
-        Content="Use custom ToolTip on MouseOver (Vista and above)" />
-      <RadioButton
-        Margin="14,60,97,0"
-        VerticalAlignment="Top"
-        Height="22"
-        Content="Use custom ToolTip with Storyboard" />
-      <RadioButton
-        Margin="14,16,10,0"
-        Content="Only use ToolTipText (no custom tooltip)"
-        VerticalAlignment="Top"
-        Height="22"
-        IsChecked="True" />
       <TextBox
-        Margin="14,0,21,19"
+        Margin="10,0,25,86"
         x:Name="txtToolTipText"
         VerticalAlignment="Bottom"
         Height="23"
-        Text="Click to open tooltip" />
+        Text="THIS IS A SAMPLE TEXT...."
+        Foreground="#FFFF0000" />
       <TextBlock
-        Margin="14,0,157,52"
+        Margin="10,132,25,119"
+        TextWrapping="Wrap"><Run
+          Text="ToolTipText:"
+          Language="de-ch" /></TextBlock>
+      <TextBlock
+        Margin="10,10,10,0"
+        VerticalAlignment="Top"
+        Height="112"
+        TextWrapping="Wrap"><Run
+          Text="If the user moves the mouse over the Taskbar Icon, a tooltip can be displayed. Starting from Windows Vista, we have convenient events to display and hide tooltips. If we can, the "
+          Language="de-ch" /><Run
+          FontStyle="Italic"
+          FontWeight="Bold"
+          Text="TrayToolTip "
+          Language="de-ch" /><Run
+          Text="control is being displayed."
+          Language="de-ch" /><LineBreak /><Run
+          Text="If "
+          Language="de-ch" /><Run
+          FontStyle="Italic"
+          FontWeight="Bold"
+          Text="TrayToolTip "
+          Language="de-ch" /><Run
+          Text="is not set or the app runs under an older OS (e.g. xp), the control falls back to the "
+          Language="de-ch" /><Run
+          FontStyle="Italic"
+          FontWeight="Bold"
+          Text="ToolTipText "
+          Language="de-ch" /><Run
+          Text="property."
+          Language="de-ch" /></TextBlock>
+      <Button
+        HorizontalAlignment="Left"
+        Margin="10,0,0,20"
+        VerticalAlignment="Bottom"
+        Width="147"
+        Height="24"
+        Content="Remove Custom ToolTip"
+        Name="removeToolTip"
+        Click="removeToolTip_Click" />
+      <TextBlock
+        Margin="10,0,25,53"
         VerticalAlignment="Bottom"
         Height="16"
         TextWrapping="Wrap"><Run
-          Text="ToolTip Text:"
+          Text="Click to fall back to ToolTipText (sets TrayToolTip to null):"
           Language="de-ch" /></TextBlock>
     </Grid>
     <Grid
       HorizontalAlignment="Left"
-      Margin="12,323,0,276"
+      Margin="12,231.58,0,0"
       Width="307"
-      x:Name="ContextMenus">
+      x:Name="ContextMenus" Height="271" VerticalAlignment="Top">
       <Border
         BorderBrush="#FF000000"
         BorderThickness="2,2,2,2" />
@@ -281,19 +327,58 @@
         VerticalAlignment="Bottom"
         SelectedIndex="1" />
       <TextBlock
-        Margin="10,10,110,0"
+        Margin="10,108,48,0"
         VerticalAlignment="Top"
         Height="22"
         TextWrapping="Wrap"><Run
-          Text="Trigger Context Menu:"
+          Text="Mouse events that open the context menu:"
+          Language="de-ch" /></TextBlock>
+      <TextBlock
+        Margin="10,10,10,0"
+        VerticalAlignment="Top"
+        Height="78"
+        TextWrapping="Wrap"><Run
+          Text="Assign a custon context menu through the "
+          Language="de-ch" /><Run
+          FontStyle="Italic"
+          FontWeight="Bold"
+          Text="ContextMenu "
+          Language="de-ch" /><Run
+          Text="property of the TaskbarIcon. The "
+          Language="de-ch" /><Run
+          FontStyle="Italic"
+          FontWeight="Bold"
+          Text="MenuActivation "
+          Language="de-ch" /><Run
+          Text="property determines what mouse events open the context menu."
           Language="de-ch" /></TextBlock>
     </Grid>
     <TextBlock
-      Margin="10,10,45,0"
+      Margin="10,10,0,0"
       VerticalAlignment="Top"
       Height="Auto"
       TextWrapping="Wrap"
       FontWeight="Bold"
-      FontSize="14"><Run Text="Some Title Goes Here..." Language="de-ch"/></TextBlock>
+      FontSize="14" Width="309" HorizontalAlignment="Left"><Run
+        Text="WPF NotifyIcon - RC 1.0"
+        Language="de-ch" /></TextBlock>
+    <TextBlock
+      HorizontalAlignment="Right"
+      Margin="0,10,10,0"
+      VerticalAlignment="Top"
+      Width="358"
+      Height="146.38"
+      FontSize="14"
+      FontStyle="Italic"
+      Foreground="#FF303030"
+      TextWrapping="Wrap"><Run Text="This is my first shot at this control and a think a few additions might make sense." Language="de-ch"/><LineBreak/><Run Text="Play around and feel free to commit critical feedback - it's appreciated :)" Language="de-ch"/><LineBreak/><Run Text="" Language="de-ch"/><LineBreak/><Run Foreground="#FF067EBD" Text="Feedback and Updates:" Language="de-ch"/><LineBreak/><Run Foreground="#FF067EBD" Text="http://www.hardcodet.net " Language="de-ch"/><Run FontSize="10" Foreground="#FF067EBD" Text="(watch the spelling" Language="de-ch"/><Run Foreground="#FF067EBD" Text=")" Language="de-ch"/></TextBlock>
+    <TextBlock Margin="12,0,10,10" VerticalAlignment="Bottom" Height="22.42" TextWrapping="Wrap" FontWeight="Bold" Foreground="#FFFFA051"><Run Text="Copyright (c) 2009 Philipp Sumi. This is prerelease software, realeased under the CodeProject Open License (CPOL)" Language="de-ch"/></TextBlock>
+    <Grid HorizontalAlignment="Right" Margin="0,0,10,262.42" VerticalAlignment="Bottom" Width="358" Height="87.2" x:Name="CustomBalloons">
+    	<Border HorizontalAlignment="Stretch" Width="Auto" BorderThickness="2,2,2,2" BorderBrush="#FF000000"/>
+    	<Button Content="Display Message" x:Name="showCustomBalloon"
+    		Click="showCustomBalloon_Click" HorizontalAlignment="Right" Margin="0,0,24.377,10.52" Width="107.623" Height="23" VerticalAlignment="Bottom" />
+    	<TextBox VerticalAlignment="Bottom" Height="23" Text="Balloon Title" TextWrapping="Wrap" Margin="10,0,173,10" x:Name="customBalloonTitle"/>
+    	<TextBlock Margin="10,10,24.377,0" VerticalAlignment="Top" TextWrapping="Wrap"><Run Text="Custom Balloon Tips are more flexible then standard tips when it comes to styling..." Language="de-ch"/></TextBlock>
+    </Grid>
   </Grid>
 </Window>

@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using System.Windows.Controls.Primitives;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace Sample_Project
 {
@@ -20,23 +9,55 @@ namespace Sample_Project
   /// </summary>
   public partial class Window1 : Window
   {
-
-
     public Window1()
     {
       InitializeComponent();
     }
 
-    private void OnClick(object sender, RoutedEventArgs e)
+
+    /// <summary>
+    /// Displays a balloon tip.
+    /// </summary>
+    private void showBalloonTip_Click(object sender, RoutedEventArgs e)
     {
-      if (tb.Visibility == System.Windows.Visibility.Visible)
+      string title = txtBalloonTitle.Text;
+      string message = txtBalloonText.Text;
+
+      if (rbCustomIcon.IsChecked == true)
       {
-        tb.Visibility = System.Windows.Visibility.Collapsed;
+        //just display the icon on the tray
+        var icon = tb.Icon;
+        tb.ShowBalloonTip(title, message, icon);
       }
       else
       {
-        tb.Visibility = Visibility.Visible;
+        BalloonIcon bi = rbInfo.IsChecked == true ? BalloonIcon.Info : BalloonIcon.Error;
+        tb.ShowBalloonTip(title, message, bi);
       }
+    }
+
+    private void hideBalloonTip_Click(object sender, RoutedEventArgs e)
+    {
+      tb.HideBalloonTip();
+    }
+
+
+    /// <summary>
+    /// Resets the tooltip.
+    /// </summary>
+    private void removeToolTip_Click(object sender, RoutedEventArgs e)
+    {
+      tb.TrayToolTip = null;
+    }
+
+
+
+    private void showCustomBalloon_Click(object sender, RoutedEventArgs e)
+    {
+      FancyBalloon balloon = new FancyBalloon();
+      balloon.BalloonText = customBalloonTitle.Text;
+      //show and close after 2.5 seconds
+      tb.ShowCustomBalloon(balloon, PopupAnimation.Slide, 5000);
     }
   }
 }

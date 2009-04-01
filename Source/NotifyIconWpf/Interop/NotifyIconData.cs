@@ -126,7 +126,20 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     {
       var data = new NotifyIconData();
 
-      data.cbSize = (uint) Marshal.SizeOf(data);
+      if (Environment.OSVersion.Version.Major >= 6)
+      {
+        //use the current size
+        data.cbSize = (uint)Marshal.SizeOf(data);
+      }
+      else
+      {
+        //we need to set another size on xp/2003- otherwise certain
+        //features (e.g. balloon tooltips) don't work.
+        data.cbSize = 504;
+
+        //set to fixed timeout
+        data.VersionOrTimeout = 10;
+      }
 
       data.WindowHandle = handle;
       data.TaskbarIconId = 0x0;

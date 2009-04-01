@@ -9,11 +9,11 @@ using System.Windows.Markup;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NotifyIconWpf")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("NotifyIcon Implementation for WPF.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("hardcodet.net")]
 [assembly: AssemblyProduct("NotifyIconWpf")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2009")]
+[assembly: AssemblyCopyright("Copyright © Philipp Sumi 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

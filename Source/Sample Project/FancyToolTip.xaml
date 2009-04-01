@@ -8,12 +8,12 @@
   x:Class="Sample_Project.FancyToolTip"
   x:Name="me"
   Width="285"
-  Height="108">
+  Height="136">
 	<UserControl.Resources>
 		<Storyboard x:Key="FadeIn">
 			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="border" Storyboard.TargetProperty="(UIElement.Opacity)">
-				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0.25"/>
-				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="1"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="1" KeySpline="0,0,0.46,0.969"/>
 			</DoubleAnimationUsingKeyFrames>
 			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="image" Storyboard.TargetProperty="(UIElement.Opacity)">
 				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0.6"/>
@@ -41,7 +41,7 @@
 	</UserControl.Triggers>
 
   <Grid
-    x:Name="LayoutRoot">
+    x:Name="LayoutRoot" Height="Auto">
     <Border
       HorizontalAlignment="Stretch"
       VerticalAlignment="Stretch"
@@ -74,7 +74,7 @@
       Source="Images\Info.png"
       Stretch="Fill"
       VerticalAlignment="Top"
-      RenderTransformOrigin="0.792,0.486" x:Name="image" >
+      RenderTransformOrigin="0.792,0.486" x:Name="image" Height="72" >
     	<Image.RenderTransform>
     		<TransformGroup>
     			<ScaleTransform ScaleX="1" ScaleY="1"/>
@@ -96,12 +96,19 @@
         Language="de-ch" /></TextBlock>
     <TextBlock
       FontSize="12"
-      FontWeight="Normal"
+      FontWeight="Bold"
       Foreground="#FF141414"
       TextWrapping="Wrap"
-      Margin="82,52,20,0"
-      VerticalAlignment="Top"
+      Margin="10,0,20,19"
+      VerticalAlignment="Bottom"
       Text="{Binding ElementName=me, Path=InfoText}"
-      x:Name="txtToolTipDetail" />
+      x:Name="txtToolTipDetail" d:LayoutOverrides="Height" />
+    <TextBlock
+    	FontSize="12"
+    	FontWeight="Normal"
+    	Foreground="#FF141414"
+    	TextWrapping="Wrap"
+    	Margin="82,42,20,44.96"
+    	x:Name="txtToolTipDetail_Copy" ><Run Text="Data binding is simple: this user control automatically derived the DataContext of the TaskbarIcon." Language="de-ch"/></TextBlock>
   </Grid>
 </UserControl>

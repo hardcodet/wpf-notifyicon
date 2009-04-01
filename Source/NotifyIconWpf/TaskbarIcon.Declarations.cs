@@ -20,103 +20,116 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// </summary>
     public const string CategoryName = "NotifyIcon";
 
-    /// <summary>
-    /// A <see cref="ToolTip"/> control that was created
-    /// in order to display either <see cref="TaskbarIconToolTip"/>
-    /// or <see cref="ToolTipText"/>.
-    /// </summary>
-    internal ToolTip CustomToolTip
-    {
-      get { return IconToolTipResolved; }
-      private set { SetIconToolTipResolved(value); }
-    }
+
+    //POPUP CONTROLS
+
+    #region TrayPopupResolved
 
     /// <summary>
-    /// A <see cref="Popup"/> which is either the
-    /// <see cref="TaskbarIconPopup"/> control itself or a
-    /// <see cref="Popup"/> that wraps it.
+    /// TrayPopupResolved Read-Only Dependency Property
     /// </summary>
-    internal Popup CustomPopup
-    {
-      get { return IconPopupResolved; }
-      private set { SetIconPopupResolved(value); }
-    }
-
-
-
-    //RESOLVED POPUPS CONTROLS
-    #region IconPopupResolved
-
-    /// <summary>
-    /// IconPopupResolved Read-Only Dependency Property
-    /// </summary>
-    private static readonly DependencyPropertyKey IconPopupResolvedPropertyKey
-        = DependencyProperty.RegisterReadOnly("IconPopupResolved", typeof(Popup), typeof(TaskbarIcon),
+    private static readonly DependencyPropertyKey TrayPopupResolvedPropertyKey
+        = DependencyProperty.RegisterReadOnly("TrayPopupResolved", typeof(Popup), typeof(TaskbarIcon),
             new FrameworkPropertyMetadata(null));
 
-    public static readonly DependencyProperty IconPopupResolvedProperty
-        = IconPopupResolvedPropertyKey.DependencyProperty;
+    public static readonly DependencyProperty TrayPopupResolvedProperty
+        = TrayPopupResolvedPropertyKey.DependencyProperty;
 
     /// <summary>
-    /// Gets the IconPopupResolved property.  This dependency property 
-    /// indicates ....
+    /// Gets the TrayPopupResolved property. Returns
+    /// a <see cref="Popup"/> which is either the
+    /// <see cref="TrayPopup"/> control itself or a
+    /// <see cref="Popup"/> control that contains the
+    /// <see cref="TrayPopup"/>.
     /// </summary>
     [Category(CategoryName)]
-    public Popup IconPopupResolved
+    public Popup TrayPopupResolved
     {
-      get { return (Popup)GetValue(IconPopupResolvedProperty); }
+      get { return (Popup)GetValue(TrayPopupResolvedProperty); }
     }
 
     /// <summary>
-    /// Provides a secure method for setting the IconPopupResolved property.  
+    /// Provides a secure method for setting the TrayPopupResolved property.  
     /// This dependency property indicates ....
     /// </summary>
     /// <param name="value">The new value for the property.</param>
-    protected void SetIconPopupResolved(Popup value)
+    protected void SetTrayPopupResolved(Popup value)
     {
-      SetValue(IconPopupResolvedPropertyKey, value);
+      SetValue(TrayPopupResolvedPropertyKey, value);
     }
 
     #endregion
 
-    #region IconToolTipResolved
+    #region TrayToolTipResolved
 
     /// <summary>
-    /// IconToolTipResolved Read-Only Dependency Property
+    /// TrayToolTipResolved Read-Only Dependency Property
     /// </summary>
-    private static readonly DependencyPropertyKey IconToolTipResolvedPropertyKey
-        = DependencyProperty.RegisterReadOnly("IconToolTipResolved", typeof(ToolTip), typeof(TaskbarIcon),
+    private static readonly DependencyPropertyKey TrayToolTipResolvedPropertyKey
+        = DependencyProperty.RegisterReadOnly("TrayToolTipResolved", typeof(ToolTip), typeof(TaskbarIcon),
             new FrameworkPropertyMetadata(null  ));
 
-    public static readonly DependencyProperty IconToolTipResolvedProperty
-        = IconToolTipResolvedPropertyKey.DependencyProperty;
+    public static readonly DependencyProperty TrayToolTipResolvedProperty
+        = TrayToolTipResolvedPropertyKey.DependencyProperty;
 
     /// <summary>
-    /// Gets the IconToolTipResolved property.  This dependency property 
-    /// indicates ....
+    /// Gets the TrayToolTipResolved property. Returns 
+    /// a <see cref="ToolTip"/> control that was created
+    /// in order to display either <see cref="TrayToolTip"/>
+    /// or <see cref="ToolTipText"/>.
     /// </summary>
     [Category(CategoryName)]
     [Browsable(true)]
     [Bindable(true)] 
-    public ToolTip IconToolTipResolved
+    public ToolTip TrayToolTipResolved
     {
-      get { return (ToolTip)GetValue(IconToolTipResolvedProperty); }
+      get { return (ToolTip)GetValue(TrayToolTipResolvedProperty); }
     }
 
     /// <summary>
-    /// Provides a secure method for setting the IconToolTipResolved property.  
-    /// This dependency property indicates ....
+    /// Provides a secure method for setting the <see cref="TrayToolTipResolved"/>
+    /// property.  
     /// </summary>
     /// <param name="value">The new value for the property.</param>
-    protected void SetIconToolTipResolved(ToolTip value)
+    protected void SetTrayToolTipResolved(ToolTip value)
     {
-      SetValue(IconToolTipResolvedPropertyKey, value);
+      SetValue(TrayToolTipResolvedPropertyKey, value);
     }
 
     #endregion
 
-        
-        
+    #region CustomBalloon
+
+    /// <summary>
+    /// CustomBalloon Read-Only Dependency Property
+    /// </summary>
+    private static readonly DependencyPropertyKey CustomBalloonPropertyKey
+        = DependencyProperty.RegisterReadOnly("CustomBalloon", typeof(Popup), typeof(TaskbarIcon),
+            new FrameworkPropertyMetadata(null));
+
+    public static readonly DependencyProperty CustomBalloonProperty
+        = CustomBalloonPropertyKey.DependencyProperty;
+
+    /// <summary>
+    /// A custom popup that is being displayed in the tray area in order
+    /// to display messages to the user.
+    /// </summary>
+    public Popup CustomBalloon
+    {
+      get { return (Popup)GetValue(CustomBalloonProperty); }
+    }
+
+    /// <summary>
+    /// Provides a secure method for setting the CustomBalloon property.  
+    /// </summary>
+    /// <param name="value">The new value for the property.</param>
+    protected void SetCustomBalloon(Popup value)
+    {
+      SetValue(CustomBalloonPropertyKey, value);
+    }
+
+    #endregion
+
 
 
     //DEPENDENCY PROPERTIES
@@ -253,7 +266,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     private void OnToolTipTextPropertyChanged(DependencyPropertyChangedEventArgs e)
     {
       //only recreate tooltip if we're not using a custom control
-      if (CustomToolTip == null || CustomToolTip.Content is string)
+      if (TrayToolTipResolved == null || TrayToolTipResolved.Content is string)
       {
         CreateCustomToolTip();
       }
@@ -263,21 +276,21 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-    #region TaskbarIconToolTip dependency property
+    #region TrayToolTip dependency property
 
     /// <summary>
     /// A custom UI element that is displayed as a tooltip if the user hovers over the taskbar icon.
     /// Works only with Vista and above. Accordingly, you should make sure that
     /// the <see cref="ToolTipText"/> property is set as well.
     /// </summary>
-    public static readonly DependencyProperty TaskbarIconToolTipProperty =
-        DependencyProperty.Register("TaskbarIconToolTip",
+    public static readonly DependencyProperty TrayToolTipProperty =
+        DependencyProperty.Register("TrayToolTip",
                                     typeof (UIElement),
                                     typeof (TaskbarIcon),
-                                    new FrameworkPropertyMetadata(null, TaskbarIconToolTipPropertyChanged));
+                                    new FrameworkPropertyMetadata(null, TrayToolTipPropertyChanged));
 
     /// <summary>
-    /// A property wrapper for the <see cref="TaskbarIconToolTipProperty"/>
+    /// A property wrapper for the <see cref="TrayToolTipProperty"/>
     /// dependency property:<br/>
     /// A custom UI element that is displayed as a tooltip if the user hovers over the taskbar icon.
     /// Works only with Vista and above. Accordingly, you should make sure that
@@ -285,36 +298,36 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// </summary>
     [Category(CategoryName)]
     [Description("Custom UI element that is displayed as a tooltip. Only on Vista and above")]
-    public UIElement TaskbarIconToolTip
+    public UIElement TrayToolTip
     {
-      get { return (UIElement) GetValue(TaskbarIconToolTipProperty); }
-      set { SetValue(TaskbarIconToolTipProperty, value); }
+      get { return (UIElement) GetValue(TrayToolTipProperty); }
+      set { SetValue(TrayToolTipProperty, value); }
     }
 
 
     /// <summary>
     /// A static callback listener which is being invoked if the
-    /// <see cref="TaskbarIconToolTipProperty"/> dependency property has
-    /// been changed. Invokes the <see cref="OnTaskbarIconToolTipPropertyChanged"/>
+    /// <see cref="TrayToolTipProperty"/> dependency property has
+    /// been changed. Invokes the <see cref="OnTrayToolTipPropertyChanged"/>
     /// instance method of the changed instance.
     /// </summary>
     /// <param name="d">The currently processed owner of the property.</param>
     /// <param name="e">Provides information about the updated property.</param>
-    private static void TaskbarIconToolTipPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void TrayToolTipPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       TaskbarIcon owner = (TaskbarIcon) d;
-      owner.OnTaskbarIconToolTipPropertyChanged(e);
+      owner.OnTrayToolTipPropertyChanged(e);
     }
 
 
     /// <summary>
-    /// Handles changes of the <see cref="TaskbarIconToolTipProperty"/> dependency property. As
+    /// Handles changes of the <see cref="TrayToolTipProperty"/> dependency property. As
     /// WPF internally uses the dependency property system and bypasses the
-    /// <see cref="TaskbarIconToolTip"/> property wrapper, updates of the property's value
+    /// <see cref="TrayToolTip"/> property wrapper, updates of the property's value
     /// should be handled here.
     /// </summary
     /// <param name="e">Provides information about the updated property.</param>
-    private void OnTaskbarIconToolTipPropertyChanged(DependencyPropertyChangedEventArgs e)
+    private void OnTrayToolTipPropertyChanged(DependencyPropertyChangedEventArgs e)
     {
       //recreate tooltip control
       CreateCustomToolTip();
@@ -327,54 +340,54 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-    #region TaskbarIconPopup dependency property
+    #region TrayPopup dependency property
 
     /// <summary>
     /// A control that is displayed as a popup when the taskbar icon is clicked.
     /// </summary>
-    public static readonly DependencyProperty TaskbarIconPopupProperty =
-        DependencyProperty.Register("TaskbarIconPopup",
+    public static readonly DependencyProperty TrayPopupProperty =
+        DependencyProperty.Register("TrayPopup",
                                     typeof(UIElement),
                                     typeof (TaskbarIcon),
-                                    new FrameworkPropertyMetadata(null, TaskbarIconPopupPropertyChanged));
+                                    new FrameworkPropertyMetadata(null, TrayPopupPropertyChanged));
 
     /// <summary>
-    /// A property wrapper for the <see cref="TaskbarIconPopupProperty"/>
+    /// A property wrapper for the <see cref="TrayPopupProperty"/>
     /// dependency property:<br/>
     /// A control that is displayed as a popup when the taskbar icon is clicked.
     /// </summary>
     [Category(CategoryName)]
     [Description("Displayed as a Popup if the user clicks on the taskbar icon.")]
-    public UIElement TaskbarIconPopup
+    public UIElement TrayPopup
     {
-      get { return (UIElement)GetValue(TaskbarIconPopupProperty); }
-      set { SetValue(TaskbarIconPopupProperty, value); }
+      get { return (UIElement)GetValue(TrayPopupProperty); }
+      set { SetValue(TrayPopupProperty, value); }
     }
 
 
     /// <summary>
     /// A static callback listener which is being invoked if the
-    /// <see cref="TaskbarIconPopupProperty"/> dependency property has
-    /// been changed. Invokes the <see cref="OnTaskbarIconPopupPropertyChanged"/>
+    /// <see cref="TrayPopupProperty"/> dependency property has
+    /// been changed. Invokes the <see cref="OnTrayPopupPropertyChanged"/>
     /// instance method of the changed instance.
     /// </summary>
     /// <param name="d">The currently processed owner of the property.</param>
     /// <param name="e">Provides information about the updated property.</param>
-    private static void TaskbarIconPopupPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static void TrayPopupPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
       TaskbarIcon owner = (TaskbarIcon) d;
-      owner.OnTaskbarIconPopupPropertyChanged(e);
+      owner.OnTrayPopupPropertyChanged(e);
     }
 
 
     /// <summary>
-    /// Handles changes of the <see cref="TaskbarIconPopupProperty"/> dependency property. As
+    /// Handles changes of the <see cref="TrayPopupProperty"/> dependency property. As
     /// WPF internally uses the dependency property system and bypasses the
-    /// <see cref="TaskbarIconPopup"/> property wrapper, updates of the property's value
+    /// <see cref="TrayPopup"/> property wrapper, updates of the property's value
     /// should be handled here.
     /// </summary
     /// <param name="e">Provides information about the updated property.</param>
-    private void OnTaskbarIconPopupPropertyChanged(DependencyPropertyChangedEventArgs e)
+    private void OnTrayPopupPropertyChanged(DependencyPropertyChangedEventArgs e)
     {
       //create a pop
       CreatePopup();
@@ -442,7 +455,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #region PopupActivation dependency property
 
     /// <summary>
-    /// Defines what mouse events trigger the <see cref="TaskbarIconPopup" />.
+    /// Defines what mouse events trigger the <see cref="TrayPopup" />.
     /// Default is <see cref="PopupActivationMode.LeftClick" />.
     /// </summary>
     public static readonly DependencyProperty PopupActivationProperty =
@@ -454,7 +467,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <summary>
     /// A property wrapper for the <see cref="PopupActivationProperty"/>
     /// dependency property:<br/>
-    /// Defines what mouse events trigger the <see cref="TaskbarIconPopup" />.
+    /// Defines what mouse events trigger the <see cref="TrayPopup" />.
     /// Default is <see cref="PopupActivationMode.LeftClick" />.
     /// </summary>
     [Category(CategoryName)]
@@ -540,124 +553,124 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     //EVENTS
 
-    #region TaskbarIconLeftMouseDown
+    #region TrayLeftMouseDown
 
     /// <summary>
-    /// TaskbarIconLeftMouseDown Routed Event
+    /// TrayLeftMouseDown Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconLeftMouseDownEvent = EventManager.RegisterRoutedEvent("TaskbarIconLeftMouseDown",
+    public static readonly RoutedEvent TrayLeftMouseDownEvent = EventManager.RegisterRoutedEvent("TrayLeftMouseDown",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the user presses the left mouse button.
     /// </summary>
     [Category(CategoryName)]
-    public event RoutedEventHandler TaskbarIconLeftMouseDown
+    public event RoutedEventHandler TrayLeftMouseDown
     {
-      add { AddHandler(TaskbarIconLeftMouseDownEvent, value); }
-      remove { RemoveHandler(TaskbarIconLeftMouseDownEvent, value); }
+      add { AddHandler(TrayLeftMouseDownEvent, value); }
+      remove { RemoveHandler(TrayLeftMouseDownEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconLeftMouseDown event.
+    /// A helper method to raise the TrayLeftMouseDown event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconLeftMouseDownEvent()
+    protected RoutedEventArgs RaiseTrayLeftMouseDownEvent()
     {
-      return RaiseTaskbarIconLeftMouseDownEvent(this);
+      return RaiseTrayLeftMouseDownEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconLeftMouseDown event on a target element.
+    /// A static helper method to raise the TrayLeftMouseDown event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconLeftMouseDownEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayLeftMouseDownEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconLeftMouseDownEvent;
+      args.RoutedEvent = TrayLeftMouseDownEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
 
-    #region TaskbarIconRightMouseDown
+    #region TrayRightMouseDown
 
     /// <summary>
-    /// TaskbarIconRightMouseDown Routed Event
+    /// TrayRightMouseDown Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconRightMouseDownEvent = EventManager.RegisterRoutedEvent("TaskbarIconRightMouseDown",
+    public static readonly RoutedEvent TrayRightMouseDownEvent = EventManager.RegisterRoutedEvent("TrayRightMouseDown",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the presses the right mouse button.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconRightMouseDown
+    public event RoutedEventHandler TrayRightMouseDown
     {
-      add { AddHandler(TaskbarIconRightMouseDownEvent, value); }
-      remove { RemoveHandler(TaskbarIconRightMouseDownEvent, value); }
+      add { AddHandler(TrayRightMouseDownEvent, value); }
+      remove { RemoveHandler(TrayRightMouseDownEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconRightMouseDown event.
+    /// A helper method to raise the TrayRightMouseDown event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconRightMouseDownEvent()
+    protected RoutedEventArgs RaiseTrayRightMouseDownEvent()
     {
-      return RaiseTaskbarIconRightMouseDownEvent(this);
+      return RaiseTrayRightMouseDownEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconRightMouseDown event on a target element.
+    /// A static helper method to raise the TrayRightMouseDown event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconRightMouseDownEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayRightMouseDownEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconRightMouseDownEvent;
+      args.RoutedEvent = TrayRightMouseDownEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
 
-    #region TaskbarIconMiddleMouseDown
+    #region TrayMiddleMouseDown
 
     /// <summary>
-    /// TaskbarIconMiddleMouseDown Routed Event
+    /// TrayMiddleMouseDown Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconMiddleMouseDownEvent = EventManager.RegisterRoutedEvent("TaskbarIconMiddleMouseDown",
+    public static readonly RoutedEvent TrayMiddleMouseDownEvent = EventManager.RegisterRoutedEvent("TrayMiddleMouseDown",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the user presses the middle mouse button.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconMiddleMouseDown
+    public event RoutedEventHandler TrayMiddleMouseDown
     {
-      add { AddHandler(TaskbarIconMiddleMouseDownEvent, value); }
-      remove { RemoveHandler(TaskbarIconMiddleMouseDownEvent, value); }
+      add { AddHandler(TrayMiddleMouseDownEvent, value); }
+      remove { RemoveHandler(TrayMiddleMouseDownEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconMiddleMouseDown event.
+    /// A helper method to raise the TrayMiddleMouseDown event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconMiddleMouseDownEvent()
+    protected RoutedEventArgs RaiseTrayMiddleMouseDownEvent()
     {
-      return RaiseTaskbarIconMiddleMouseDownEvent(this);
+      return RaiseTrayMiddleMouseDownEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconMiddleMouseDown event on a target element.
+    /// A static helper method to raise the TrayMiddleMouseDown event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconMiddleMouseDownEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayMiddleMouseDownEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconMiddleMouseDownEvent;
+      args.RoutedEvent = TrayMiddleMouseDownEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
@@ -665,123 +678,123 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #endregion
         
     
-    #region TaskbarIconLeftMouseUp
+    #region TrayLeftMouseUp
 
     /// <summary>
-    /// TaskbarIconLeftMouseUp Routed Event
+    /// TrayLeftMouseUp Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconLeftMouseUpEvent = EventManager.RegisterRoutedEvent("TaskbarIconLeftMouseUp",
+    public static readonly RoutedEvent TrayLeftMouseUpEvent = EventManager.RegisterRoutedEvent("TrayLeftMouseUp",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the user releases the left mouse button.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconLeftMouseUp
+    public event RoutedEventHandler TrayLeftMouseUp
     {
-      add { AddHandler(TaskbarIconLeftMouseUpEvent, value); }
-      remove { RemoveHandler(TaskbarIconLeftMouseUpEvent, value); }
+      add { AddHandler(TrayLeftMouseUpEvent, value); }
+      remove { RemoveHandler(TrayLeftMouseUpEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconLeftMouseUp event.
+    /// A helper method to raise the TrayLeftMouseUp event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconLeftMouseUpEvent()
+    protected RoutedEventArgs RaiseTrayLeftMouseUpEvent()
     {
-      return RaiseTaskbarIconLeftMouseUpEvent(this);
+      return RaiseTrayLeftMouseUpEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconLeftMouseUp event on a target element.
+    /// A static helper method to raise the TrayLeftMouseUp event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconLeftMouseUpEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayLeftMouseUpEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconLeftMouseUpEvent;
+      args.RoutedEvent = TrayLeftMouseUpEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
 
-    #region TaskbarIconRightMouseUp
+    #region TrayRightMouseUp
 
     /// <summary>
-    /// TaskbarIconRightMouseUp Routed Event
+    /// TrayRightMouseUp Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconRightMouseUpEvent = EventManager.RegisterRoutedEvent("TaskbarIconRightMouseUp",
+    public static readonly RoutedEvent TrayRightMouseUpEvent = EventManager.RegisterRoutedEvent("TrayRightMouseUp",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the user releases the right mouse button.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconRightMouseUp
+    public event RoutedEventHandler TrayRightMouseUp
     {
-      add { AddHandler(TaskbarIconRightMouseUpEvent, value); }
-      remove { RemoveHandler(TaskbarIconRightMouseUpEvent, value); }
+      add { AddHandler(TrayRightMouseUpEvent, value); }
+      remove { RemoveHandler(TrayRightMouseUpEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconRightMouseUp event.
+    /// A helper method to raise the TrayRightMouseUp event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconRightMouseUpEvent()
+    protected RoutedEventArgs RaiseTrayRightMouseUpEvent()
     {
-      return RaiseTaskbarIconRightMouseUpEvent(this);
+      return RaiseTrayRightMouseUpEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconRightMouseUp event on a target element.
+    /// A static helper method to raise the TrayRightMouseUp event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconRightMouseUpEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayRightMouseUpEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconRightMouseUpEvent;
+      args.RoutedEvent = TrayRightMouseUpEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
 
-    #region TaskbarIconMiddleMouseUp
+    #region TrayMiddleMouseUp
 
     /// <summary>
-    /// TaskbarIconMiddleMouseUp Routed Event
+    /// TrayMiddleMouseUp Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconMiddleMouseUpEvent = EventManager.RegisterRoutedEvent("TaskbarIconMiddleMouseUp",
+    public static readonly RoutedEvent TrayMiddleMouseUpEvent = EventManager.RegisterRoutedEvent("TrayMiddleMouseUp",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the user releases the middle mouse button.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconMiddleMouseUp
+    public event RoutedEventHandler TrayMiddleMouseUp
     {
-      add { AddHandler(TaskbarIconMiddleMouseUpEvent, value); }
-      remove { RemoveHandler(TaskbarIconMiddleMouseUpEvent, value); }
+      add { AddHandler(TrayMiddleMouseUpEvent, value); }
+      remove { RemoveHandler(TrayMiddleMouseUpEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconMiddleMouseUp event.
+    /// A helper method to raise the TrayMiddleMouseUp event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconMiddleMouseUpEvent()
+    protected RoutedEventArgs RaiseTrayMiddleMouseUpEvent()
     {
-      return RaiseTaskbarIconMiddleMouseUpEvent(this);
+      return RaiseTrayMiddleMouseUpEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconMiddleMouseUp event on a target element.
+    /// A static helper method to raise the TrayMiddleMouseUp event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconMiddleMouseUpEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayMiddleMouseUpEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconMiddleMouseUpEvent;
+      args.RoutedEvent = TrayMiddleMouseUpEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
@@ -789,82 +802,82 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #endregion
         
 
-    #region TaskbarIconMouseDoubleClick
+    #region TrayMouseDoubleClick
 
     /// <summary>
-    /// TaskbarIconMouseDoubleClick Routed Event
+    /// TrayMouseDoubleClick Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconMouseDoubleClickEvent = EventManager.RegisterRoutedEvent("TaskbarIconMouseDoubleClick",
+    public static readonly RoutedEvent TrayMouseDoubleClickEvent = EventManager.RegisterRoutedEvent("TrayMouseDoubleClick",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the user double-clicks the taskbar icon.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconMouseDoubleClick
+    public event RoutedEventHandler TrayMouseDoubleClick
     {
-      add { AddHandler(TaskbarIconMouseDoubleClickEvent, value); }
-      remove { RemoveHandler(TaskbarIconMouseDoubleClickEvent, value); }
+      add { AddHandler(TrayMouseDoubleClickEvent, value); }
+      remove { RemoveHandler(TrayMouseDoubleClickEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconMouseDoubleClick event.
+    /// A helper method to raise the TrayMouseDoubleClick event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconMouseDoubleClickEvent()
+    protected RoutedEventArgs RaiseTrayMouseDoubleClickEvent()
     {
-      return RaiseTaskbarIconMouseDoubleClickEvent(this);
+      return RaiseTrayMouseDoubleClickEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconMouseDoubleClick event on a target element.
+    /// A static helper method to raise the TrayMouseDoubleClick event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconMouseDoubleClickEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayMouseDoubleClickEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconMouseDoubleClickEvent;
+      args.RoutedEvent = TrayMouseDoubleClickEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
         
-    #region TaskbarIconMouseMove
+    #region TrayMouseMove
 
     /// <summary>
-    /// TaskbarIconMouseMove Routed Event
+    /// TrayMouseMove Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconMouseMoveEvent = EventManager.RegisterRoutedEvent("TaskbarIconMouseMove",
+    public static readonly RoutedEvent TrayMouseMoveEvent = EventManager.RegisterRoutedEvent("TrayMouseMove",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the user moves the mouse over the taskbar icon.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconMouseMove
+    public event RoutedEventHandler TrayMouseMove
     {
-      add { AddHandler(TaskbarIconMouseMoveEvent, value); }
-      remove { RemoveHandler(TaskbarIconMouseMoveEvent, value); }
+      add { AddHandler(TrayMouseMoveEvent, value); }
+      remove { RemoveHandler(TrayMouseMoveEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconMouseMove event.
+    /// A helper method to raise the TrayMouseMove event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconMouseMoveEvent()
+    protected RoutedEventArgs RaiseTrayMouseMoveEvent()
     {
-      return RaiseTaskbarIconMouseMoveEvent(this);
+      return RaiseTrayMouseMoveEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconMouseMove event on a target element.
+    /// A static helper method to raise the TrayMouseMove event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconMouseMoveEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayMouseMoveEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconMouseMoveEvent;
+      args.RoutedEvent = TrayMouseMoveEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
@@ -872,123 +885,123 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #endregion
 
 
-    #region TaskbarIconBalloonTipShown
+    #region TrayBalloonTipShown
 
     /// <summary>
-    /// TaskbarIconBalloonTipShown Routed Event
+    /// TrayBalloonTipShown Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconBalloonTipShownEvent = EventManager.RegisterRoutedEvent("TaskbarIconBalloonTipShown",
+    public static readonly RoutedEvent TrayBalloonTipShownEvent = EventManager.RegisterRoutedEvent("TrayBalloonTipShown",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when a balloon ToolTip is displayed.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconBalloonTipShown
+    public event RoutedEventHandler TrayBalloonTipShown
     {
-      add { AddHandler(TaskbarIconBalloonTipShownEvent, value); }
-      remove { RemoveHandler(TaskbarIconBalloonTipShownEvent, value); }
+      add { AddHandler(TrayBalloonTipShownEvent, value); }
+      remove { RemoveHandler(TrayBalloonTipShownEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconBalloonTipShown event.
+    /// A helper method to raise the TrayBalloonTipShown event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconBalloonTipShownEvent()
+    protected RoutedEventArgs RaiseTrayBalloonTipShownEvent()
     {
-      return RaiseTaskbarIconBalloonTipShownEvent(this);
+      return RaiseTrayBalloonTipShownEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconBalloonTipShown event on a target element.
+    /// A static helper method to raise the TrayBalloonTipShown event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconBalloonTipShownEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayBalloonTipShownEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconBalloonTipShownEvent;
+      args.RoutedEvent = TrayBalloonTipShownEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
 
-    #region TaskbarIconBalloonTipClosed
+    #region TrayBalloonTipClosed
 
     /// <summary>
-    /// TaskbarIconBalloonTipClosed Routed Event
+    /// TrayBalloonTipClosed Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconBalloonTipClosedEvent = EventManager.RegisterRoutedEvent("TaskbarIconBalloonTipClosed",
+    public static readonly RoutedEvent TrayBalloonTipClosedEvent = EventManager.RegisterRoutedEvent("TrayBalloonTipClosed",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when a balloon ToolTip was closed.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconBalloonTipClosed
+    public event RoutedEventHandler TrayBalloonTipClosed
     {
-      add { AddHandler(TaskbarIconBalloonTipClosedEvent, value); }
-      remove { RemoveHandler(TaskbarIconBalloonTipClosedEvent, value); }
+      add { AddHandler(TrayBalloonTipClosedEvent, value); }
+      remove { RemoveHandler(TrayBalloonTipClosedEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconBalloonTipClosed event.
+    /// A helper method to raise the TrayBalloonTipClosed event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconBalloonTipClosedEvent()
+    protected RoutedEventArgs RaiseTrayBalloonTipClosedEvent()
     {
-      return RaiseTaskbarIconBalloonTipClosedEvent(this);
+      return RaiseTrayBalloonTipClosedEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconBalloonTipClosed event on a target element.
+    /// A static helper method to raise the TrayBalloonTipClosed event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconBalloonTipClosedEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayBalloonTipClosedEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconBalloonTipClosedEvent;
+      args.RoutedEvent = TrayBalloonTipClosedEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
 
-    #region TaskbarIconBalloonTipClicked
+    #region TrayBalloonTipClicked
 
     /// <summary>
-    /// TaskbarIconBalloonTipClicked Routed Event
+    /// TrayBalloonTipClicked Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconBalloonTipClickedEvent = EventManager.RegisterRoutedEvent("TaskbarIconBalloonTipClicked",
+    public static readonly RoutedEvent TrayBalloonTipClickedEvent = EventManager.RegisterRoutedEvent("TrayBalloonTipClicked",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Occurs when the user clicks on a balloon ToolTip.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconBalloonTipClicked
+    public event RoutedEventHandler TrayBalloonTipClicked
     {
-      add { AddHandler(TaskbarIconBalloonTipClickedEvent, value); }
-      remove { RemoveHandler(TaskbarIconBalloonTipClickedEvent, value); }
+      add { AddHandler(TrayBalloonTipClickedEvent, value); }
+      remove { RemoveHandler(TrayBalloonTipClickedEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconBalloonTipClicked event.
+    /// A helper method to raise the TrayBalloonTipClicked event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconBalloonTipClickedEvent()
+    protected RoutedEventArgs RaiseTrayBalloonTipClickedEvent()
     {
-      return RaiseTaskbarIconBalloonTipClickedEvent(this);
+      return RaiseTrayBalloonTipClickedEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconBalloonTipClicked event on a target element.
+    /// A static helper method to raise the TrayBalloonTipClicked event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconBalloonTipClickedEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayBalloonTipClickedEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconBalloonTipClickedEvent;
+      args.RoutedEvent = TrayBalloonTipClickedEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
@@ -996,156 +1009,156 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #endregion
         
 
-    #region TaskbarIconContextMenuOpen (and PreviewTaskbarIconContextMenuOpen)
+    #region TrayContextMenuOpen (and PreviewTrayContextMenuOpen)
 
     /// <summary>
-    /// TaskbarIconContextMenuOpen Routed Event
+    /// TrayContextMenuOpen Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconContextMenuOpenEvent = EventManager.RegisterRoutedEvent("TaskbarIconContextMenuOpen",
+    public static readonly RoutedEvent TrayContextMenuOpenEvent = EventManager.RegisterRoutedEvent("TrayContextMenuOpen",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Bubbled event that occurs when the context menu of the taskbar icon is being displayed.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconContextMenuOpen
+    public event RoutedEventHandler TrayContextMenuOpen
     {
-      add { AddHandler(TaskbarIconContextMenuOpenEvent, value); }
-      remove { RemoveHandler(TaskbarIconContextMenuOpenEvent, value); }
+      add { AddHandler(TrayContextMenuOpenEvent, value); }
+      remove { RemoveHandler(TrayContextMenuOpenEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconContextMenuOpen event.
+    /// A helper method to raise the TrayContextMenuOpen event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconContextMenuOpenEvent()
+    protected RoutedEventArgs RaiseTrayContextMenuOpenEvent()
     {
-      return RaiseTaskbarIconContextMenuOpenEvent(this);
+      return RaiseTrayContextMenuOpenEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconContextMenuOpen event on a target element.
+    /// A static helper method to raise the TrayContextMenuOpen event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconContextMenuOpenEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayContextMenuOpenEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconContextMenuOpenEvent;
+      args.RoutedEvent = TrayContextMenuOpenEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     /// <summary>
-    /// PreviewTaskbarIconContextMenuOpen Routed Event
+    /// PreviewTrayContextMenuOpen Routed Event
     /// </summary>
-    public static readonly RoutedEvent PreviewTaskbarIconContextMenuOpenEvent = EventManager.RegisterRoutedEvent("PreviewTaskbarIconContextMenuOpen",
+    public static readonly RoutedEvent PreviewTrayContextMenuOpenEvent = EventManager.RegisterRoutedEvent("PreviewTrayContextMenuOpen",
         RoutingStrategy.Tunnel, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Tunneled event that occurs when the context menu of the taskbar icon is being displayed.
     /// </summary>
-    public event RoutedEventHandler PreviewTaskbarIconContextMenuOpen
+    public event RoutedEventHandler PreviewTrayContextMenuOpen
     {
-      add { AddHandler(PreviewTaskbarIconContextMenuOpenEvent, value); }
-      remove { RemoveHandler(PreviewTaskbarIconContextMenuOpenEvent, value); }
+      add { AddHandler(PreviewTrayContextMenuOpenEvent, value); }
+      remove { RemoveHandler(PreviewTrayContextMenuOpenEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the PreviewTaskbarIconContextMenuOpen event.
+    /// A helper method to raise the PreviewTrayContextMenuOpen event.
     /// </summary>
-    protected RoutedEventArgs RaisePreviewTaskbarIconContextMenuOpenEvent()
+    protected RoutedEventArgs RaisePreviewTrayContextMenuOpenEvent()
     {
-      return RaisePreviewTaskbarIconContextMenuOpenEvent(this);
+      return RaisePreviewTrayContextMenuOpenEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the PreviewTaskbarIconContextMenuOpen event on a target element.
+    /// A static helper method to raise the PreviewTrayContextMenuOpen event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaisePreviewTaskbarIconContextMenuOpenEvent(DependencyObject target)
+    internal static RoutedEventArgs RaisePreviewTrayContextMenuOpenEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = PreviewTaskbarIconContextMenuOpenEvent;
+      args.RoutedEvent = PreviewTrayContextMenuOpenEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
 
-    #region TaskbarIconPopupOpen (and PreviewTaskbarIconPopupOpen)
+    #region TrayPopupOpen (and PreviewTrayPopupOpen)
 
     /// <summary>
-    /// TaskbarIconPopupOpen Routed Event
+    /// TrayPopupOpen Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconPopupOpenEvent = EventManager.RegisterRoutedEvent("TaskbarIconPopupOpen",
+    public static readonly RoutedEvent TrayPopupOpenEvent = EventManager.RegisterRoutedEvent("TrayPopupOpen",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Bubbled event that occurs when the custom popup is being opened.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconPopupOpen
+    public event RoutedEventHandler TrayPopupOpen
     {
-      add { AddHandler(TaskbarIconPopupOpenEvent, value); }
-      remove { RemoveHandler(TaskbarIconPopupOpenEvent, value); }
+      add { AddHandler(TrayPopupOpenEvent, value); }
+      remove { RemoveHandler(TrayPopupOpenEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconPopupOpen event.
+    /// A helper method to raise the TrayPopupOpen event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconPopupOpenEvent()
+    protected RoutedEventArgs RaiseTrayPopupOpenEvent()
     {
-      return RaiseTaskbarIconPopupOpenEvent(this);
+      return RaiseTrayPopupOpenEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconPopupOpen event on a target element.
+    /// A static helper method to raise the TrayPopupOpen event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconPopupOpenEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayPopupOpenEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconPopupOpenEvent;
+      args.RoutedEvent = TrayPopupOpenEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     /// <summary>
-    /// PreviewTaskbarIconPopupOpen Routed Event
+    /// PreviewTrayPopupOpen Routed Event
     /// </summary>
-    public static readonly RoutedEvent PreviewTaskbarIconPopupOpenEvent = EventManager.RegisterRoutedEvent("PreviewTaskbarIconPopupOpen",
+    public static readonly RoutedEvent PreviewTrayPopupOpenEvent = EventManager.RegisterRoutedEvent("PreviewTrayPopupOpen",
         RoutingStrategy.Tunnel, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Tunneled event that occurs when the custom popup is being opened.
     /// </summary>
-    public event RoutedEventHandler PreviewTaskbarIconPopupOpen
+    public event RoutedEventHandler PreviewTrayPopupOpen
     {
-      add { AddHandler(PreviewTaskbarIconPopupOpenEvent, value); }
-      remove { RemoveHandler(PreviewTaskbarIconPopupOpenEvent, value); }
+      add { AddHandler(PreviewTrayPopupOpenEvent, value); }
+      remove { RemoveHandler(PreviewTrayPopupOpenEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the PreviewTaskbarIconPopupOpen event.
+    /// A helper method to raise the PreviewTrayPopupOpen event.
     /// </summary>
-    protected RoutedEventArgs RaisePreviewTaskbarIconPopupOpenEvent()
+    protected RoutedEventArgs RaisePreviewTrayPopupOpenEvent()
     {
-      return RaisePreviewTaskbarIconPopupOpenEvent(this);
+      return RaisePreviewTrayPopupOpenEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the PreviewTaskbarIconPopupOpen event on a target element.
+    /// A static helper method to raise the PreviewTrayPopupOpen event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaisePreviewTaskbarIconPopupOpenEvent(DependencyObject target)
+    internal static RoutedEventArgs RaisePreviewTrayPopupOpenEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = PreviewTaskbarIconPopupOpenEvent;
+      args.RoutedEvent = PreviewTrayPopupOpenEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
@@ -1153,156 +1166,156 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #endregion
 
 
-    #region TaskbarIconToolTipOpen (and PreviewTaskbarIconToolTipOpen)
+    #region TrayToolTipOpen (and PreviewTrayToolTipOpen)
 
     /// <summary>
-    /// TaskbarIconToolTipOpen Routed Event
+    /// TrayToolTipOpen Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconToolTipOpenEvent = EventManager.RegisterRoutedEvent("TaskbarIconToolTipOpen",
+    public static readonly RoutedEvent TrayToolTipOpenEvent = EventManager.RegisterRoutedEvent("TrayToolTipOpen",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Bubbled event that occurs when the custom ToolTip is being displayed.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconToolTipOpen
+    public event RoutedEventHandler TrayToolTipOpen
     {
-      add { AddHandler(TaskbarIconToolTipOpenEvent, value); }
-      remove { RemoveHandler(TaskbarIconToolTipOpenEvent, value); }
+      add { AddHandler(TrayToolTipOpenEvent, value); }
+      remove { RemoveHandler(TrayToolTipOpenEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconToolTipOpen event.
+    /// A helper method to raise the TrayToolTipOpen event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconToolTipOpenEvent()
+    protected RoutedEventArgs RaiseTrayToolTipOpenEvent()
     {
-      return RaiseTaskbarIconToolTipOpenEvent(this);
+      return RaiseTrayToolTipOpenEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconToolTipOpen event on a target element.
+    /// A static helper method to raise the TrayToolTipOpen event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconToolTipOpenEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayToolTipOpenEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconToolTipOpenEvent;
+      args.RoutedEvent = TrayToolTipOpenEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     /// <summary>
-    /// PreviewTaskbarIconToolTipOpen Routed Event
+    /// PreviewTrayToolTipOpen Routed Event
     /// </summary>
-    public static readonly RoutedEvent PreviewTaskbarIconToolTipOpenEvent = EventManager.RegisterRoutedEvent("PreviewTaskbarIconToolTipOpen",
+    public static readonly RoutedEvent PreviewTrayToolTipOpenEvent = EventManager.RegisterRoutedEvent("PreviewTrayToolTipOpen",
         RoutingStrategy.Tunnel, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Tunneled event that occurs when the custom ToolTip is being displayed.
     /// </summary>
-    public event RoutedEventHandler PreviewTaskbarIconToolTipOpen
+    public event RoutedEventHandler PreviewTrayToolTipOpen
     {
-      add { AddHandler(PreviewTaskbarIconToolTipOpenEvent, value); }
-      remove { RemoveHandler(PreviewTaskbarIconToolTipOpenEvent, value); }
+      add { AddHandler(PreviewTrayToolTipOpenEvent, value); }
+      remove { RemoveHandler(PreviewTrayToolTipOpenEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the PreviewTaskbarIconToolTipOpen event.
+    /// A helper method to raise the PreviewTrayToolTipOpen event.
     /// </summary>
-    protected RoutedEventArgs RaisePreviewTaskbarIconToolTipOpenEvent()
+    protected RoutedEventArgs RaisePreviewTrayToolTipOpenEvent()
     {
-      return RaisePreviewTaskbarIconToolTipOpenEvent(this);
+      return RaisePreviewTrayToolTipOpenEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the PreviewTaskbarIconToolTipOpen event on a target element.
+    /// A static helper method to raise the PreviewTrayToolTipOpen event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaisePreviewTaskbarIconToolTipOpenEvent(DependencyObject target)
+    internal static RoutedEventArgs RaisePreviewTrayToolTipOpenEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = PreviewTaskbarIconToolTipOpenEvent;
+      args.RoutedEvent = PreviewTrayToolTipOpenEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
 
-    #region TaskbarIconToolTipClose (and PreviewTaskbarIconToolTipClose)
+    #region TrayToolTipClose (and PreviewTrayToolTipClose)
 
     /// <summary>
-    /// TaskbarIconToolTipClose Routed Event
+    /// TrayToolTipClose Routed Event
     /// </summary>
-    public static readonly RoutedEvent TaskbarIconToolTipCloseEvent = EventManager.RegisterRoutedEvent("TaskbarIconToolTipClose",
+    public static readonly RoutedEvent TrayToolTipCloseEvent = EventManager.RegisterRoutedEvent("TrayToolTipClose",
         RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Bubbled event that occurs when a custom tooltip is being closed.
     /// </summary>
-    public event RoutedEventHandler TaskbarIconToolTipClose
+    public event RoutedEventHandler TrayToolTipClose
     {
-      add { AddHandler(TaskbarIconToolTipCloseEvent, value); }
-      remove { RemoveHandler(TaskbarIconToolTipCloseEvent, value); }
+      add { AddHandler(TrayToolTipCloseEvent, value); }
+      remove { RemoveHandler(TrayToolTipCloseEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the TaskbarIconToolTipClose event.
+    /// A helper method to raise the TrayToolTipClose event.
     /// </summary>
-    protected RoutedEventArgs RaiseTaskbarIconToolTipCloseEvent()
+    protected RoutedEventArgs RaiseTrayToolTipCloseEvent()
     {
-      return RaiseTaskbarIconToolTipCloseEvent(this);
+      return RaiseTrayToolTipCloseEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the TaskbarIconToolTipClose event on a target element.
+    /// A static helper method to raise the TrayToolTipClose event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseTaskbarIconToolTipCloseEvent(DependencyObject target)
+    internal static RoutedEventArgs RaiseTrayToolTipCloseEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = TaskbarIconToolTipCloseEvent;
+      args.RoutedEvent = TrayToolTipCloseEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     /// <summary>
-    /// PreviewTaskbarIconToolTipClose Routed Event
+    /// PreviewTrayToolTipClose Routed Event
     /// </summary>
-    public static readonly RoutedEvent PreviewTaskbarIconToolTipCloseEvent = EventManager.RegisterRoutedEvent("PreviewTaskbarIconToolTipClose",
+    public static readonly RoutedEvent PreviewTrayToolTipCloseEvent = EventManager.RegisterRoutedEvent("PreviewTrayToolTipClose",
         RoutingStrategy.Tunnel, typeof(RoutedEventHandler), typeof(TaskbarIcon));
 
     /// <summary>
     /// Tunneled event that occurs when a custom tooltip is being closed.
     /// </summary>
-    public event RoutedEventHandler PreviewTaskbarIconToolTipClose
+    public event RoutedEventHandler PreviewTrayToolTipClose
     {
-      add { AddHandler(PreviewTaskbarIconToolTipCloseEvent, value); }
-      remove { RemoveHandler(PreviewTaskbarIconToolTipCloseEvent, value); }
+      add { AddHandler(PreviewTrayToolTipCloseEvent, value); }
+      remove { RemoveHandler(PreviewTrayToolTipCloseEvent, value); }
     }
 
     /// <summary>
-    /// A helper method to raise the PreviewTaskbarIconToolTipClose event.
+    /// A helper method to raise the PreviewTrayToolTipClose event.
     /// </summary>
-    protected RoutedEventArgs RaisePreviewTaskbarIconToolTipCloseEvent()
+    protected RoutedEventArgs RaisePreviewTrayToolTipCloseEvent()
     {
-      return RaisePreviewTaskbarIconToolTipCloseEvent(this);
+      return RaisePreviewTrayToolTipCloseEvent(this);
     }
 
     /// <summary>
-    /// A static helper method to raise the PreviewTaskbarIconToolTipClose event on a target element.
+    /// A static helper method to raise the PreviewTrayToolTipClose event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaisePreviewTaskbarIconToolTipCloseEvent(DependencyObject target)
+    internal static RoutedEventArgs RaisePreviewTrayToolTipCloseEvent(DependencyObject target)
     {
       if (target == null) return null;
 
       RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = PreviewTaskbarIconToolTipCloseEvent;
+      args.RoutedEvent = PreviewTrayToolTipCloseEvent;
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
@@ -1355,8 +1368,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
-
-
           
     #region ToolTipOpened
 
@@ -1445,13 +1456,54 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
-        
-        
-        
+
+    #region BalloonShowing
+
+    /// <summary>
+    /// BalloonShowing Attached Routed Event
+    /// </summary>
+    public static readonly RoutedEvent BalloonShowingEvent = EventManager.RegisterRoutedEvent("BalloonShowing",
+        RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
+
+    /// <summary>
+    /// Adds a handler for the BalloonShowing attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be added</param>
+    public static void AddBalloonShowingHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.AddHandler(element, BalloonShowingEvent, handler);
+    }
+
+    /// <summary>
+    /// Removes a handler for the BalloonShowing attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be removed</param>
+    public static void RemoveBalloonShowingHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.RemoveHandler(element, BalloonShowingEvent, handler);
+    }
+
+    /// <summary>
+    /// A static helper method to raise the BalloonShowing event on a target element.
+    /// </summary>
+    /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+    internal static RoutedEventArgs RaiseBalloonShowingEvent(DependencyObject target)
+    {
+      if (target == null) return null;
+
+      RoutedEventArgs args = new RoutedEventArgs();
+      args.RoutedEvent = BalloonShowingEvent;
+      RoutedEventHelper.RaiseEvent(target, args);
+      return args;
+    }
+
+    #endregion
         
         
 
-
+        
 
     //BASE CLASS PROPERTY OVERRIDES
 

@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 using Point=Hardcodet.Wpf.TaskbarNotification.Interop.Point;
+using Rect=Hardcodet.Wpf.TaskbarNotification.Interop.Rect;
 
 namespace Hardcodet.Wpf.TaskbarNotification
 {
@@ -17,6 +18,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
   /// </summary>
   public partial class TaskbarIcon : FrameworkElement, IDisposable
   {
+    #region Members
+
     /// <summary>
     /// Represents the current icon data.
     /// </summary>
@@ -40,6 +43,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
     private readonly Timer singleClickTimer;
 
     /// <summary>
+    /// A timer that is used to close open balloon tooltips.
+    /// </summary>
+    private readonly Timer balloonCloseTimer;
+
+    /// <summary>
     /// Indicates whether the taskbar icon has been created or not.
     /// </summary>
     public bool IsTaskbarIconCreated { get; private set; }
@@ -53,6 +61,29 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       get { return messageSink.Version == NotifyIconVersion.Vista; }
     }
+
+
+
+    /// <summary>
+    /// Checks whether a non-tooltip popup is currently opened.
+    /// </summary>
+    private bool IsPopupOpen
+    {
+      get
+      {
+        var popup = TrayPopupResolved;
+        var menu = ContextMenu;
+        var balloon = CustomBalloon;
+
+        return popup != null && popup.IsOpen ||
+               menu != null && menu.IsOpen ||
+               balloon != null && balloon.IsOpen;
+
+      }
+    }
+
+    #endregion
+
 
     #region Construction
 
@@ -79,14 +110,121 @@ namespace Hardcodet.Wpf.TaskbarNotification
       messageSink.ChangeToolTipStateRequest += OnToolTipChange;
       messageSink.BallonToolTipChanged += OnBalloonToolTipChanged;
 
-      //init single click timer
+      //init single click / balloon timers
       singleClickTimer = new Timer(DoSingleClickAction);
+      balloonCloseTimer = new Timer(CloseBalloonCallback);
 
       //register listener in order to get notified when the application closes
       if (Application.Current != null) Application.Current.Exit += OnExit;
     }
 
     #endregion
+
+
+    /// <summary>
+    /// Shows a custom control as a tooltip in the tray location.
+    /// </summary>
+    /// <param name="balloon"></param>
+    /// <param name="animation">An optional animation for the popup.</param>
+    /// <param name="timeout">The time after which the popup is being closed.
+    /// </param>
+    /// <exception cref="ArgumentNullException">If <paramref name="balloon"/>
+    /// is a null reference.</exception>
+    public void ShowCustomBalloon(UIElement balloon, PopupAnimation animation, int? timeout)
+    {
+      if (balloon == null) throw new ArgumentNullException("balloon");
+      if (timeout.HasValue && timeout < 500)
+      {
+        string msg = "Invalid timeout of {0} milliseconds. Timeout must be at least 500 ms";
+        msg = String.Format(msg, timeout); 
+        throw new ArgumentOutOfRangeException("timeout", msg);
+      }
+
+      EnsureNotDisposed();
+
+      //make sure we don't have an open balloon
+      lock (this)
+      {
+        CloseBalloon();
+      }
+
+      //create an invisible popup that hosts the UIElement
+      Popup popup = new Popup();
+      popup.AllowsTransparency = true;
+
+      //don't animate by default - devs can use attached
+      //events or override
+      popup.PopupAnimation = animation;
+
+      Popup.CreateRootPopup(popup, balloon);
+
+      popup.PlacementTarget = this;
+      popup.Placement = PlacementMode.AbsolutePoint;
+      popup.StaysOpen = true;
+
+      Point position = TrayInfo.GetTrayLocation();
+      popup.HorizontalOffset = position.X -1;
+      popup.VerticalOffset = position.Y -1;
+
+      //store reference
+      lock (this)
+      {
+        SetCustomBalloon(popup);
+      }
+
+      //fire attached event
+      RaiseBalloonShowingEvent(balloon);
+
+      //display item
+      popup.IsOpen = true;
+
+      if (timeout.HasValue)
+      {
+        //register timer to close the popup
+        balloonCloseTimer.Change(timeout.Value, Timeout.Infinite);
+      }
+
+      return;
+    }
+
+
+    /// <summary>
+    /// Closes the current <see cref="CustomBalloon"/>, if it's set.
+    /// </summary>
+    private void CloseBalloon()
+    {
+      if (IsDisposed) return;
+
+      lock (this)
+      {
+        //reset timer in any case
+        balloonCloseTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+        //reset old popup, if we still have one
+        Popup popup = CustomBalloon;
+        if (popup != null)
+        {
+          //if a balloon message is already displayed, close it immediately
+          popup.IsOpen = false;
+          SetCustomBalloon(null);
+        }
+      }
+    }
+
+
+    /// <summary>
+    /// Timer-invoke event which closes the currently open balloon and
+    /// resets the <see cref="CustomBalloon"/> dependency property.
+    /// </summary>
+    private void CloseBalloonCallback(object state)
+    {
+      if (IsDisposed) return;
+
+      //switch to UI thread
+      Action action = CloseBalloon;
+      Application.Current.Dispatcher.Invoke(action);
+    }
+
 
     #region Process Incoming Mouse Events
 
@@ -104,35 +242,35 @@ namespace Hardcodet.Wpf.TaskbarNotification
       switch (me)
       {
         case MouseEvent.MouseMove:
-          RaiseTaskbarIconMouseMoveEvent();
+          RaiseTrayMouseMoveEvent();
           //immediately return - there's nothing left to evaluate
           return;
         case MouseEvent.IconRightMouseDown:
-          RaiseTaskbarIconRightMouseDownEvent();
+          RaiseTrayRightMouseDownEvent();
           break;
         case MouseEvent.IconLeftMouseDown:
-          RaiseTaskbarIconLeftMouseDownEvent();
+          RaiseTrayLeftMouseDownEvent();
           break;
         case MouseEvent.IconRightMouseUp:
-          RaiseTaskbarIconRightMouseUpEvent();
+          RaiseTrayRightMouseUpEvent();
           break;
         case MouseEvent.IconLeftMouseUp:
-          RaiseTaskbarIconLeftMouseUpEvent();
+          RaiseTrayLeftMouseUpEvent();
           break;
         case MouseEvent.IconMiddleMouseDown:
-          RaiseTaskbarIconMiddleMouseDownEvent();
+          RaiseTrayMiddleMouseDownEvent();
           break;
         case MouseEvent.IconMiddleMouseUp:
-          RaiseTaskbarIconMiddleMouseUpEvent();
+          RaiseTrayMiddleMouseUpEvent();
           break;
         case MouseEvent.IconDoubleClick:
           //cancel single click timer
           singleClickTimer.Change(Timeout.Infinite, Timeout.Infinite);
           //bubble event
-          RaiseTaskbarIconMouseDoubleClickEvent();
+          RaiseTrayMouseDoubleClickEvent();
           break;
         case MouseEvent.BalloonToolTipClicked:
-          RaiseTaskbarIconBalloonTipClickedEvent();
+          RaiseTrayBalloonTipClickedEvent();
           break;
         default:
           throw new ArgumentOutOfRangeException("me", "Missing handler for mouse event flag: " + me);
@@ -189,47 +327,49 @@ namespace Hardcodet.Wpf.TaskbarNotification
     private void OnToolTipChange(bool visible)
     {
       //if we don't have a tooltip, there's nothing to do here...
-      if (CustomToolTip == null) return;
+      if (TrayToolTipResolved == null) return;
 
       if (visible)
       {
         if (ContextMenu != null && ContextMenu.IsOpen ||
-            CustomPopup != null && CustomPopup.IsOpen)
+            TrayPopupResolved != null && TrayPopupResolved.IsOpen)
         {
           //ignore if we have an open context menu or popup
           return;
         }
 
-        var args = RaisePreviewTaskbarIconToolTipOpenEvent();
+        var args = RaisePreviewTrayToolTipOpenEvent();
         if (args.Handled) return;
 
-        CustomToolTip.IsOpen = true;
+        TrayToolTipResolved.IsOpen = true;
 
         //raise attached event first
-        if (TaskbarIconToolTip != null) RaiseToolTipOpenedEvent(TaskbarIconToolTip);
+        if (TrayToolTip != null) RaiseToolTipOpenedEvent(TrayToolTip);
         
         //bubble routed event
-        RaiseTaskbarIconToolTipOpenEvent();
+        RaiseTrayToolTipOpenEvent();
       }
       else
       {
-        var args = RaisePreviewTaskbarIconToolTipCloseEvent();
+        var args = RaisePreviewTrayToolTipCloseEvent();
         if (args.Handled) return;
 
         //raise attached event first
-        if (TaskbarIconToolTip != null) RaiseToolTipCloseEvent(TaskbarIconToolTip);
+        if (TrayToolTip != null) RaiseToolTipCloseEvent(TrayToolTip);
 
-        //CustomToolTip.IsOpen = false;
-        RaiseTaskbarIconToolTipCloseEvent();
+        TrayToolTipResolved.IsOpen = false;
+
+        //bubble event
+        RaiseTrayToolTipCloseEvent();
       }
     }
 
 
     /// <summary>
     /// Creates a <see cref="ToolTip"/> control that either
-    /// wraps the currently set <see cref="TaskbarIconToolTip"/>
+    /// wraps the currently set <see cref="TrayToolTip"/>
     /// control or the <see cref="ToolTipText"/> string.<br/>
-    /// If <see cref="TaskbarIconToolTip"/> itself is already
+    /// If <see cref="TrayToolTip"/> itself is already
     /// a <see cref="ToolTip"/> instance, it will be used directly.
     /// </summary>
     /// <remarks>We use a <see cref="ToolTip"/> rather than
@@ -241,9 +381,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
     private void CreateCustomToolTip()
     {
       //check if the item itself is a tooltip
-      ToolTip tt = TaskbarIconToolTip as ToolTip;
+      ToolTip tt = TrayToolTip as ToolTip;
 
-      if (tt == null && TaskbarIconToolTip != null)
+      if (tt == null && TrayToolTip != null)
       {
         //create an invisible tooltip that hosts the UIElement
         tt = new ToolTip();
@@ -262,8 +402,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         //setting the 
         tt.StaysOpen = true;
-
-        tt.Content = TaskbarIconToolTip;
+        tt.Content = TrayToolTip;
       }
       else if (tt == null && !String.IsNullOrEmpty(ToolTipText))
       {
@@ -273,7 +412,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       }
 
       //store a reference to the used tooltip
-      CustomToolTip = tt;
+      SetTrayToolTipResolved(tt);
     }
 
 
@@ -290,7 +429,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       {
         //we need to set a tooltip text to get tooltip events from the
         //taskbar icon
-        if (String.IsNullOrEmpty(iconData.ToolTipText) && CustomToolTip != null)
+        if (String.IsNullOrEmpty(iconData.ToolTipText) && TrayToolTipResolved != null)
         {
           //if we have not tooltip text but a custom tooltip, we
           //need to set a dummy value (we're displaying the ToolTip control, not the string)
@@ -308,9 +447,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     /// <summary>
     /// Creates a <see cref="ToolTip"/> control that either
-    /// wraps the currently set <see cref="TaskbarIconToolTip"/>
+    /// wraps the currently set <see cref="TrayToolTip"/>
     /// control or the <see cref="ToolTipText"/> string.<br/>
-    /// If <see cref="TaskbarIconToolTip"/> itself is already
+    /// If <see cref="TrayToolTip"/> itself is already
     /// a <see cref="ToolTip"/> instance, it will be used directly.
     /// </summary>
     /// <remarks>We use a <see cref="ToolTip"/> rather than
@@ -322,24 +461,27 @@ namespace Hardcodet.Wpf.TaskbarNotification
     private void CreatePopup()
     {
       //no popup is available
-      if (TaskbarIconPopup == null) return;
+      if (TrayPopup == null) return;
 
       //check if the item itself is a popup
-      Popup popup = TaskbarIconPopup as Popup;
+      Popup popup = TrayPopup as Popup;
 
       if (popup == null)
       {
         //create an invisible popup that hosts the UIElement
         popup = new Popup();
         popup.AllowsTransparency = true;
-        popup.PopupAnimation = PopupAnimation.Fade;
+
+        //don't animate by default - devs can use attached
+        //events or override
+        popup.PopupAnimation = PopupAnimation.None;
 
         //the tooltip (and implicitly its context) explicitly gets
         //the DataContext of this instance. If there is no DataContext,
         //the TaskbarIcon assigns itself
         popup.DataContext = DataContext ?? this;
 
-        Popup.CreateRootPopup(popup, TaskbarIconPopup);
+        Popup.CreateRootPopup(popup, TrayPopup);
 
         popup.PlacementTarget = this;
         popup.Placement = PlacementMode.AbsolutePoint;
@@ -347,11 +489,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
       }
 
       //store a reference to the used tooltip
-      CustomPopup = popup;
+      SetTrayPopupResolved(popup);
     }
 
+
     /// <summary>
-    /// Displays the <see cref="TaskbarIconPopup"/> control if
+    /// Displays the <see cref="TrayPopup"/> control if
     /// it was set.
     /// </summary>
     private void ShowTrayPopup(Point cursorPosition)
@@ -360,18 +503,18 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
       //raise preview event no matter whether popup is currently set
       //or not (enables client to set it on demand)
-      var args = RaisePreviewTaskbarIconPopupOpenEvent();
+      var args = RaisePreviewTrayPopupOpenEvent();
       if (args.Handled) return;
 
-      if (TaskbarIconPopup != null)
+      if (TrayPopup != null)
       {
         //use absolute position, but place the popup centered above the icon
-        CustomPopup.Placement = PlacementMode.AbsolutePoint;
-        CustomPopup.HorizontalOffset = cursorPosition.X; //+ TaskbarIconPopup.ActualWidth/2;
-        CustomPopup.VerticalOffset = cursorPosition.Y;
+        TrayPopupResolved.Placement = PlacementMode.AbsolutePoint;
+        TrayPopupResolved.HorizontalOffset = cursorPosition.X;
+        TrayPopupResolved.VerticalOffset = cursorPosition.Y;
 
         //open popup
-        CustomPopup.IsOpen = true;
+        TrayPopupResolved.IsOpen = true;
 
         //activate the message window to track deactivation - otherwise, the context menu
         //does not close if the user clicks somewhere else
@@ -379,10 +522,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         //raise attached event - item should never be null unless developers
         //changed the CustomPopup directly...
-        if (TaskbarIconPopup != null) RaisePopupOpenedEvent(TaskbarIconPopup);
+        if (TrayPopup != null) RaisePopupOpenedEvent(TrayPopup);
 
         //bubble routed event
-        RaiseTaskbarIconPopupOpenEvent();
+        RaiseTrayPopupOpenEvent();
       }
     }
 
@@ -400,7 +543,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
       //raise preview event no matter whether context menu is currently set
       //or not (enables client to set it on demand)
-      var args = RaisePreviewTaskbarIconContextMenuOpenEvent();
+      var args = RaisePreviewTrayContextMenuOpenEvent();
       if (args.Handled) return;
 
       if (ContextMenu != null)
@@ -416,7 +559,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         WinApi.SetForegroundWindow(messageSink.MessageWindowHandle);
 
         //bubble event
-        RaiseTaskbarIconContextMenuOpenEvent();
+        RaiseTrayContextMenuOpenEvent();
       }
     }
 
@@ -434,11 +577,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       if (visible)
       {
-        RaiseTaskbarIconBalloonTipShownEvent();
+        RaiseTrayBalloonTipShownEvent();
       }
       else
       {
-        RaiseTaskbarIconBalloonTipClosedEvent();
+        RaiseTrayBalloonTipClosedEvent();
       }
     }
 
@@ -491,12 +634,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       EnsureNotDisposed();
 
-      iconData.BalloonText = message;
-      iconData.BalloonTitle = title;
+      iconData.BalloonText = message ?? String.Empty;
+      iconData.BalloonTitle = title ?? String.Empty;
 
       iconData.BalloonFlags = flags;
       iconData.CustomBalloonIconHandle = balloonIconHandle;
-      Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Info);
+      Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Info | IconDataMembers.Icon);
     }
 
 
@@ -720,8 +863,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
         //deregister application event listener
         Application.Current.Exit -= OnExit;
 
-        //stop timer
+        //stop timers
         singleClickTimer.Dispose();
+        balloonCloseTimer.Dispose();
 
         //dispose message sink
         messageSink.Dispose();

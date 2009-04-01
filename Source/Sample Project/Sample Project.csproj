@@ -80,6 +80,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="FancyBalloon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FancyPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -101,6 +105,9 @@
     <Compile Include="Commands\TaskbarIconCommands.cs" />
     <Compile Include="Commands\HideMainWindowCommand.cs" />
     <Compile Include="Commands\ShowMainWindowCommand.cs" />
+    <Compile Include="FancyBalloon.xaml.cs">
+      <DependentUpon>FancyBalloon.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FancyPopup.xaml.cs">
       <DependentUpon>FancyPopup.xaml</DependentUpon>
     </Compile>

@@ -63,11 +63,11 @@
     <TextBlock
       Margin="107,10,20,0"
       TextWrapping="Wrap"
-      Height="32"
+      Height="Auto"
       VerticalAlignment="Top"
       FontSize="16"
       FontWeight="Bold"
-      Foreground="#FF575757"><Run
+      Foreground="#FF575757" HorizontalAlignment="Right"><Run
         Text="This is a fancy Popup..."
         Language="de-ch" /></TextBlock>
     <Button
@@ -103,11 +103,8 @@
     </Button>
     <TextBlock
       Margin="19,92,10,49"
-      TextWrapping="Wrap"><Run
-        Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sed sem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla dui nisi, venenatis" /><Run
-        Text="."
-        Language="de-ch" /></TextBlock>
-    <TextBlock Margin="0,52,20,0" VerticalAlignment="Top" Height="30" TextWrapping="Wrap" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Foreground="#FF575757"><Run Text="Clicks: " Language="de-ch"/><InlineUIContainer>
+      TextWrapping="Wrap"><Run Text="This user control makes use of the " Language="de-ch"/><Run FontStyle="Italic" FontWeight="Bold" Text="PopupOpened " Language="de-ch"/><Run Text="attached routed event . Whenever the popup is opened, this attached event fires and triggers the rotation animation." Language="de-ch"/></TextBlock>
+    <TextBlock Margin="0,52,20,0" VerticalAlignment="Top" Height="Auto" TextWrapping="Wrap" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Foreground="#FF575757"><Run Text="Clicks: " Language="de-ch"/><InlineUIContainer>
     		<TextBlock Width="Auto" Height="Auto" Text="{Binding Path=ClickCount, ElementName=me, Mode=Default}" TextWrapping="Wrap"/>
     	</InlineUIContainer></TextBlock>
 
