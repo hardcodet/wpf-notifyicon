@@ -8,7 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 using Point=Hardcodet.Wpf.TaskbarNotification.Interop.Point;
-using Rect=Hardcodet.Wpf.TaskbarNotification.Interop.Rect;
+
+
 
 namespace Hardcodet.Wpf.TaskbarNotification
 {
