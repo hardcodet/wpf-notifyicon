@@ -25,117 +25,25 @@
           TypeName="tb:PopupActivationMode" />
       </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
-
-
-      <Storyboard
-      x:Key="OnTaskbarIconLeftMouseUp1">
-      <BooleanAnimationUsingKeyFrames
-        BeginTime="00:00:00"
-        Storyboard.TargetName="popup"
-        Storyboard.TargetProperty="(Popup.IsOpen)">
-        <DiscreteBooleanKeyFrame
-          KeyTime="00:00:00"
-          Value="True" />
-        <DiscreteBooleanKeyFrame
-          KeyTime="00:00:02"
-          Value="False" />
-      </BooleanAnimationUsingKeyFrames>
-      <DoubleAnimationUsingKeyFrames
-        BeginTime="00:00:00"
-        Storyboard.TargetName="ellipse"
-        Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)">
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:00"
-          Value="0" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:01"
-          Value="74" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:01.5000000"
-          Value="26" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:02"
-          Value="0" />
-      </DoubleAnimationUsingKeyFrames>
-      <DoubleAnimationUsingKeyFrames
-        BeginTime="00:00:00"
-        Storyboard.TargetName="ellipse"
-        Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)">
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:00"
-          Value="0" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:01"
-          Value="106" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:01.5000000"
-          Value="151" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:02"
-          Value="0" />
-      </DoubleAnimationUsingKeyFrames>
-      <DoubleAnimationUsingKeyFrames
-        BeginTime="00:00:00"
-        Storyboard.TargetName="popup"
-        Storyboard.TargetProperty="(UIElement.Opacity)">
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:00"
-          Value="0.1" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:02"
-          Value="1" />
-      </DoubleAnimationUsingKeyFrames>
-      <DoubleAnimationUsingKeyFrames
-        BeginTime="00:00:00"
-        Storyboard.TargetName="ellipse"
-        Storyboard.TargetProperty="(UIElement.Opacity)">
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:00"
-          Value="0.47" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:01"
-          Value="1" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:01.5000000"
-          Value="1" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:02"
-          Value="0.685" />
-      </DoubleAnimationUsingKeyFrames>
-      <DoubleAnimationUsingKeyFrames
-        BeginTime="00:00:00"
-        Storyboard.TargetName="border"
-        Storyboard.TargetProperty="(UIElement.Opacity)">
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:00"
-          Value="1" />
-        <SplineDoubleKeyFrame
-          KeyTime="00:00:01"
-          Value="0.515" />
-      </DoubleAnimationUsingKeyFrames>
-    </Storyboard>
+    <Storyboard x:Key="FadeToolTip"/>
   </Window.Resources>
-  <Window.Triggers>
-    <EventTrigger
-      RoutedEvent="tb:TaskbarIcon.TaskbarIconLeftMouseUp"
-      SourceName="tb">
-      <BeginStoryboard
-        Storyboard="{StaticResource OnTaskbarIconLeftMouseUp1}" />
-    </EventTrigger>
-  </Window.Triggers>
+	<Window.Triggers>
+		<EventTrigger RoutedEvent="tb:TaskbarIcon.TaskbarIconToolTipOpen" SourceName="tb"/>
+	</Window.Triggers>
+
   <Grid>
     <tb:TaskbarIcon
       x:Name="tb"
       VerticalAlignment="Top"
       IconSource="{Binding Path=SelectedItem.Source, ElementName=iconList, Mode=Default}"
       ContextMenu="{DynamicResource tbMenu}"
-      ToolTip="hello world"
       ToolTipText="{Binding Path=Text, ElementName=txtToolTipText, Mode=Default}"
       Visibility="{Binding Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=iconVisibility, Mode=Default}"
       MenuActivation="{Binding Path=SelectedItem, ElementName=lstMenuTrigger, Mode=Default}"
       PopupActivation="{Binding Path=SelectedItem, ElementName=lstPopupTrigger, Mode=Default}">
 
       <tb:TaskbarIcon.TaskbarIconPopup>
+        <!-- the control will be put into a popup with an explicit DataContext -->
         <local:FancyPopup />
       </tb:TaskbarIcon.TaskbarIconPopup>
       
@@ -148,6 +56,13 @@
       
     </tb:TaskbarIcon>
 
+    
+    
+    
+    <!-- EVERYTHING BELOW IS JUST PLUMBING FOR THE SAMPLE -->
+    
+    
+    
     <Button
       x:Name="btn"
       Click="OnClick"
@@ -165,58 +80,6 @@
       VerticalAlignment="Top"
       Width="75"
       Content="Button" />
-    <Popup
-      x:Name="popup"
-      Margin="-231,-276,231,0"
-      VerticalAlignment="Top"
-      Height="549"
-      d:IsHidden="True"
-      d:IsLocked="True">
-      <Grid
-        Width="180"
-        Height="227">
-        <Border
-          CornerRadius="10,10,10,10"
-          x:Name="border">
-          <Border.Background>
-            <LinearGradientBrush
-              EndPoint="0.5,1"
-              StartPoint="0.5,0">
-              <GradientStop
-                Color="#FFF4B569"
-                Offset="0" />
-              <GradientStop
-                Color="#FFFFFFFF"
-                Offset="1" />
-            </LinearGradientBrush>
-          </Border.Background>
-        </Border>
-        <Ellipse
-          Fill="#FFC13E3E"
-          Stroke="#FF000000"
-          VerticalAlignment="Top"
-          Height="58"
-          Margin="51,19,75,0"
-          x:Name="ellipse"
-          RenderTransformOrigin="0.5,0.5">
-          <Ellipse.RenderTransform>
-            <TransformGroup>
-              <ScaleTransform
-                ScaleX="1"
-                ScaleY="1" />
-              <SkewTransform
-                AngleX="0"
-                AngleY="0" />
-              <RotateTransform
-                Angle="0" />
-              <TranslateTransform
-                X="0"
-                Y="0" />
-            </TransformGroup>
-          </Ellipse.RenderTransform>
-        </Ellipse>
-      </Grid>
-    </Popup>
     <CheckBox
       HorizontalAlignment="Left"
       Margin="8,116,0,0"
@@ -410,7 +273,7 @@
         BorderBrush="#FF000000"
         BorderThickness="2,2,2,2" />
       <ListBox
-        Margin="10,0,128,10"
+        Margin="10,0,95,10"
         IsSynchronizedWithCurrentItem="False"
         x:Name="lstMenuTrigger"
         ItemsSource="{Binding Mode=OneWay, Source={StaticResource ActivationModes}}"
@@ -431,8 +294,6 @@
       Height="Auto"
       TextWrapping="Wrap"
       FontWeight="Bold"
-      FontSize="14"><Run
-        Text="This window only contains the plumbing. In order to keep things separated, I created a few user controls for the popups and the TaskbarIcon instance."
-        Language="de-ch" /></TextBlock>
+      FontSize="14"><Run Text="Some Title Goes Here..." Language="de-ch"/></TextBlock>
   </Grid>
 </Window>

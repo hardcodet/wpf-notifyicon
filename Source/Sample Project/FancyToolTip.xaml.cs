@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace Sample_Project
 {
@@ -27,7 +28,7 @@ namespace Sample_Project
 	      DependencyProperty.Register("InfoText",
 	                                  typeof (string),
 	                                  typeof (FancyToolTip),
-	                                  new FrameworkPropertyMetadata("", InfoTextPropertyChanged));
+	                                  new FrameworkPropertyMetadata(""));
 
 	  /// <summary>
 	  /// A property wrapper for the <see cref="InfoTextProperty"/>
@@ -40,34 +41,6 @@ namespace Sample_Project
 	    set { SetValue(InfoTextProperty, value); }
 	  }
 
-
-	  /// <summary>
-	  /// A static callback listener which is being invoked if the
-	  /// <see cref="InfoTextProperty"/> dependency property has
-	  /// been changed. Invokes the <see cref="OnInfoTextPropertyChanged"/>
-	  /// instance method of the changed instance.
-	  /// </summary>
-	  /// <param name="d">The currently processed owner of the property.</param>
-	  /// <param name="e">Provides information about the updated property.</param>
-	  private static void InfoTextPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-	  {
-	    FancyToolTip owner = (FancyToolTip) d;
-	    owner.OnInfoTextPropertyChanged(e);
-	  }
-
-
-	  /// <summary>
-	  /// Handles changes of the <see cref="InfoTextProperty"/> dependency property. As
-	  /// WPF internally uses the dependency property system and bypasses the
-	  /// <see cref="InfoText"/> property wrapper, updates of the property's value
-	  /// should be handled here.
-	  /// </summary
-	  /// <param name="e">Provides information about the updated property.</param>
-	  private void OnInfoTextPropertyChanged(DependencyPropertyChangedEventArgs e)
-	  {
-//	    string newValue = (string) e.NewValue;
-	  }
-
 	  #endregion
 
 
@@ -76,5 +49,6 @@ namespace Sample_Project
 		{
 			this.InitializeComponent();
 		}
+
 	}
 }

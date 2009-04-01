@@ -58,7 +58,6 @@
     <Compile Include="Interop\WindowClass.cs" />
     <Compile Include="PopupActivationMode.cs" />
     <Compile Include="RoutedEventHelper.cs" />
-    <Compile Include="TaskbarIcon.Interop.cs" />
     <Compile Include="Interop\WinApi.cs" />
     <Compile Include="Interop\MouseEvent.cs" />
     <Compile Include="Interop\NotifyCommand.cs" />

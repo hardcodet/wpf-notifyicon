@@ -25,14 +25,98 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// in order to display either <see cref="TaskbarIconToolTip"/>
     /// or <see cref="ToolTipText"/>.
     /// </summary>
-    internal ToolTip CustomToolTip { get; private set; }
+    internal ToolTip CustomToolTip
+    {
+      get { return IconToolTipResolved; }
+      private set { SetIconToolTipResolved(value); }
+    }
 
     /// <summary>
     /// A <see cref="Popup"/> which is either the
     /// <see cref="TaskbarIconPopup"/> control itself or a
     /// <see cref="Popup"/> that wraps it.
     /// </summary>
-    internal Popup CustomPopup { get; private set; }
+    internal Popup CustomPopup
+    {
+      get { return IconPopupResolved; }
+      private set { SetIconPopupResolved(value); }
+    }
+
+
+
+    //RESOLVED POPUPS CONTROLS
+    #region IconPopupResolved
+
+    /// <summary>
+    /// IconPopupResolved Read-Only Dependency Property
+    /// </summary>
+    private static readonly DependencyPropertyKey IconPopupResolvedPropertyKey
+        = DependencyProperty.RegisterReadOnly("IconPopupResolved", typeof(Popup), typeof(TaskbarIcon),
+            new FrameworkPropertyMetadata(null));
+
+    public static readonly DependencyProperty IconPopupResolvedProperty
+        = IconPopupResolvedPropertyKey.DependencyProperty;
+
+    /// <summary>
+    /// Gets the IconPopupResolved property.  This dependency property 
+    /// indicates ....
+    /// </summary>
+    [Category(CategoryName)]
+    public Popup IconPopupResolved
+    {
+      get { return (Popup)GetValue(IconPopupResolvedProperty); }
+    }
+
+    /// <summary>
+    /// Provides a secure method for setting the IconPopupResolved property.  
+    /// This dependency property indicates ....
+    /// </summary>
+    /// <param name="value">The new value for the property.</param>
+    protected void SetIconPopupResolved(Popup value)
+    {
+      SetValue(IconPopupResolvedPropertyKey, value);
+    }
+
+    #endregion
+
+    #region IconToolTipResolved
+
+    /// <summary>
+    /// IconToolTipResolved Read-Only Dependency Property
+    /// </summary>
+    private static readonly DependencyPropertyKey IconToolTipResolvedPropertyKey
+        = DependencyProperty.RegisterReadOnly("IconToolTipResolved", typeof(ToolTip), typeof(TaskbarIcon),
+            new FrameworkPropertyMetadata(null  ));
+
+    public static readonly DependencyProperty IconToolTipResolvedProperty
+        = IconToolTipResolvedPropertyKey.DependencyProperty;
+
+    /// <summary>
+    /// Gets the IconToolTipResolved property.  This dependency property 
+    /// indicates ....
+    /// </summary>
+    [Category(CategoryName)]
+    [Browsable(true)]
+    [Bindable(true)] 
+    public ToolTip IconToolTipResolved
+    {
+      get { return (ToolTip)GetValue(IconToolTipResolvedProperty); }
+    }
+
+    /// <summary>
+    /// Provides a secure method for setting the IconToolTipResolved property.  
+    /// This dependency property indicates ....
+    /// </summary>
+    /// <param name="value">The new value for the property.</param>
+    protected void SetIconToolTipResolved(ToolTip value)
+    {
+      SetValue(IconToolTipResolvedPropertyKey, value);
+    }
+
+    #endregion
+
+        
+        
 
 
     //DEPENDENCY PROPERTIES
@@ -292,7 +376,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <param name="e">Provides information about the updated property.</param>
     private void OnTaskbarIconPopupPropertyChanged(DependencyPropertyChangedEventArgs e)
     {
-      //currently not needed
+      //create a pop
       CreatePopup();
     }
 
@@ -452,38 +536,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
-
-    #region ContextMenu dependency property override
-
-    /// <summary>
-    /// A static callback listener which is being invoked if the
-    /// <see cref="FrameworkElement.ContextMenuProperty"/> dependency property has
-    /// been changed. Invokes the <see cref="OnContextMenuPropertyChanged"/>
-    /// instance method of the changed instance.
-    /// </summary>
-    /// <param name="d">The currently processed owner of the property.</param>
-    /// <param name="e">Provides information about the updated property.</param>
-    private static void ContextMenuPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      TaskbarIcon owner = (TaskbarIcon) d;
-      owner.OnContextMenuPropertyChanged(e);
-    }
-
-
-    /// <summary>
-    /// Handles changes of the <see cref="FrameworkElement.ContextMenuProperty"/> dependency property. As
-    /// WPF internally uses the dependency property system and bypasses the
-    /// <see cref="ContextMenu"/> property wrapper, updates of the property's value
-    /// should be handled here.
-    /// </summary
-    /// <param name="e">Provides information about the updated property.</param>
-    private void OnContextMenuPropertyChanged(DependencyPropertyChangedEventArgs e)
-    {
-      //currently not needed
-    }
-
-    #endregion
-
 
 
     //EVENTS
@@ -1258,6 +1310,148 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #endregion
         
 
+    //ATTACHED EVENTS
+
+    #region PopupOpened
+
+    /// <summary>
+    /// PopupOpened Attached Routed Event
+    /// </summary>
+    public static readonly RoutedEvent PopupOpenedEvent = EventManager.RegisterRoutedEvent("PopupOpened",
+        RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
+
+    /// <summary>
+    /// Adds a handler for the PopupOpened attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be added</param>
+    public static void AddPopupOpenedHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.AddHandler(element, PopupOpenedEvent, handler);
+    }
+
+    /// <summary>
+    /// Removes a handler for the PopupOpened attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be removed</param>
+    public static void RemovePopupOpenedHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.RemoveHandler(element, PopupOpenedEvent, handler);
+    }
+
+    /// <summary>
+    /// A static helper method to raise the PopupOpened event on a target element.
+    /// </summary>
+    /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+    internal static RoutedEventArgs RaisePopupOpenedEvent(DependencyObject target)
+    {
+      if (target == null) return null;
+
+      RoutedEventArgs args = new RoutedEventArgs();
+      args.RoutedEvent = PopupOpenedEvent;
+      RoutedEventHelper.RaiseEvent(target, args);
+      return args;
+    }
+
+    #endregion
+
+
+          
+    #region ToolTipOpened
+
+    /// <summary>
+    /// ToolTipOpened Attached Routed Event
+    /// </summary>
+    public static readonly RoutedEvent ToolTipOpenedEvent = EventManager.RegisterRoutedEvent("ToolTipOpened",
+        RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
+
+    /// <summary>
+    /// Adds a handler for the ToolTipOpened attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be added</param>
+    public static void AddToolTipOpenedHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.AddHandler(element, ToolTipOpenedEvent, handler);
+    }
+
+    /// <summary>
+    /// Removes a handler for the ToolTipOpened attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be removed</param>
+    public static void RemoveToolTipOpenedHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.RemoveHandler(element, ToolTipOpenedEvent, handler);
+    }
+
+    /// <summary>
+    /// A static helper method to raise the ToolTipOpened event on a target element.
+    /// </summary>
+    /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+    internal static RoutedEventArgs RaiseToolTipOpenedEvent(DependencyObject target)
+    {
+      if (target == null) return null;
+
+      RoutedEventArgs args = new RoutedEventArgs();
+      args.RoutedEvent = ToolTipOpenedEvent;
+      RoutedEventHelper.RaiseEvent(target, args);
+      return args;
+    }
+
+    #endregion
+
+    #region ToolTipClose
+
+    /// <summary>
+    /// ToolTipClose Attached Routed Event
+    /// </summary>
+    public static readonly RoutedEvent ToolTipCloseEvent = EventManager.RegisterRoutedEvent("ToolTipClose",
+        RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
+
+    /// <summary>
+    /// Adds a handler for the ToolTipClose attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be added</param>
+    public static void AddToolTipCloseHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.AddHandler(element, ToolTipCloseEvent, handler);
+    }
+
+    /// <summary>
+    /// Removes a handler for the ToolTipClose attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be removed</param>
+    public static void RemoveToolTipCloseHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.RemoveHandler(element, ToolTipCloseEvent, handler);
+    }
+
+    /// <summary>
+    /// A static helper method to raise the ToolTipClose event on a target element.
+    /// </summary>
+    /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+    internal static RoutedEventArgs RaiseToolTipCloseEvent(DependencyObject target)
+    {
+      if (target == null) return null;
+
+      RoutedEventArgs args = new RoutedEventArgs();
+      args.RoutedEvent = ToolTipCloseEvent;
+      RoutedEventHelper.RaiseEvent(target, args);
+      return args;
+    }
+
+    #endregion
+        
+        
+        
+        
+        
+
+
 
     //BASE CLASS PROPERTY OVERRIDES
 
@@ -1269,10 +1463,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
       //register change listener for the Visibility property
       PropertyMetadata md = new PropertyMetadata(Visibility.Visible, VisibilityPropertyChanged);
       VisibilityProperty.OverrideMetadata(typeof(TaskbarIcon), md);
-
-      //register change listener for the ContextMenu property
-      md = new FrameworkPropertyMetadata(new PropertyChangedCallback(ContextMenuPropertyChanged));
-      ContextMenuProperty.OverrideMetadata(typeof (TaskbarIcon), md);
     }
   }
 }

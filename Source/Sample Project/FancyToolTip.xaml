@@ -3,12 +3,42 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:tb="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.Wpf.TaskbarNotification"
+  xmlns:tb="http://www.hardcodet.net/taskbar"
   mc:Ignorable="d"
   x:Class="Sample_Project.FancyToolTip"
   x:Name="me"
   Width="285"
   Height="108">
+	<UserControl.Resources>
+		<Storyboard x:Key="FadeIn">
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="border" Storyboard.TargetProperty="(UIElement.Opacity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0.25"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="1"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="image" Storyboard.TargetProperty="(UIElement.Opacity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0.6"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="1"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="FadeOut">
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="border" Storyboard.TargetProperty="(UIElement.Opacity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="0.25"/>
+			</DoubleAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="image" Storyboard.TargetProperty="(UIElement.Opacity)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="1"/>
+				<SplineDoubleKeyFrame KeyTime="00:00:01" Value="0.6"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+	</UserControl.Resources>
+	<UserControl.Triggers>
+		<EventTrigger RoutedEvent="tb:TaskbarIcon.ToolTipOpened">
+			<BeginStoryboard Storyboard="{StaticResource FadeIn}" x:Name="FadeIn_BeginStoryboard"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="tb:TaskbarIcon.ToolTipClose">
+      <BeginStoryboard Storyboard="{StaticResource FadeOut}" x:Name="FadeOut_BeginStoryboard"/>
+		</EventTrigger>
+	</UserControl.Triggers>
 
   <Grid
     x:Name="LayoutRoot">
@@ -19,7 +49,7 @@
       Height="Auto"
       CornerRadius="6,6,6,6"
       BorderThickness="3,3,3,3"
-      Margin="0,0,5,5">
+      Margin="0,0,5,5" x:Name="border">
       <Border.Effect>
         <DropShadowEffect
           Color="#FF7A7A7A" />
@@ -44,7 +74,16 @@
       Source="Images\Info.png"
       Stretch="Fill"
       VerticalAlignment="Top"
-      RenderTransformOrigin="0.792,0.486" />
+      RenderTransformOrigin="0.792,0.486" x:Name="image" >
+    	<Image.RenderTransform>
+    		<TransformGroup>
+    			<ScaleTransform ScaleX="1" ScaleY="1"/>
+    			<SkewTransform AngleX="0" AngleY="0"/>
+    			<RotateTransform Angle="0"/>
+    			<TranslateTransform X="0" Y="0"/>
+    		</TransformGroup>
+    	</Image.RenderTransform>
+    </Image>
     <TextBlock
       Margin="82,10,20,0"
       TextWrapping="Wrap"
