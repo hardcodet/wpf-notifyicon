@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 
@@ -207,7 +208,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       ImageSource newValue = (ImageSource)e.NewValue;
 
-      //resolving the ImageSource at design time probably won't work
+      //resolving the ImageSource at design time is unlikely to work
       if (!Util.IsDesignMode) Icon = newValue.ToIcon();
     }
 
@@ -550,6 +551,169 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
+    #region DataContext dependency property override
+
+    /// <summary>
+    /// A static callback listener which is being invoked if the
+    /// <see cref="FrameworkElement.DataContextProperty"/> dependency property has
+    /// been changed. Invokes the <see cref="OnDataContextPropertyChanged"/>
+    /// instance method of the changed instance.
+    /// </summary>
+    /// <param name="d">The currently processed owner of the property.</param>
+    /// <param name="e">Provides information about the updated property.</param>
+    private static void DataContextPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      TaskbarIcon owner = (TaskbarIcon) d;
+      owner.OnDataContextPropertyChanged(e);
+    }
+
+
+    /// <summary>
+    /// Handles changes of the <see cref="FrameworkElement.DataContextProperty"/> dependency property. As
+    /// WPF internally uses the dependency property system and bypasses the
+    /// <see cref="FrameworkElement.DataContext"/> property wrapper, updates of the property's value
+    /// should be handled here.
+    /// </summary
+    /// <param name="e">Provides information about the updated property.</param>
+    private void OnDataContextPropertyChanged(DependencyPropertyChangedEventArgs e)
+    {
+      object newValue = e.NewValue;
+      object oldValue = e.OldValue;
+
+      //replace custom data context for popup and tooltip, if
+      //they are reflecting the data context's data context
+      var popup = TrayPopupResolved;
+      var toolTip = TrayToolTipResolved;
+
+      if (popup != null && Equals(popup.DataContext, oldValue))
+      {
+        popup.DataContext = newValue;
+      }
+
+      if (toolTip != null && Equals(toolTip.DataContext, oldValue))
+      {
+        toolTip.DataContext = newValue;
+      }
+    }
+
+    #endregion
+
+
+    #region DoubleClickCommand dependency property
+
+    /// <summary>
+    /// Associates a command that is being executed if the tray icon is being
+    /// double clicked.
+    /// </summary>
+    public static readonly DependencyProperty DoubleClickCommandProperty =
+        DependencyProperty.Register("DoubleClickCommand",
+                                    typeof (ICommand),
+                                    typeof (TaskbarIcon),
+                                    new FrameworkPropertyMetadata(null));
+
+    /// <summary>
+    /// A property wrapper for the <see cref="DoubleClickCommandProperty"/>
+    /// dependency property:<br/>
+    /// Associates a command that is being executed if the tray icon is being
+    /// double clicked.
+    /// </summary>
+    public ICommand DoubleClickCommand
+    {
+      get { return (ICommand) GetValue(DoubleClickCommandProperty); }
+      set { SetValue(DoubleClickCommandProperty, value); }
+    }
+
+    #endregion
+
+    #region DoubleClickCommandParameter dependency property
+
+    /// <summary>
+    /// Command parameter for the <see cref="DoubleClickCommand"/>.
+    /// </summary>
+    public static readonly DependencyProperty DoubleClickCommandParameterProperty =
+        DependencyProperty.Register("DoubleClickCommandParameter",
+                                    typeof (object),
+                                    typeof (TaskbarIcon),
+                                    new FrameworkPropertyMetadata(null));
+
+    /// <summary>
+    /// A property wrapper for the <see cref="DoubleClickCommandParameterProperty"/>
+    /// dependency property:<br/>
+    /// Command parameter for the <see cref="DoubleClickCommand"/>.
+    /// </summary>
+    public object DoubleClickCommandParameter
+    {
+      get { return GetValue(DoubleClickCommandParameterProperty); }
+      set { SetValue(DoubleClickCommandParameterProperty, value); }
+    }
+
+    #endregion
+
+    #region LeftClickCommand dependency property
+
+    /// <summary>
+    /// Associates a command that is being executed if the tray icon is being
+    /// double clicked.
+    /// </summary>
+    public static readonly DependencyProperty LeftClickCommandProperty =
+        DependencyProperty.Register("LeftClickCommand",
+                                    typeof (ICommand),
+                                    typeof (TaskbarIcon),
+                                    new FrameworkPropertyMetadata(null));
+
+    /// <summary>
+    /// A property wrapper for the <see cref="LeftClickCommandProperty"/>
+    /// dependency property:<br/>
+    /// Associates a command that is being executed if the tray icon is being
+    /// double clicked.
+    /// </summary>
+    public ICommand LeftClickCommand
+    {
+      get { return (ICommand) GetValue(LeftClickCommandProperty); }
+      set { SetValue(LeftClickCommandProperty, value); }
+    }
+
+    #endregion
+
+    #region LeftClickCommandParameter dependency property
+
+    /// <summary>
+    /// Command parameter for the <see cref="LeftClickCommand"/>.
+    /// </summary>
+    public static readonly DependencyProperty LeftClickCommandParameterProperty =
+        DependencyProperty.Register("LeftClickCommandParameter",
+                                    typeof (object),
+                                    typeof (TaskbarIcon),
+                                    new FrameworkPropertyMetadata(null));
+
+    /// <summary>
+    /// A property wrapper for the <see cref="LeftClickCommandParameterProperty"/>
+    /// dependency property:<br/>
+    /// Command parameter for the <see cref="LeftClickCommand"/>.
+    /// </summary>
+    public object LeftClickCommandParameter
+    {
+      get { return GetValue(LeftClickCommandParameterProperty); }
+      set { SetValue(LeftClickCommandParameterProperty, value); }
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Executes a given command.
+    /// </summary>
+    /// <param name="command">The command to be executed.</param>
+    /// <param name="commandParameter">An optional parameter that was associated with
+    /// the command.</param>
+    private static void RunCommand(ICommand command, object commandParameter)
+    {
+      if (command == null) return;
+      if (command.CanExecute(commandParameter))
+      {
+        command.Execute(commandParameter);
+      }
+    }
+
 
     //EVENTS
 
@@ -576,7 +740,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// </summary>
     protected RoutedEventArgs RaiseTrayLeftMouseDownEvent()
     {
-      return RaiseTrayLeftMouseDownEvent(this);
+      //first raise event, then command
+      RoutedEventArgs args = RaiseTrayLeftMouseDownEvent(this);
+      RunCommand(LeftClickCommand, LeftClickCommandParameter);
+      return args;
     }
 
     /// <summary>
@@ -824,7 +991,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// </summary>
     protected RoutedEventArgs RaiseTrayMouseDoubleClickEvent()
     {
-      return RaiseTrayMouseDoubleClickEvent(this);
+      RoutedEventArgs args = RaiseTrayMouseDoubleClickEvent(this);
+      RunCommand(DoubleClickCommand, DoubleClickCommandParameter);
+      return args;
     }
 
     /// <summary>
@@ -1515,6 +1684,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
       //register change listener for the Visibility property
       PropertyMetadata md = new PropertyMetadata(Visibility.Visible, VisibilityPropertyChanged);
       VisibilityProperty.OverrideMetadata(typeof(TaskbarIcon), md);
+
+      //register change listener for the DataContext property
+      md = new FrameworkPropertyMetadata(new PropertyChangedCallback(DataContextPropertyChanged));
+      DataContextProperty.OverrideMetadata(typeof(TaskbarIcon), md);
     }
+
   }
 }

@@ -149,9 +149,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
         CloseBalloon();
       }
 
+      
       //create an invisible popup that hosts the UIElement
       Popup popup = new Popup();
       popup.AllowsTransparency = true;
+
+      //provide the popup with the taskbar icon's data context
+      popup.DataContext = DataContext;
 
       //don't animate by default - devs can use attached
       //events or override
@@ -159,7 +163,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
       Popup.CreateRootPopup(popup, balloon);
 
-      popup.PlacementTarget = this;
+      //TODO we don't really need this and it causes the popup to become hidden if the
+      //TaskbarIcon's parent is hidden, too...
+      //popup.PlacementTarget = this;
+      
       popup.Placement = PlacementMode.AbsolutePoint;
       popup.StaysOpen = true;
 
@@ -332,10 +339,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
       if (visible)
       {
-        if (ContextMenu != null && ContextMenu.IsOpen ||
-            TrayPopupResolved != null && TrayPopupResolved.IsOpen)
+        if (IsPopupOpen)
         {
-          //ignore if we have an open context menu or popup
+          //ignore if we are already displaying something down there
           return;
         }
 
@@ -389,7 +395,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
         //create an invisible tooltip that hosts the UIElement
         tt = new ToolTip();
         tt.Placement = PlacementMode.Mouse;
-        tt.PlacementTarget = this;
+
+        //TODO we don't really need this and it causes the popup to become hidden if the
+        //TaskbarIcon's parent is hidden, too.
+        //tt.PlacementTarget = this;
 
         //the tooltip (and implicitly its context) explicitly gets
         //the DataContext of this instance. If there is no DataContext,
@@ -484,7 +493,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         Popup.CreateRootPopup(popup, TrayPopup);
 
-        popup.PlacementTarget = this;
+        //TODO we don't really need this and it causes the popup to become hidden if the
+        //TaskbarIcon's parent is hidden, too.
+        //popup.PlacementTarget = this;
+
         popup.Placement = PlacementMode.AbsolutePoint;
         popup.StaysOpen = false;
       }

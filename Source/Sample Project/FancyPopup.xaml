@@ -72,6 +72,7 @@
         Language="de-ch" /></TextBlock>
     <Button
       Click="OnButtonClick"
+      ToolTip="{Binding Path=ToolTipText}"
       HorizontalAlignment="Right"
       VerticalAlignment="Bottom"
       Width="89"

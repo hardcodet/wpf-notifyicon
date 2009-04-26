@@ -12,6 +12,13 @@ namespace Sample_Project
     public Window1()
     {
       InitializeComponent();
+
+      
+      Loaded += delegate
+                  {
+                    //show balloon at startup, pointing to the icon
+                    showBalloonTip_Click(null, null);
+                  };
     }
 
 
