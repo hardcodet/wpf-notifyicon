@@ -102,7 +102,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\TaskbarIconCommands.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Commands\HideMainWindowCommand.cs" />
     <Compile Include="Commands\ShowMainWindowCommand.cs" />
     <Compile Include="FancyBalloon.xaml.cs">
@@ -152,6 +152,9 @@
   <ItemGroup>
     <Resource Include="Images\Add.png" />
     <Resource Include="Images\Remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Close.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Samples\" />

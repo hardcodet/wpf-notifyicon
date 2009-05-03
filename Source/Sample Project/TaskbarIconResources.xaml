@@ -31,7 +31,7 @@
     x:Key="tbMenu">
     <MenuItem
       Header="Show Main Window"
-      Command="{Binding Source={x:Static Commands:TaskbarIconCommands.ShowMain}}">
+      Command="{Commands:ShowMainWindowCommand}">
       <MenuItem.Icon>
         <Image
           Width="16"
@@ -44,7 +44,7 @@
 
     <MenuItem
       Header="Hide Main Window"
-      Command="{Binding Source={x:Static Commands:TaskbarIconCommands.HideMain}}">
+      Command="{Commands:HideMainWindowCommand}">
       <MenuItem.Icon>
         <Image
           Width="16"

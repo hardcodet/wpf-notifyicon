@@ -121,7 +121,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     /// <summary>
-    /// Provides a secure method for setting the CustomBalloon property.  
+    /// Provides a secure method for setting the <see cref="CustomBalloon"/> property.  
     /// </summary>
     /// <param name="value">The new value for the property.</param>
     protected void SetCustomBalloon(Popup value)
@@ -333,7 +333,21 @@ namespace Hardcodet.Wpf.TaskbarNotification
       //recreate tooltip control
       CreateCustomToolTip();
 
-      //udpate tooltip settings - needed to make sure a string is set, even
+      if (e.OldValue != null)
+      {
+        //remove the taskbar icon reference from the previously used element
+        SetParentTaskbarIcon((DependencyObject) e.OldValue, this);
+      }
+
+
+      if (e.NewValue != null)
+      {
+        //set this taskbar icon as a reference to the new tooltip element
+        SetParentTaskbarIcon((DependencyObject) e.NewValue, this);        
+      }
+
+
+      //update tooltip settings - needed to make sure a string is set, even
       //if the ToolTipText property is not set. Otherwise, the event that
       //triggers tooltip display is never fired.
       WriteToolTipSettings();
@@ -390,6 +404,19 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <param name="e">Provides information about the updated property.</param>
     private void OnTrayPopupPropertyChanged(DependencyPropertyChangedEventArgs e)
     {
+      if (e.OldValue != null)
+      {
+        //remove the taskbar icon reference from the previously used element
+        SetParentTaskbarIcon((DependencyObject)e.OldValue, this);
+      }
+
+
+      if (e.NewValue != null)
+      {
+        //set this taskbar icon as a reference to the new tooltip element
+        SetParentTaskbarIcon((DependencyObject)e.NewValue, this);
+      }
+
       //create a pop
       CreatePopup();
     }
@@ -1670,7 +1697,38 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
         
-        
+    //ATTACHED PROPERTIES
+
+    //TODO put into use
+    #region ParentTaskbarIcon
+
+    /// <summary>
+    /// An attached property that is assigned to 
+    /// </summary>  
+    public static readonly DependencyProperty ParentTaskbarIconProperty =
+        DependencyProperty.RegisterAttached("ParentTaskbarIcon", typeof (TaskbarIcon), typeof (TaskbarIcon));
+
+    /// <summary>
+    /// Gets the ParentTaskbarIcon property.  This dependency property 
+    /// indicates ....
+    /// </summary>
+    public static TaskbarIcon GetParentTaskbarIcon(DependencyObject d)
+    {
+      return (TaskbarIcon)d.GetValue(ParentTaskbarIconProperty);
+    }
+
+    /// <summary>
+    /// Sets the ParentTaskbarIcon property.  This dependency property 
+    /// indicates ....
+    /// </summary>
+    public static void SetParentTaskbarIcon(DependencyObject d, TaskbarIcon value)
+    {
+      d.SetValue(ParentTaskbarIconProperty, value);
+    }
+
+    #endregion
+
+
 
         
 

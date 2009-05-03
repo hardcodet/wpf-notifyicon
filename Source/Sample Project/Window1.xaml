@@ -43,7 +43,7 @@
   <Window.Triggers>
     <EventTrigger
       RoutedEvent="tb:TaskbarIcon.TrayToolTipOpen"
-      SourceName="tb" />
+      SourceName="tb"  />
   </Window.Triggers>
 
   <Grid>
@@ -52,8 +52,9 @@
     
     <!--
       THE TASKBARICON ELEMENT WAS DECLARED INLINE IN ORDER TO USE DATABINDING
-      FOR ITS PROPERTIES. IN  A REAL-LIFE APP, YOU'D PROBABLY RATHER CREATE IT THROUGH
-      CODE OR DECLARE IT IN A RESOURCE DICTIONARY.    
+      FOR ITS PROPERTIES. IN  A REAL-LIFE APP, YOU'D PROBABLY RATHER DECLARE
+      IT IN A RESOURCE DICTIONARY SO YOU CAN EVEN USE IT IF THERE IS NO WINDOW
+      OPEN.
     -->
     
     <tb:TaskbarIcon
@@ -65,7 +66,7 @@
       Visibility="{Binding Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=iconVisibility, Mode=Default}"
       MenuActivation="{Binding Path=SelectedItem, ElementName=lstMenuTrigger, Mode=Default}"
       PopupActivation="{Binding Path=SelectedItem, ElementName=lstPopupTrigger, Mode=Default}"
-      DoubleClickCommand="{Binding Source={x:Static Commands:TaskbarIconCommands.ShowMain}}"
+      DoubleClickCommand="{Commands:ShowMainWindowCommand}"
       >
 
       <tb:TaskbarIcon.TrayPopup>
@@ -148,7 +149,7 @@
       <TextBox
         Margin="125,0,17,76"
         x:Name="txtBalloonText" AcceptsReturn="True" Height="47" VerticalAlignment="Bottom" d:LayoutOverrides="VerticalAlignment"
-        TextWrapping="Wrap">You should see a grey LED icon in your system tray. This is your NotifyIcon</TextBox>
+        TextWrapping="Wrap" Text="You should see a LED icon in your system tray. This is your NotifyIcon."/>
       <RadioButton
         HorizontalAlignment="Left"
         Margin="14,0,0,54"
@@ -379,10 +380,12 @@
     <TextBlock Margin="12,0,10,10" VerticalAlignment="Bottom" Height="22.42" TextWrapping="Wrap" FontWeight="Bold" Foreground="#FFFFA051"><Run Text="Copyright (c) 2009 Philipp Sumi. This is prerelease software, realeased under the CodeProject Open License (CPOL)" Language="de-ch"/></TextBlock>
     <Grid HorizontalAlignment="Right" Margin="0,0,10,262.42" VerticalAlignment="Bottom" Width="358" Height="87.2" x:Name="CustomBalloons">
     	<Border HorizontalAlignment="Stretch" Width="Auto" BorderThickness="2,2,2,2" BorderBrush="#FF000000"/>
-    	<Button Content="Display Message" x:Name="showCustomBalloon"
-    		Click="showCustomBalloon_Click" HorizontalAlignment="Right" Margin="0,0,24.377,10.52" Width="107.623" Height="23" VerticalAlignment="Bottom" />
+    	<Button Content="Show" x:Name="showCustomBalloon"
+    		Click="showCustomBalloon_Click" HorizontalAlignment="Right" Margin="0,0,91.377,10" Width="71.623" Height="23" VerticalAlignment="Bottom" />
     	<TextBox VerticalAlignment="Bottom" Height="23" Text="WPF Balloon" TextWrapping="Wrap" Margin="10,0,173,10" x:Name="customBalloonTitle"/>
     	<TextBlock Margin="10,10,24.377,0" VerticalAlignment="Top" TextWrapping="Wrap"><Run Text="Custom Balloon Tips are more flexible then standard tips when it comes to styling..." Language="de-ch"/></TextBlock>
+    	<Button Content="Hide" x:Name="hideCustomBalloon"
+    		Click="hideCustomBalloon_Click" HorizontalAlignment="Right" Margin="0,0,9.754,10.52" Width="71.623" Height="23" VerticalAlignment="Bottom" />
     </Grid>
   </Grid>
 </Window>

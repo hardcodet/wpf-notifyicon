@@ -66,5 +66,10 @@ namespace Sample_Project
       //show and close after 2.5 seconds
       tb.ShowCustomBalloon(balloon, PopupAnimation.Slide, 5000);
     }
+
+    private void hideCustomBalloon_Click(object sender, RoutedEventArgs e)
+    {
+      tb.CloseBalloon();
+    }
   }
 }

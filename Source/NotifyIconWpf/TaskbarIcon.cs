@@ -163,7 +163,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
       Popup.CreateRootPopup(popup, balloon);
 
-      //TODO we don't really need this and it causes the popup to become hidden if the
+      //don't set the PlacementTarget as it causes the popup to become hidden if the
       //TaskbarIcon's parent is hidden, too...
       //popup.PlacementTarget = this;
       
@@ -179,6 +179,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
       {
         SetCustomBalloon(popup);
       }
+
+      //assign this instance as an attached property
+      SetParentTaskbarIcon(balloon, this);
 
       //fire attached event
       RaiseBalloonShowingEvent(balloon);
@@ -199,7 +202,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <summary>
     /// Closes the current <see cref="CustomBalloon"/>, if it's set.
     /// </summary>
-    private void CloseBalloon()
+    public void CloseBalloon()
     {
       if (IsDisposed) return;
 
@@ -214,6 +217,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
           //if a balloon message is already displayed, close it immediately
           popup.IsOpen = false;
+
+          //reset attached property
+          UIElement element = popup.Child;
+          if (element != null) SetParentTaskbarIcon(element, null);
+
           SetCustomBalloon(null);
         }
       }
@@ -396,7 +404,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         tt = new ToolTip();
         tt.Placement = PlacementMode.Mouse;
 
-        //TODO we don't really need this and it causes the popup to become hidden if the
+        //do *not* set the placement target, as it causes the popup to become hidden if the
         //TaskbarIcon's parent is hidden, too.
         //tt.PlacementTarget = this;
 
