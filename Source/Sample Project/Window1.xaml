@@ -11,7 +11,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   mc:Ignorable="d"
   xmlns:local="clr-namespace:Sample_Project"
-  xmlns:Commands="clr-namespace:Sample_Project.Commands" MinWidth="750" MinHeight="800">
+  xmlns:Commands="clr-namespace:Sample_Project.Commands" MinWidth="750" MinHeight="800" ResizeMode="NoResize">
   <Window.Resources>
 
     <BooleanToVisibilityConverter
@@ -93,7 +93,7 @@
     
     <CheckBox
       HorizontalAlignment="Left"
-      Margin="12,64.04,0,0"
+      Margin="10,38.62,0,0"
       VerticalAlignment="Top"
       Width="155.42"
       Content="NotifyIcon Visible"
@@ -101,7 +101,7 @@
       IsChecked="True" />
     <ListBox
       HorizontalAlignment="Left"
-      Margin="12,122,0,0"
+      Margin="12,86.58,0,0"
       Width="123"
       IsSynchronizedWithCurrentItem="True"
       Height="51"
@@ -122,7 +122,7 @@
     </ListBox>
     <TextBlock
       HorizontalAlignment="Left"
-      Margin="12,100,0,0"
+      Margin="12,64.58,0,0"
       VerticalAlignment="Top"
       Width="Auto"
       Height="22"
@@ -250,25 +250,25 @@
           Language="de-ch" /></TextBlock>
     </Grid>
     <Grid
-      Margin="0,166.38,10,0"
+      Margin="0,156.38,10,0"
       Width="358"
       HorizontalAlignment="Right"
-      x:Name="ToolTips" Height="271" VerticalAlignment="Top">
+      x:Name="ToolTips" Height="233" VerticalAlignment="Top" d:LayoutOverrides="VerticalAlignment">
       <Border
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         BorderBrush="#FF000000"
         BorderThickness="2,2,2,2" />
       <TextBox
-        Margin="10,0,25,86"
+        Margin="10,0,25,70"
         x:Name="txtToolTipText"
         VerticalAlignment="Bottom"
         Height="23"
         Text="THIS IS A SAMPLE TEXT...."
         Foreground="#FFFF0000" />
       <TextBlock
-        Margin="10,132,25,119"
-        TextWrapping="Wrap"><Run
+        Margin="10,0,25,93"
+        TextWrapping="Wrap" Height="21" VerticalAlignment="Bottom"><Run
           Text="ToolTipText:"
           Language="de-ch" /></TextBlock>
       <TextBlock
@@ -300,7 +300,7 @@
           Language="de-ch" /></TextBlock>
       <Button
         HorizontalAlignment="Left"
-        Margin="10,0,0,20"
+        Margin="10,0,0,10"
         VerticalAlignment="Bottom"
         Width="147"
         Height="24"
@@ -308,7 +308,7 @@
         Name="removeToolTip"
         Click="removeToolTip_Click" />
       <TextBlock
-        Margin="10,0,25,53"
+        Margin="10,0,25,44"
         VerticalAlignment="Bottom"
         Height="16"
         TextWrapping="Wrap"><Run
@@ -378,13 +378,13 @@
       Foreground="#FF303030"
       TextWrapping="Wrap"><Run Text="This is my first shot at this control and a think a few additions might make sense." Language="de-ch"/><LineBreak/><Run Text="Play around and feel free to commit critical feedback - it's appreciated :)" Language="de-ch"/><LineBreak/><Run Text="" Language="de-ch"/><LineBreak/><Run Foreground="#FF067EBD" Text="Feedback and Updates:" Language="de-ch"/><LineBreak/><Run Foreground="#FF067EBD" Text="http://www.hardcodet.net " Language="de-ch"/><Run FontSize="10" Foreground="#FF067EBD" Text="(watch the spelling" Language="de-ch"/><Run Foreground="#FF067EBD" Text=")" Language="de-ch"/></TextBlock>
     <TextBlock Margin="12,0,10,10" VerticalAlignment="Bottom" Height="22.42" TextWrapping="Wrap" FontWeight="Bold" Foreground="#FFFFA051"><Run Text="Copyright (c) 2009 Philipp Sumi. This is prerelease software, realeased under the CodeProject Open License (CPOL)" Language="de-ch"/></TextBlock>
-    <Grid HorizontalAlignment="Right" Margin="0,0,10,262.42" VerticalAlignment="Bottom" Width="358" Height="87.2" x:Name="CustomBalloons">
+    <Grid HorizontalAlignment="Right" Margin="0,399.38,10,272.42" Width="358" x:Name="CustomBalloons">
     	<Border HorizontalAlignment="Stretch" Width="Auto" BorderThickness="2,2,2,2" BorderBrush="#FF000000"/>
     	<Button Content="Show" x:Name="showCustomBalloon"
     		Click="showCustomBalloon_Click" HorizontalAlignment="Right" Margin="0,0,91.377,10" Width="71.623" Height="23" VerticalAlignment="Bottom" />
     	<TextBox VerticalAlignment="Bottom" Height="23" Text="WPF Balloon" TextWrapping="Wrap" Margin="10,0,173,10" x:Name="customBalloonTitle"/>
-    	<TextBlock Margin="10,10,24.377,0" VerticalAlignment="Top" TextWrapping="Wrap"><Run Text="Custom Balloon Tips are more flexible then standard tips when it comes to styling..." Language="de-ch"/></TextBlock>
-    	<Button Content="Hide" x:Name="hideCustomBalloon"
+    	<TextBlock Margin="10,10,24.377,0" VerticalAlignment="Top" TextWrapping="Wrap" Height="66.68"><Run Text="Custom Balloon Tips are more flexible then standard tips when it comes to styling and they provide attached properties and events that can be used to control behavior. Hover over the tooltip to suspend the fade-out." Language="de-ch"/></TextBlock>
+    	<Button Content="Close" x:Name="hideCustomBalloon"
     		Click="hideCustomBalloon_Click" HorizontalAlignment="Right" Margin="0,0,9.754,10.52" Width="71.623" Height="23" VerticalAlignment="Bottom" />
     </Grid>
   </Grid>

@@ -1,7 +1,33 @@
-﻿using System;
+﻿// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 Philipp Sumi
+// Contact and Information: http://www.hardcodet.net
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the Code Project Open License (CPOL);
+// either version 1.0 of the License, or (at your option) any later
+// version.
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+//
+// THIS COPYRIGHT NOTICE MAY NOT BE REMOVED FROM THIS FILE
+
+
+
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Resources;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
@@ -222,5 +248,27 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
+
+
+    #region execute command
+
+    /// <summary>
+    /// Executes a given command if its <see cref="ICommand.CanExecute"/> method
+    /// indicates it can run.
+    /// </summary>
+    /// <param name="command">The command to be executed, or a null reference.</param>
+    /// <param name="commandParameter">An optional parameter that is associated with
+    /// the command.</param>
+    public static void ExecuteIfEnabled(this ICommand command, object commandParameter)
+    {
+      if (command == null) return;
+      if (command.CanExecute(commandParameter))
+      {
+        command.Execute(commandParameter);
+      }
+    }
+
+    #endregion
+
   }
 }

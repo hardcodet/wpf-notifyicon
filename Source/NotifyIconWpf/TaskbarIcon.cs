@@ -1,4 +1,28 @@
-﻿using System;
+﻿// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 Philipp Sumi
+// Contact and Information: http://www.hardcodet.net
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the Code Project Open License (CPOL);
+// either version 1.0 of the License, or (at your option) any later
+// version.
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+//
+// THIS COPYRIGHT NOTICE MAY NOT BE REMOVED FROM THIS FILE
+
+
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,6 +30,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 using Point=Hardcodet.Wpf.TaskbarNotification.Interop.Point;
 
@@ -122,6 +147,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #endregion
 
 
+    #region Custom Balloons
+
     /// <summary>
     /// Shows a custom control as a tooltip in the tray location.
     /// </summary>
@@ -133,6 +160,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// is a null reference.</exception>
     public void ShowCustomBalloon(UIElement balloon, PopupAnimation animation, int? timeout)
     {
+      if (!Application.Current.Dispatcher.CheckAccess())
+      {
+        var action = new Action(() => ShowCustomBalloon(balloon, animation, timeout));
+        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, action);
+        return;
+      }
+
       if (balloon == null) throw new ArgumentNullException("balloon");
       if (timeout.HasValue && timeout < 500)
       {
@@ -184,7 +218,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       SetParentTaskbarIcon(balloon, this);
 
       //fire attached event
-      RaiseBalloonShowingEvent(balloon);
+      RaiseBalloonShowingEvent(balloon, this);
 
       //display item
       popup.IsOpen = true;
@@ -200,11 +234,38 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
 
     /// <summary>
-    /// Closes the current <see cref="CustomBalloon"/>, if it's set.
+    /// Resets the closing timeout, which effectively
+    /// keeps a displayed balloon message open until
+    /// it is either closed programmatically through
+    /// <see cref="CloseBalloon"/> or due to a new
+    /// message being displayed.
+    /// </summary>
+    public void ResetBalloonCloseTimer()
+    {
+      if (IsDisposed) return;
+
+      lock (this)
+      {
+        //reset timer in any case
+        balloonCloseTimer.Change(Timeout.Infinite, Timeout.Infinite);
+      }
+    }
+
+
+    /// <summary>
+    /// Closes the current <see cref="CustomBalloon"/>, if the
+    /// property is set.
     /// </summary>
     public void CloseBalloon()
     {
       if (IsDisposed) return;
+
+      if (!Application.Current.Dispatcher.CheckAccess())
+      {
+        Action action = CloseBalloon;
+        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, action);
+        return;
+      }
 
       lock (this)
       {
@@ -215,13 +276,23 @@ namespace Hardcodet.Wpf.TaskbarNotification
         Popup popup = CustomBalloon;
         if (popup != null)
         {
-          //if a balloon message is already displayed, close it immediately
-          popup.IsOpen = false;
-
-          //reset attached property
           UIElement element = popup.Child;
-          if (element != null) SetParentTaskbarIcon(element, null);
 
+          //announce closing
+          RoutedEventArgs eventArgs = RaiseBalloonClosingEvent(element, this);
+          if (!eventArgs.Handled)
+          {
+            //if the event was handled, clear the reference to the popup,
+            //but don't close it - the handling code has to manage this stuff now
+
+            //close the popup
+            popup.IsOpen = false;
+
+            //reset attached property
+            if (element != null) SetParentTaskbarIcon(element, null);
+          }
+
+          //remove custom balloon anyway
           SetCustomBalloon(null);
         }
       }
@@ -240,6 +311,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
       Action action = CloseBalloon;
       Application.Current.Dispatcher.Invoke(action);
     }
+
+    #endregion
+
 
 
     #region Process Incoming Mouse Events
@@ -405,7 +479,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
         tt.Placement = PlacementMode.Mouse;
 
         //do *not* set the placement target, as it causes the popup to become hidden if the
-        //TaskbarIcon's parent is hidden, too.
+        //TaskbarIcon's parent is hidden, too. At runtime, the parent can be resolved through
+        //the ParentTaskbarIcon attached dependency property:
         //tt.PlacementTarget = this;
 
         //the tooltip (and implicitly its context) explicitly gets
@@ -478,13 +553,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// property which prevents this issue.</remarks>
     private void CreatePopup()
     {
-      //no popup is available
-      if (TrayPopup == null) return;
-
       //check if the item itself is a popup
       Popup popup = TrayPopup as Popup;
 
-      if (popup == null)
+      if (popup == null && TrayPopup != null)
       {
         //create an invisible popup that hosts the UIElement
         popup = new Popup();
@@ -501,8 +573,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         Popup.CreateRootPopup(popup, TrayPopup);
 
-        //TODO we don't really need this and it causes the popup to become hidden if the
-        //TaskbarIcon's parent is hidden, too.
+        //do *not* set the placement target, as it causes the popup to become hidden if the
+        //TaskbarIcon's parent is hidden, too. At runtime, the parent can be resolved through
+        //the ParentTaskbarIcon attached dependency property:
         //popup.PlacementTarget = this;
 
         popup.Placement = PlacementMode.AbsolutePoint;

@@ -1,4 +1,29 @@
-﻿using System;
+﻿// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 Philipp Sumi
+// Contact and Information: http://www.hardcodet.net
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the Code Project Open License (CPOL);
+// either version 1.0 of the License, or (at your option) any later
+// version.
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+//
+// THIS COPYRIGHT NOTICE MAY NOT BE REMOVED FROM THIS FILE
+
+
+
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
@@ -33,6 +58,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
         = DependencyProperty.RegisterReadOnly("TrayPopupResolved", typeof(Popup), typeof(TaskbarIcon),
             new FrameworkPropertyMetadata(null));
 
+
+    /// <summary>
+    /// A read-only dependency property that returns the <see cref="Popup"/>
+    /// that is being displayed in the taskbar area based on a user action.
+    /// </summary>
     public static readonly DependencyProperty TrayPopupResolvedProperty
         = TrayPopupResolvedPropertyKey.DependencyProperty;
 
@@ -70,6 +100,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
         = DependencyProperty.RegisterReadOnly("TrayToolTipResolved", typeof(ToolTip), typeof(TaskbarIcon),
             new FrameworkPropertyMetadata(null  ));
 
+
+    /// <summary>
+    /// A read-only dependency property that returns the <see cref="ToolTip"/>
+    /// that is being displayed.
+    /// </summary>
     public static readonly DependencyProperty TrayToolTipResolvedProperty
         = TrayToolTipResolvedPropertyKey.DependencyProperty;
 
@@ -336,7 +371,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       if (e.OldValue != null)
       {
         //remove the taskbar icon reference from the previously used element
-        SetParentTaskbarIcon((DependencyObject) e.OldValue, this);
+        SetParentTaskbarIcon((DependencyObject) e.OldValue, null);
       }
 
 
@@ -407,7 +442,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       if (e.OldValue != null)
       {
         //remove the taskbar icon reference from the previously used element
-        SetParentTaskbarIcon((DependencyObject)e.OldValue, this);
+        SetParentTaskbarIcon((DependencyObject)e.OldValue, null);
       }
 
 
@@ -434,7 +469,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         DependencyProperty.Register("MenuActivation",
                                     typeof (PopupActivationMode),
                                     typeof (TaskbarIcon),
-                                    new FrameworkPropertyMetadata(PopupActivationMode.RightClick, MenuActivationPropertyChanged));
+                                    new FrameworkPropertyMetadata(PopupActivationMode.RightClick));
 
     /// <summary>
     /// A property wrapper for the <see cref="MenuActivationProperty"/>
@@ -450,34 +485,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
       set { SetValue(MenuActivationProperty, value); }
     }
 
-
-    /// <summary>
-    /// A static callback listener which is being invoked if the
-    /// <see cref="MenuActivationProperty"/> dependency property has
-    /// been changed. Invokes the <see cref="OnMenuActivationPropertyChanged"/>
-    /// instance method of the changed instance.
-    /// </summary>
-    /// <param name="d">The currently processed owner of the property.</param>
-    /// <param name="e">Provides information about the updated property.</param>
-    private static void MenuActivationPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      TaskbarIcon owner = (TaskbarIcon) d;
-      owner.OnMenuActivationPropertyChanged(e);
-    }
-
-
-    /// <summary>
-    /// Handles changes of the <see cref="MenuActivationProperty"/> dependency property. As
-    /// WPF internally uses the dependency property system and bypasses the
-    /// <see cref="MenuActivation"/> property wrapper, updates of the property's value
-    /// should be handled here.
-    /// </summary
-    /// <param name="e">Provides information about the updated property.</param>
-    private void OnMenuActivationPropertyChanged(DependencyPropertyChangedEventArgs e)
-    {
-      //currently not needed
-    }
-
     #endregion
     
     #region PopupActivation dependency property
@@ -490,7 +497,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         DependencyProperty.Register("PopupActivation",
                                     typeof (PopupActivationMode),
                                     typeof (TaskbarIcon),
-                                    new FrameworkPropertyMetadata(PopupActivationMode.LeftClick, PopupActivationPropertyChanged));
+                                    new FrameworkPropertyMetadata(PopupActivationMode.LeftClick));
 
     /// <summary>
     /// A property wrapper for the <see cref="PopupActivationProperty"/>
@@ -504,34 +511,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       get { return (PopupActivationMode) GetValue(PopupActivationProperty); }
       set { SetValue(PopupActivationProperty, value); }
-    }
-
-
-    /// <summary>
-    /// A static callback listener which is being invoked if the
-    /// <see cref="PopupActivationProperty"/> dependency property has
-    /// been changed. Invokes the <see cref="OnPopupActivationPropertyChanged"/>
-    /// instance method of the changed instance.
-    /// </summary>
-    /// <param name="d">The currently processed owner of the property.</param>
-    /// <param name="e">Provides information about the updated property.</param>
-    private static void PopupActivationPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-      TaskbarIcon owner = (TaskbarIcon) d;
-      owner.OnPopupActivationPropertyChanged(e);
-    }
-
-
-    /// <summary>
-    /// Handles changes of the <see cref="PopupActivationProperty"/> dependency property. As
-    /// WPF internally uses the dependency property system and bypasses the
-    /// <see cref="PopupActivation"/> property wrapper, updates of the property's value
-    /// should be handled here.
-    /// </summary
-    /// <param name="e">Provides information about the updated property.</param>
-    private void OnPopupActivationPropertyChanged(DependencyPropertyChangedEventArgs e)
-    {
-      //currently not needed
     }
 
     #endregion
@@ -726,21 +705,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-    /// <summary>
-    /// Executes a given command.
-    /// </summary>
-    /// <param name="command">The command to be executed.</param>
-    /// <param name="commandParameter">An optional parameter that was associated with
-    /// the command.</param>
-    private static void RunCommand(ICommand command, object commandParameter)
-    {
-      if (command == null) return;
-      if (command.CanExecute(commandParameter))
-      {
-        command.Execute(commandParameter);
-      }
-    }
-
 
     //EVENTS
 
@@ -769,7 +733,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       //first raise event, then command
       RoutedEventArgs args = RaiseTrayLeftMouseDownEvent(this);
-      RunCommand(LeftClickCommand, LeftClickCommandParameter);
+      LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter);
       return args;
     }
 
@@ -1019,7 +983,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     protected RoutedEventArgs RaiseTrayMouseDoubleClickEvent()
     {
       RoutedEventArgs args = RaiseTrayMouseDoubleClickEvent(this);
-      RunCommand(DoubleClickCommand, DoubleClickCommandParameter);
+      DoubleClickCommand.ExecuteIfEnabled(DoubleClickCommandParameter);
       return args;
     }
 
@@ -1685,21 +1649,66 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// A static helper method to raise the BalloonShowing event on a target element.
     /// </summary>
     /// <param name="target">UIElement or ContentElement on which to raise the event</param>
-    internal static RoutedEventArgs RaiseBalloonShowingEvent(DependencyObject target)
+    /// <param name="source">The <see cref="TaskbarIcon"/> instance that manages the balloon.</param>
+    internal static RoutedEventArgs RaiseBalloonShowingEvent(DependencyObject target, TaskbarIcon source)
     {
       if (target == null) return null;
 
-      RoutedEventArgs args = new RoutedEventArgs();
-      args.RoutedEvent = BalloonShowingEvent;
+      RoutedEventArgs args = new RoutedEventArgs(BalloonShowingEvent, source);
+      RoutedEventHelper.RaiseEvent(target, args);
+      return args;
+    }
+
+    #endregion
+
+    #region BalloonClosing
+
+    /// <summary>
+    /// BalloonClosing Attached Routed Event
+    /// </summary>
+    public static readonly RoutedEvent BalloonClosingEvent = EventManager.RegisterRoutedEvent("BalloonClosing",
+        RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
+
+    /// <summary>
+    /// Adds a handler for the BalloonClosing attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be added</param>
+    public static void AddBalloonClosingHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.AddHandler(element, BalloonClosingEvent, handler);
+    }
+
+    /// <summary>
+    /// Removes a handler for the BalloonClosing attached event
+    /// </summary>
+    /// <param name="element">UIElement or ContentElement that listens to the event</param>
+    /// <param name="handler">Event handler to be removed</param>
+    public static void RemoveBalloonClosingHandler(DependencyObject element, RoutedEventHandler handler)
+    {
+      RoutedEventHelper.RemoveHandler(element, BalloonClosingEvent, handler);
+    }
+
+    /// <summary>
+    /// A static helper method to raise the BalloonClosing event on a target element.
+    /// </summary>
+    /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+    /// <param name="source">The <see cref="TaskbarIcon"/> instance that manages the balloon.</param>
+    internal static RoutedEventArgs RaiseBalloonClosingEvent(DependencyObject target, TaskbarIcon source)
+    {
+      if (target == null) return null;
+
+      RoutedEventArgs args = new RoutedEventArgs(BalloonClosingEvent, source);
       RoutedEventHelper.RaiseEvent(target, args);
       return args;
     }
 
     #endregion
         
+
+        
     //ATTACHED PROPERTIES
 
-    //TODO put into use
     #region ParentTaskbarIcon
 
     /// <summary>
@@ -1728,9 +1737,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-
-
-        
 
     //BASE CLASS PROPERTY OVERRIDES
 

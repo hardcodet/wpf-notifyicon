@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
@@ -8,16 +6,16 @@ using System.Windows.Markup;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NotifyIconWpf")]
-[assembly: AssemblyDescription("NotifyIcon Implementation for WPF.")]
+[assembly: AssemblyTitle("NotifyIcon for WPF")]
+[assembly: AssemblyDescription("NotifyIcon Implementation for the WPF platform.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("hardcodet.net")]
-[assembly: AssemblyProduct("NotifyIconWpf")]
+[assembly: AssemblyProduct("NotifyIcon WPF")]
 [assembly: AssemblyCopyright("Copyright © Philipp Sumi 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-
+//provides simplified declaration
 [assembly: XmlnsDefinition("http://www.hardcodet.net/taskbar", "Hardcodet.Wpf.TaskbarNotification")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
