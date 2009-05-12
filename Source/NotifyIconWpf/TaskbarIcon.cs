@@ -30,6 +30,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 using Point=Hardcodet.Wpf.TaskbarNotification.Interop.Point;
@@ -182,14 +183,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
       {
         CloseBalloon();
       }
-
       
       //create an invisible popup that hosts the UIElement
       Popup popup = new Popup();
       popup.AllowsTransparency = true;
 
       //provide the popup with the taskbar icon's data context
-      popup.DataContext = DataContext;
+      UpdateDataContext(popup, null, DataContext);
 
       //don't animate by default - devs can use attached
       //events or override
@@ -313,8 +313,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
-
-
 
     #region Process Incoming Mouse Events
 
@@ -483,11 +481,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
         //the ParentTaskbarIcon attached dependency property:
         //tt.PlacementTarget = this;
 
-        //the tooltip (and implicitly its context) explicitly gets
-        //the DataContext of this instance. If there is no DataContext,
-        //the TaskbarIcon sets itself
-        tt.DataContext = DataContext ?? this;
-
         //make sure the tooltip is invisible
         tt.HasDropShadow = false;
         tt.BorderThickness = new Thickness(0);
@@ -502,6 +495,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
         //create a simple tooltip for the string
         tt = new ToolTip();
         tt.Content = ToolTipText;
+      }
+
+      //the tooltip explicitly gets the DataContext of this instance.
+      //If there is no DataContext, the TaskbarIcon assigns itself
+      if (tt != null)
+      {
+        UpdateDataContext(tt, null, DataContext);
       }
 
       //store a reference to the used tooltip
@@ -566,11 +566,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
         //events or override
         popup.PopupAnimation = PopupAnimation.None;
 
-        //the tooltip (and implicitly its context) explicitly gets
-        //the DataContext of this instance. If there is no DataContext,
-        //the TaskbarIcon assigns itself
-        popup.DataContext = DataContext ?? this;
-
+        //the CreateRootPopup method outputs binding errors in the debug window because
+        //it tries to bind to "Popup-specific" properties in case they are provided by the child
+        //not a problem.
         Popup.CreateRootPopup(popup, TrayPopup);
 
         //do *not* set the placement target, as it causes the popup to become hidden if the
@@ -580,6 +578,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         popup.Placement = PlacementMode.AbsolutePoint;
         popup.StaysOpen = false;
+      }
+
+      //the popup explicitly gets the DataContext of this instance.
+      //If there is no DataContext, the TaskbarIcon assigns itself
+      if (popup != null)
+      {
+        UpdateDataContext(popup, null, DataContext);
       }
 
       //store a reference to the used tooltip

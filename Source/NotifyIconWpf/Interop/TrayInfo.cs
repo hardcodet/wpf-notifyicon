@@ -1,4 +1,4 @@
-﻿// Interop code taken from Mike Marshall's AnyForm
+﻿// Some interop code taken from Mike Marshall's AnyForm
 
 using System;
 using System.Drawing;
@@ -12,11 +12,10 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
   /// </summary>
   public static class TrayInfo
   {
-
-    [DllImport("user32.dll")]
-    private static extern Int32 GetWindowLong(IntPtr hWnd, Int32 Offset);
-
-
+    /// <summary>
+    /// Gets the position of the system tray.
+    /// </summary>
+    /// <returns>Tray coordinates.</returns>
     public static Point GetTrayLocation()
     {
       var info = new AppBarInfo();

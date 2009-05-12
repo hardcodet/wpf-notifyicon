@@ -27,6 +27,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Resources;
@@ -99,9 +100,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// Updates the taskbar icons with data provided by a given
     /// <see cref="NotifyIconData"/> instance.
     /// </summary>
-    /// <param name="data"></param>
-    /// <param name="command"></param>
-    /// <returns></returns>
+    /// <param name="data">Configuration settings for the NotifyIcon.</param>
+    /// <param name="command">Operation on the icon (e.g. delete the icon).</param>
+    /// <returns>True if the data was successfully written.</returns>
+    /// <remarks>See Shell_NotifyIcon documentation on MSDN for details.</remarks>
     public static bool WriteIconData(ref NotifyIconData data, NotifyCommand command)
     {
       return WriteIconData(ref data, command, data.ValidMembers);
@@ -112,10 +114,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// Updates the taskbar icons with data provided by a given
     /// <see cref="NotifyIconData"/> instance.
     /// </summary>
-    /// <param name="data"></param>
-    /// <param name="command"></param>
-    /// <param name="flags"></param>
-    /// <returns></returns>
+    /// <param name="data">Configuration settings for the NotifyIcon.</param>
+    /// <param name="command">Operation on the icon (e.g. delete the icon).</param>
+    /// <param name="flags">Defines which members of the <paramref name="data"/>
+    /// structure are set.</param>
+    /// <returns>True if the data was successfully written.</returns>
+    /// <remarks>See Shell_NotifyIcon documentation on MSDN for details.</remarks>
     public static bool WriteIconData(ref NotifyIconData data, NotifyCommand command, IconDataMembers flags)
     {
       //do nothing if in design mode
@@ -269,6 +273,22 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
+
+
+    /// <summary>
+    /// Checks whether the <see cref="FrameworkElement.DataContextProperty"/>
+    ///  is bound or not.
+    /// </summary>
+    /// <param name="element">The element to be checked.</param>
+    /// <returns>True if the data context property is being managed by a
+    /// binding expression.</returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="element"/>
+    /// is a null reference.</exception>
+    public static bool IsDataContextDataBound(this FrameworkElement element)
+    {
+      if (element == null) throw new ArgumentNullException("element");
+      return element.GetBindingExpression(FrameworkElement.DataContextProperty) != null;
+    }
 
   }
 }

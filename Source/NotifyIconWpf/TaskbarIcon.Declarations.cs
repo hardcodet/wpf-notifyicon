@@ -557,7 +557,24 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-    #region DataContext dependency property override
+    #region DataContext dependency property override / target update
+
+    /// <summary>
+    /// Updates the <see cref="FrameworkElement.DataContextProperty"/> of a given
+    /// <see cref="FrameworkElement"/>. This method only updates target elements
+    /// that do not already have a data context of their own, and either assigns
+    /// the <see cref="FrameworkElement.DataContext"/> of the NotifyIcon, or the
+    /// NotifyIcon itself, if no data context was assigned at all.
+    /// </summary>
+    private void UpdateDataContext(FrameworkElement target, object oldDataContextValue, object newDataContextValue)
+    {
+      if (target != null && !target.IsDataContextDataBound() && Equals(oldDataContextValue, target.DataContext))
+      {
+        //assign own data context, if available. If there is no data
+        //context at all, assign NotifyIcon itself.
+        target.DataContext = newDataContextValue ?? this;
+      }
+    }
 
     /// <summary>
     /// A static callback listener which is being invoked if the
@@ -586,23 +603,57 @@ namespace Hardcodet.Wpf.TaskbarNotification
       object newValue = e.NewValue;
       object oldValue = e.OldValue;
 
-      //replace custom data context for popup and tooltip, if
-      //they are reflecting the data context's data context
-      var popup = TrayPopupResolved;
-      var toolTip = TrayToolTipResolved;
-
-      if (popup != null && Equals(popup.DataContext, oldValue))
-      {
-        popup.DataContext = newValue;
-      }
-
-      if (toolTip != null && Equals(toolTip.DataContext, oldValue))
-      {
-        toolTip.DataContext = newValue;
-      }
+      //replace custom data context for ToolTips, Popup, and
+      //ContextMenu
+      UpdateDataContext(TrayPopupResolved, oldValue, newValue);
+      UpdateDataContext(TrayToolTipResolved, oldValue, newValue);
+      UpdateDataContext(ContextMenu, oldValue, newValue);
     }
 
     #endregion
+
+    #region ContextMenu dependency property override
+
+    /// <summary>
+    /// A static callback listener which is being invoked if the
+    /// <see cref="FrameworkElement.ContextMenuProperty"/> dependency property has
+    /// been changed. Invokes the <see cref="OnContextMenuPropertyChanged"/>
+    /// instance method of the changed instance.
+    /// </summary>
+    /// <param name="d">The currently processed owner of the property.</param>
+    /// <param name="e">Provides information about the updated property.</param>
+    private static void ContextMenuPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      TaskbarIcon owner = (TaskbarIcon)d;
+      owner.OnContextMenuPropertyChanged(e);
+    }
+
+
+    /// <summary>
+    /// Releases the old and updates the new <see cref="ContextMenu"/> property
+    /// in order to reflect both the NotifyIcon's <see cref="FrameworkElement.DataContext"/>
+    /// property and have the <see cref="ParentTaskbarIconProperty"/> assigned.
+    /// </summary>
+    /// <param name="e">Provides information about the updated property.</param>
+    private void OnContextMenuPropertyChanged(DependencyPropertyChangedEventArgs e)
+    {
+      if (e.OldValue != null)
+      {
+        //remove the taskbar icon reference from the previously used element
+        SetParentTaskbarIcon((DependencyObject)e.OldValue, null);
+      }
+
+      if (e.NewValue != null)
+      {
+        //set this taskbar icon as a reference to the new tooltip element
+        SetParentTaskbarIcon((DependencyObject)e.NewValue, this);
+      }
+
+      UpdateDataContext((ContextMenu) e.NewValue, null, DataContext);
+    }
+
+    #endregion
+
 
 
     #region DoubleClickCommand dependency property
@@ -1752,7 +1803,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
       //register change listener for the DataContext property
       md = new FrameworkPropertyMetadata(new PropertyChangedCallback(DataContextPropertyChanged));
       DataContextProperty.OverrideMetadata(typeof(TaskbarIcon), md);
+
+      //register change listener for the ContextMenu property
+      md = new FrameworkPropertyMetadata(new PropertyChangedCallback(ContextMenuPropertyChanged));
+      ContextMenuProperty.OverrideMetadata(typeof(TaskbarIcon), md);
     }
+
 
   }
 }
