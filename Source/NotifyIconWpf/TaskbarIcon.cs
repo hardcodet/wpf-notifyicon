@@ -369,14 +369,21 @@ namespace Hardcodet.Wpf.TaskbarNotification
       Point cursorPosition = new Point();
       WinApi.GetCursorPos(ref cursorPosition);
 
+      bool isLeftClickCommandInvoked = false;
+      
       //show popup, if requested
       if (me.IsMatch(PopupActivation))
       {
         if (me == MouseEvent.IconLeftMouseUp)
         {
           //show popup once we are sure it's not a double click
-          delayedTimerAction = () => ShowTrayPopup(cursorPosition);
+          delayedTimerAction = () =>
+                                 {
+                                   LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter);
+                                   ShowTrayPopup(cursorPosition);
+                                 };
           singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+          isLeftClickCommandInvoked = true;
         }
         else
         {
@@ -392,8 +399,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
         if (me == MouseEvent.IconLeftMouseUp)
         {
           //show context menu once we are sure it's not a double click
-          delayedTimerAction = () => ShowContextMenu(cursorPosition);
+          delayedTimerAction = () =>
+                                 {
+                                   LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter);
+                                   ShowContextMenu(cursorPosition);
+                                 };
           singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+          isLeftClickCommandInvoked = true;
         }
         else
         {
@@ -401,6 +413,15 @@ namespace Hardcodet.Wpf.TaskbarNotification
           ShowContextMenu(cursorPosition);
         }
       }
+
+      //make sure the left click command is invoked on mouse clicks
+      if (me == MouseEvent.IconLeftMouseUp && !isLeftClickCommandInvoked)
+      {
+        //show context menu once we are sure it's not a double click
+        delayedTimerAction = () => LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter);
+        singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+      }
+
     }
 
     #endregion

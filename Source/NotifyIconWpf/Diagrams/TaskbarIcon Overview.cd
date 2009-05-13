@@ -8,10 +8,17 @@
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>N6qdVIeUdLmQtSUbiJhEGdYRjvJYXlhbEVBBKuPRO5s=</HashCode>
+      <HashCode>N6qdVIeUdLmQtSUbiJhEGdYRjvJYXlhbEVBDKuPRO5s=</HashCode>
       <FileName>TaskbarIcon.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Enum Name="Hardcodet.Wpf.TaskbarNotification.PopupActivationMode">
+    <Position X="5.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ABAEAAAAAAAAAAABAAAAAAAAAAAAAAAAAIAKAIAAAAA=</HashCode>
+      <FileName>PopupActivationMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

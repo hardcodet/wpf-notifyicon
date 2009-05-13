@@ -782,9 +782,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// </summary>
     protected RoutedEventArgs RaiseTrayLeftMouseDownEvent()
     {
-      //first raise event, then command
       RoutedEventArgs args = RaiseTrayLeftMouseDownEvent(this);
-      LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter);
       return args;
     }
 
