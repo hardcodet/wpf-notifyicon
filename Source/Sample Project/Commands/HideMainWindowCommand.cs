@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Sample_Project.Commands
+namespace Samples.Commands
 {
   /// <summary>
   /// Hides the main window.

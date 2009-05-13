@@ -1,0 +1,20 @@
+hardcodet.net NotifyIcon for WPF - Changelog
+Copyright (c) 2009 Philipp Sumi
+Contact and Information: http://www.hardcodet.net
+
+
+----------------------------------------------------------------------------
+
+1.0.1
+*****
+CHG   DataContext is also assigned to ContextMenu, and properly coerced for
+      ToolTips and Popups. Also checks whether target item has a binding
+      on the DataContext (does not just override if DataContext is null).
+
+
+
+----------------------------------------------------------------------------
+
+1.0.0
+*****
+ADD   Initial release.

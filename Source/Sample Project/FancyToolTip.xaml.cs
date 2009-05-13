@@ -12,7 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Hardcodet.Wpf.TaskbarNotification;
 
-namespace Sample_Project
+namespace Samples
 {
 	/// <summary>
 	/// Interaction logic for FancyToolTip.xaml

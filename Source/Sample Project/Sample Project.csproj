@@ -8,7 +8,7 @@
     <ProjectGuid>{71C74F29-F1C2-49C5-969F-C25AC4CDFCCC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sample_Project</RootNamespace>
+    <RootNamespace>Samples</RootNamespace>
     <AssemblyName>Sample Project</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -88,6 +88,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Tutorials\01 - Declaration\Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tutorials\02 - ToolTips\SimpleUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WelcomeBalloon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Window1.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -124,6 +136,15 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Tutorials\01 - Declaration\Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tutorials\02 - ToolTips\SimpleUserControl.xaml.cs">
+      <DependentUpon>SimpleUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WelcomeBalloon.xaml.cs">
+      <DependentUpon>WelcomeBalloon.xaml</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -155,9 +176,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Samples\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

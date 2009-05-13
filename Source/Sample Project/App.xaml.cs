@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace Sample_Project
+namespace Samples
 {
   /// <summary>
   /// Interaction logic for App.xaml

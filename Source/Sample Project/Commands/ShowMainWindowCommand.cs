@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Sample_Project.Commands
+namespace Samples.Commands
 {
   /// <summary>
   /// Shows the main window.

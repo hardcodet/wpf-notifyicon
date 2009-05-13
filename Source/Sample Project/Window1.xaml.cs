@@ -1,8 +1,11 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
+using System.Windows.Navigation;
 using Hardcodet.Wpf.TaskbarNotification;
 
-namespace Sample_Project
+namespace Samples
 {
   /// <summary>
   /// Interaction logic for Window1.xaml
@@ -16,8 +19,9 @@ namespace Sample_Project
       
       Loaded += delegate
                   {
-                    //show balloon at startup, pointing to the icon
-                    showBalloonTip_Click(null, null);
+                    //show balloon at startup
+                    var balloon = new WelcomeBalloon();
+                    tb.ShowCustomBalloon(balloon, PopupAnimation.Slide, 12000);
                   };
     }
 
@@ -70,6 +74,13 @@ namespace Sample_Project
     private void hideCustomBalloon_Click(object sender, RoutedEventArgs e)
     {
       tb.CloseBalloon();
+    }
+
+
+    private void OnNavigationRequest(object sender, RequestNavigateEventArgs e)
+    {
+      Process.Start(e.Uri.ToString());
+      e.Handled = true;
     }
   }
 }

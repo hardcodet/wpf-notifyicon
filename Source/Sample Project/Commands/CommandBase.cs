@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Markup;
 
-namespace Sample_Project.Commands
+namespace Samples.Commands
 {
   /// <summary>
   /// Basic implementation of the <see cref="ICommand"/>

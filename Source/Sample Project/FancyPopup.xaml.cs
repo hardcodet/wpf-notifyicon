@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Sample_Project
+namespace Samples
 {
   /// <summary>
   /// Interaction logic for FancyPopup.xaml

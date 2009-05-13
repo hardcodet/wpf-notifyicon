@@ -5,7 +5,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:tb="http://www.hardcodet.net/taskbar"
   mc:Ignorable="d"
-  x:Class="Sample_Project.FancyToolTip"
+  x:Class="Samples.FancyToolTip"
   x:Name="me"
   Width="285"
   Height="136">
@@ -109,6 +109,6 @@
     	Foreground="#FF141414"
     	TextWrapping="Wrap"
     	Margin="82,42,20,44.96"
-    	x:Name="txtToolTipDetail_Copy" ><Run Text="Data binding is simple: this user control automatically derived the DataContext of the TaskbarIcon." Language="de-ch"/></TextBlock>
+    	x:Name="txtToolTipDetail_Copy" ><Run Text="Data binding is simple: The NotifyIcon sets the DataContext unless it's not already in use." Language="de-ch"/></TextBlock>
   </Grid>
 </UserControl>
