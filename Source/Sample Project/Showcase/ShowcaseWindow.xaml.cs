@@ -1,18 +1,17 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
 using System.Windows.Navigation;
 using Hardcodet.Wpf.TaskbarNotification;
 
 namespace Samples
 {
   /// <summary>
-  /// Interaction logic for Window1.xaml
+  /// Interaction logic for ShowcaseWindow.xaml
   /// </summary>
-  public partial class Window1 : Window
+  public partial class ShowcaseWindow : Window
   {
-    public Window1()
+    public ShowcaseWindow()
     {
       InitializeComponent();
 
@@ -81,6 +80,14 @@ namespace Samples
     {
       Process.Start(e.Uri.ToString());
       e.Handled = true;
+    }
+
+
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+      //clean up notifyicon (would otherwise stay open until application finishes)
+      tb.Dispose();
+      base.OnClosing(e);
     }
   }
 }

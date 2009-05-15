@@ -18,7 +18,7 @@ namespace Samples.Commands
 
     public override bool CanExecute(object parameter)
     {
-      return Application.Current.MainWindow.IsVisible;
+      return !IsDesignMode && Application.Current.MainWindow.IsVisible;
     }
 
 

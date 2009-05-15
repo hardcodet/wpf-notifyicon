@@ -233,17 +233,14 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
       switch (lParam)
       {
         case 0x200:
-//          Debug.WriteLine("MOVE");
           MouseEventReceived(MouseEvent.MouseMove);
           break;
 
         case 0x201:
-          Debug.WriteLine("left down 1");
           MouseEventReceived(MouseEvent.IconLeftMouseDown);
           break;
 
         case 0x202:
-          Debug.WriteLine("left up");
           if (!isDoubleClick)
           {
             MouseEventReceived(MouseEvent.IconLeftMouseUp);
@@ -252,69 +249,57 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
           break;
 
         case 0x203:
-          Debug.WriteLine("left click 2");
           isDoubleClick = true;
           MouseEventReceived(MouseEvent.IconDoubleClick);
           break;
 
         case 0x204:
-          Debug.WriteLine("right click 1");
           MouseEventReceived(MouseEvent.IconRightMouseDown);
           break;
 
         case 0x205:
-          Console.Out.WriteLine("right mouse up");
           MouseEventReceived(MouseEvent.IconRightMouseUp);
           break;
 
         case 0x206:
           //double click with right mouse button - do not trigger event
-          Debug.WriteLine("right click 2");  
           break;
 
         case 0x207:
-          Debug.WriteLine("middle click 1");
           MouseEventReceived(MouseEvent.IconMiddleMouseDown);
           break;
 
         case 520:
-          Debug.WriteLine("mouse up middle");
           MouseEventReceived(MouseEvent.IconMiddleMouseUp);
           break;
 
         case 0x209:
           //double click with middle mouse button - do not trigger event
-          Debug.WriteLine("middle click 2");
           break;
 
         case 0x402:
-          Debug.WriteLine("balloon shown");
           BallonToolTipChanged(true);
           break;
 
         case 0x403:
         case 0x404:
-          Debug.WriteLine("balloon close");
           BallonToolTipChanged(false);
           break;
 
         case 0x405:
-          Debug.WriteLine("balloon clicked");
           MouseEventReceived(MouseEvent.BalloonToolTipClicked);
           break;
 
         case 0x406:
-          Debug.WriteLine("show custom tooltip");
           ChangeToolTipStateRequest(true);
           break;
 
         case 0x407:
-          Debug.WriteLine("close custom tooltip");
           ChangeToolTipStateRequest(false);
           break;
 
         default:
-          Debug.WriteLine("Unhandled message ID: " + lParam);
+          Debug.WriteLine("Unhandled NotifyIcon message ID: " + lParam);
           break;
       }
 

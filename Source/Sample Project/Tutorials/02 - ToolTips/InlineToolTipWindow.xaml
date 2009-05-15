@@ -1,0 +1,40 @@
+﻿<Window
+  x:Class="Samples.Tutorials.ToolTips.InlineToolTipWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:tb="http://www.hardcodet.net/taskbar"
+  Height="300"
+  Width="300">
+  <Grid>
+
+    <tb:TaskbarIcon
+      x:Name="MyNotifyIcon"
+      IconSource="/Icons/Error.ico"
+      ToolTipText="hello world">
+      
+      <!--
+        We can use arbitrary UI elements as ToolTips.
+        Let's use a semi-transparent border.
+      -->
+      <tb:TaskbarIcon.TrayToolTip>
+        <Border
+          Background="White"
+          BorderBrush="Orange"
+          BorderThickness="2"
+          CornerRadius="4"
+          Opacity="0.8"
+          Width="160"
+          Height="40">
+          <TextBlock
+            Text="hello world"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            />
+         </Border>
+      </tb:TaskbarIcon.TrayToolTip>
+      
+    </tb:TaskbarIcon>
+    <TextBlock Margin="26,26,24,0" VerticalAlignment="Top" FontWeight="Bold" TextWrapping="Wrap"><Run Text="Move mouse over NotifyIcon to show ToolTip" Language="de-ch"/></TextBlock>
+
+  </Grid>
+</Window>

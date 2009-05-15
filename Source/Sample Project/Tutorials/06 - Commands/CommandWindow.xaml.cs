@@ -9,19 +9,26 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Samples.Tutorials.ToolTips
+namespace Samples.Tutorials.Commands
 {
   /// <summary>
-  /// Interaction logic for SimpleUserControl.xaml
+  /// Interaction logic for CommandWindow.xaml
   /// </summary>
-  public partial class SimpleUserControl : UserControl
+  public partial class CommandWindow : Window
   {
-    public SimpleUserControl()
+    public CommandWindow()
     {
       InitializeComponent();
+    }
+
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+      //clean up notifyicon (would otherwise stay open until application finishes)
+      MyNotifyIcon.Dispose();
+
+      base.OnClosing(e);
     }
   }
 }

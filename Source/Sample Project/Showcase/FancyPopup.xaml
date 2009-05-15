@@ -49,7 +49,7 @@
       VerticalAlignment="Top"
       Width="72"
       Height="72"
-      Source="Images\preferences.png"
+      Source="/Images/Preferences.png"
       Stretch="Fill" x:Name="image" RenderTransformOrigin="0.5,0.5" >
     	<Image.RenderTransform>
     		<TransformGroup>

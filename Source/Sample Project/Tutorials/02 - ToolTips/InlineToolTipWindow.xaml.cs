@@ -9,19 +9,26 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Samples.Tutorials.ToolTips
 {
   /// <summary>
-  /// Interaction logic for SimpleUserControl.xaml
+  /// Interaction logic for Window1.xaml
   /// </summary>
-  public partial class SimpleUserControl : UserControl
+  public partial class InlineToolTipWindow : Window
   {
-    public SimpleUserControl()
+    public InlineToolTipWindow()
     {
       InitializeComponent();
+    }
+
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+      //clean up notifyicon (would otherwise stay open until application finishes)
+      MyNotifyIcon.Dispose();
+
+      base.OnClosing(e);
     }
   }
 }

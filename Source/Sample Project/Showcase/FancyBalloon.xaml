@@ -84,7 +84,7 @@
       HorizontalAlignment="Left"
       Margin="0,10,0,0"
       Width="72"
-      Source="Images\Info.png"
+      Source="/Images/Info.png"
       Stretch="Fill" Height="72" VerticalAlignment="Top" />
     <TextBlock
       Margin="72,49.2,10,0"
@@ -112,7 +112,7 @@
       </Path.Stroke>
     </Path>
     <TextBlock Margin="72,10,10,0" VerticalAlignment="Top" Height="23.2" Text="{Binding Path=BalloonText, ElementName=me, Mode=Default}" TextWrapping="Wrap" Foreground="#FFECAD25" FontWeight="Bold"/>
-    <Image HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="16" Height="16" Source="Images\Close.png" Stretch="Fill" Opacity="0.4" ToolTip="Close Balloon" x:Name="imgClose" MouseDown="imgClose_MouseDown"/>
+    <Image HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="16" Height="16" Source="/Images/Close.png" Stretch="Fill" Opacity="0.4" ToolTip="Close Balloon" x:Name="imgClose" MouseDown="imgClose_MouseDown"/>
 
   </Grid>
 </UserControl>

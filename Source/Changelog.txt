@@ -10,7 +10,9 @@ Contact and Information: http://www.hardcodet.net
 CHG   DataContext is also assigned to ContextMenu, and properly coerced for
       ToolTips and Popups. Also checks whether target item has a binding
       on the DataContext (does not just override if DataContext is null).
-
+CHG   The LeftClickCommand now executes with a delay in order to mak sure
+      it's not a double-click.
+FIX   Removed debug output in WindowMessageSink.
 
 
 ----------------------------------------------------------------------------

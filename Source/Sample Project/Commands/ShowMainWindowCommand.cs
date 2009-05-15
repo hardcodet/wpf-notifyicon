@@ -20,7 +20,7 @@ namespace Samples.Commands
 
     public override bool CanExecute(object parameter)
     {
-      return Application.Current.MainWindow.IsVisible == false;
+      return !IsDesignMode && Application.Current.MainWindow.IsVisible == false;
     }
 
   }

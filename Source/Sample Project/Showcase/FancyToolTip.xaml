@@ -71,7 +71,7 @@
       HorizontalAlignment="Left"
       Margin="10,10,0,26"
       Width="72"
-      Source="Images\Info.png"
+      Source="/Images/Info.png"
       Stretch="Fill"
       VerticalAlignment="Top"
       RenderTransformOrigin="0.792,0.486" x:Name="image" Height="72" >

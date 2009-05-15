@@ -156,6 +156,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <param name="balloon"></param>
     /// <param name="animation">An optional animation for the popup.</param>
     /// <param name="timeout">The time after which the popup is being closed.
+    /// Submit null in order to keep the balloon open inde
     /// </param>
     /// <exception cref="ArgumentNullException">If <paramref name="balloon"/>
     /// is a null reference.</exception>

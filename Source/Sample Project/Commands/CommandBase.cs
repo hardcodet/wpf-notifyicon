@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
 
@@ -58,7 +60,18 @@ namespace Samples.Commands
     /// </param>
     public virtual bool CanExecute(object parameter)
     {
-      return true;
+      return IsDesignMode ? false : true;
+    }
+
+
+    public static bool IsDesignMode
+    {
+      get
+      {
+        return (bool)
+          DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement))
+              .Metadata.DefaultValue;
+      }
     }
   }
 }

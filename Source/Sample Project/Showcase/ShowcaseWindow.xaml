@@ -1,11 +1,11 @@
 ﻿<Window
-  x:Class="Samples.Window1"
+  x:Class="Samples.ShowcaseWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:tb="http://www.hardcodet.net/taskbar"
   xmlns:sys="clr-namespace:System;assembly=mscorlib"
   Title="WPF NotifyIcon Sample"
-  Height="938"
+  Height="874"
   Width="880"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -91,11 +91,11 @@
 
     <!-- ************************************************************************************* -->
     <!-- ************************************************************************************* -->
-    <!-- EVERYTHING BELOW IS JUST PLUMBING FOR THE SAMPLE -->    
-    
-    
+    <!-- EVERYTHING BELOW IS JUST PLUMBING FOR THE SAMPLE -->
+
+
     <Grid
-      Margin="486.5,617.58,0,0"
+      Margin="486.5,578.58,0,0"
       VerticalAlignment="Top"
       Height="248"
       x:Name="Balloons"
@@ -202,7 +202,7 @@
     </Grid>
     <Grid
       HorizontalAlignment="Left"
-      Margin="12,582.88,0,0"
+      Margin="12,543.88,0,0"
       VerticalAlignment="Top"
       Width="445.5"
       Height="282.7"
@@ -254,7 +254,7 @@
           Text="Popup Controls" /></TextBlock>
     </Grid>
     <Grid
-      Margin="10,317,0,0"
+      Margin="10,278,0,0"
       x:Name="ToolTips"
       Height="255.88"
       VerticalAlignment="Top"
@@ -336,7 +336,7 @@
     </Grid>
     <Grid
       HorizontalAlignment="Left"
-      Margin="488,153.5,0,0"
+      Margin="488,114.5,0,0"
       Width="370.5"
       x:Name="ContextMenus"
       Height="255.88"
@@ -392,41 +392,27 @@
       Height="Auto"
       TextWrapping="Wrap"
       FontWeight="Bold"
-      FontSize="14"
-      Width="309"
+      FontSize="16"
       HorizontalAlignment="Left"><Run
         Text="WPF NotifyIcon 1.0.1" /></TextBlock>
     <TextBlock
-      Margin="12,38.62,0,0"
+      Margin="12,57.62,15.5,0"
       VerticalAlignment="Top"
-      Height="104.88"
       FontSize="14"
       FontStyle="Italic"
       Foreground="#FF303030"
       TextWrapping="Wrap"
-      HorizontalAlignment="Left"
-      Width="846.5"><Run
+      HorizontalAlignment="Stretch"><Run
         Text="This " /><Run
         Text="is a showcase of the different features of the WPF NotifyIcon. Have a look at the used controls and styles in order to see how binding can be supported. For a real-life " /><Run
         Text="example" /><Run
-        Text=", have a look at" /><Run
-        Text=" " /><Hyperlink
+        Text=", " /><Run
+        Language="de-ch"
+        Text="check out " /><Hyperlink
         NavigateUri="http://www.hardcodet.net/netdrives/"><Run
-          Text="NetDrives" /></Hyperlink><LineBreak /><Run
-        Text="" /><LineBreak /><Run
-        Foreground="#FF067EBD"
-        Text="Project Page:" /><LineBreak /><Hyperlink
-        NavigateUri="http://www.hardcodet.net/wpf-notifyicon/"><Run
-          Text="http://www.hardcodet.net/wpf-notifyicon/" /></Hyperlink></TextBlock>
-    <TextBlock
-      Margin="12,0,29.5,10"
-      VerticalAlignment="Bottom"
-      Height="22.42"
-      TextWrapping="Wrap"
-      FontWeight="Bold"
-      Foreground="#FFFFA051"><Run Text="The WPF NotifyIcon is free software, released under the"/><Run Text=" "/><Hyperlink NavigateUri="http://www.codeproject.com/info/cpol10.aspx"><Run Text="CodeProject Open License"/></Hyperlink></TextBlock>
+          Text="NetDrives" /></Hyperlink></TextBlock>
     <Grid
-      Margin="486.5,419.38,0,0"
+      Margin="486.5,380.38,0,0"
       x:Name="CustomBalloons"
       Height="188.2"
       VerticalAlignment="Top"
@@ -492,7 +478,7 @@
           Text="Custom Balloons" /></TextBlock>
     </Grid>
     <Grid
-      Margin="10,153.5,0,0"
+      Margin="10,114.5,0,0"
       VerticalAlignment="Top"
       Height="138.38"
       x:Name="Common"
@@ -524,12 +510,12 @@
           Width="16"
           Margin="0,4,0,0"
           Height="16"
-          Source="Icons\Inactive.ico" />
+          Source="/Icons/Inactive.ico" />
         <Image
           Width="16"
           Margin="0,4,0,0"
           Height="16"
-          Source="Icons\Error.ico" />
+          Source="/Icons/Error.ico" />
 
       </ListBox>
       <TextBlock
