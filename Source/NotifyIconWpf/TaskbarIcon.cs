@@ -196,7 +196,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       //events or override
       popup.PopupAnimation = animation;
 
-      Popup.CreateRootPopup(popup, balloon);
+      popup.Child = balloon;
 
       //don't set the PlacementTarget as it causes the popup to become hidden if the
       //TaskbarIcon's parent is hidden, too...
@@ -589,9 +589,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
         popup.PopupAnimation = PopupAnimation.None;
 
         //the CreateRootPopup method outputs binding errors in the debug window because
-        //it tries to bind to "Popup-specific" properties in case they are provided by the child
-        //not a problem.
-        Popup.CreateRootPopup(popup, TrayPopup);
+        //it tries to bind to "Popup-specific" properties in case they are provided by the child.
+        //We don't need that so just assign the control as the child.
+        popup.Child = TrayPopup;
 
         //do *not* set the placement target, as it causes the popup to become hidden if the
         //TaskbarIcon's parent is hidden, too. At runtime, the parent can be resolved through

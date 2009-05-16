@@ -4,12 +4,12 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:tb="http://www.hardcodet.net/taskbar"
   Height="300"
-  Width="300">
+  Width="500">
   <Grid>
 
     <!-- the ToolTipText property is bound to the TextBox below -->
     <tb:TaskbarIcon
-      x:Name="MyNotifyIcon"
+      x:Name="MyNotifyIcon1"
       IconSource="/Icons/Error.ico"
       ToolTipText="{Binding ElementName=txtToolTip, Path=Text}">
 
@@ -36,16 +36,19 @@
     </tb:TaskbarIcon>
 
 
-    <!-- the ToolTipText property is bound to the TextBox below -->
+    <!-- This NotifyIcon has its DataContext set - implicit binding is no longer possible -->
     <tb:TaskbarIcon
+      x:Name="MyNotifyIcon2"
+      DataContext="WPF IS GREAT: "
       IconSource="/Icons/Inactive.ico"
       ToolTipText="{Binding ElementName=txtToolTip, Path=Text}">
 
-      <!--
-        The TextBlock bound to the ToolTipText property of the NotifyIcon
-        The binding is explicit (via attached ParentTaskbarIcon property)
-      -->
       <tb:TaskbarIcon.TrayToolTip>
+      
+        <!-- 
+          Important: The attached property is assigned to the border!
+          The NotifyIcon does not touch the underlying controls.
+        -->
         <Border
           Background="White"
           BorderBrush="Orange"
@@ -54,10 +57,16 @@
           Opacity="0.8"
           Width="160"
           Height="40">
+          <!-- Implicitly access the DataContext (which is a string this time)-->
+          <TextBlock Text="{Binding}">
+          <!-- Explicitly access the NotifyIcon -->
           <TextBlock
-            Text="{Binding (tb:TaskbarIcon.ParentTaskbarIcon), Path=ToolTipText}"
+            Text="{Binding RelativeSource={RelativeSource FindAncestor,
+                                           AncestorType={x:Type Border}},
+                   Path=(tb:TaskbarIcon.ParentTaskbarIcon).ToolTipText}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center" />
+          </TextBlock>
         </Border>
       </tb:TaskbarIcon.TrayToolTip>
 

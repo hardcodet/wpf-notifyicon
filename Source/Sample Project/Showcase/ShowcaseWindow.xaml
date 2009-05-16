@@ -70,7 +70,9 @@
       Visibility="{Binding Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=iconVisibility, Mode=Default}"
       MenuActivation="{Binding Path=SelectedItem, ElementName=lstMenuTrigger, Mode=Default}"
       PopupActivation="{Binding Path=SelectedItem, ElementName=lstPopupTrigger, Mode=Default}"
-      DoubleClickCommand="{Commands:ShowMainWindowCommand}">
+      DoubleClickCommand="{Commands:ShowSampleWindowCommand}"
+      DoubleClickCommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+      >
 
       <tb:TaskbarIcon.TrayPopup>
         <!-- the control will be put into a popup with an explicit DataContext -->

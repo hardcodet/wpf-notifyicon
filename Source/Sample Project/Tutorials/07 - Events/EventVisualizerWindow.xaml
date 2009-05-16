@@ -253,9 +253,7 @@
       VerticalAlignment="Top"
       Height="31"
       TextWrapping="Wrap"
-      FontWeight="Bold"><Run
-        Language="de-ch"
-        Text="The green elipses are animated based on routed events of the NotifyIcon" /></TextBlock>
+      FontWeight="Bold"><Run Language="de-ch" Text="The green ellipses are animated based on routed events of the NotifyIcon"/></TextBlock>
 
   </Grid>
 </Window>

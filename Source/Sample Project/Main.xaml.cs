@@ -16,6 +16,8 @@ using Samples.Tutorials;
 using Samples.Tutorials.Balloons;
 using Samples.Tutorials.Commands;
 using Samples.Tutorials.ContextMenus;
+using Samples.Tutorials.DataBinding;
+using Samples.Tutorials.Events;
 using Samples.Tutorials.Popups;
 using Samples.Tutorials.ToolTips;
 
@@ -82,6 +84,16 @@ namespace Samples
       ShowDialog(new CommandWindow());
     }
 
+    private void btnEvents_Click(object sender, RoutedEventArgs e)
+    {
+      ShowDialog(new EventVisualizerWindow());
+    }
+
+    private void btnDataBinding_Click(object sender, RoutedEventArgs e)
+    {
+      ShowDialog(new DataBoundToolTipWindow());
+    }
+
     private void btnMainSample_Click(object sender, RoutedEventArgs e)
     {
       var sampleWindow = new ShowcaseWindow();
@@ -97,9 +109,6 @@ namespace Samples
       Process.Start(e.Uri.ToString());
       e.Handled = true;
     }
-
-
-
 
   }
 }

@@ -155,8 +155,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandBase.cs" />
-    <Compile Include="Commands\HideMainWindowCommand.cs" />
-    <Compile Include="Commands\ShowMainWindowCommand.cs" />
+    <Compile Include="Commands\HideSampleWindowCommand.cs" />
+    <Compile Include="Commands\ShowSampleWindowCommand.cs" />
     <Compile Include="Showcase\FancyBalloon.xaml.cs">
       <DependentUpon>FancyBalloon.xaml</DependentUpon>
     </Compile>
