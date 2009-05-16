@@ -2,7 +2,7 @@
   x:Class="Samples.Main"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  Title="Main"
+  Title="NotifyIcon Samples"
   Height="563"
   Width="703"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -68,7 +68,7 @@
       Click="btnInlineToolTip_Click" />
     <Button
       HorizontalAlignment="Left"
-      Margin="10,249,0,0"
+      Margin="10,244,0,0"
       Width="164"
       Content="Popups"
       VerticalAlignment="Top"
@@ -77,7 +77,7 @@
       Click="btnPopups_Click" />
     <Button
       HorizontalAlignment="Left"
-      Margin="10,286,0,0"
+      Margin="10,281,0,0"
       Width="164"
       Content="Context Menus"
       VerticalAlignment="Top"
@@ -86,7 +86,7 @@
       Click="btnContextMenus_Click" />
     <Button
       HorizontalAlignment="Left"
-      Margin="10,323,0,0"
+      Margin="10,318,0,0"
       Width="164"
       Content="Balloon Tips"
       VerticalAlignment="Top"
@@ -95,7 +95,7 @@
       Click="btnBalloons_Click" />
     <Button
       HorizontalAlignment="Left"
-      Margin="10,360,0,0"
+      Margin="10,355,0,0"
       Width="164"
       Content="Commands"
       VerticalAlignment="Top"
@@ -141,24 +141,36 @@
       HorizontalAlignment="Left"
       Margin="244.31,50,0,66"
       Width="1"
-      Data="M269,57 L269,390.18163" />
+      Data="M269,57 L269,390.18163" Opacity="0.325" />
     <TextBlock
       Margin="255.31,191,10,0"
       TextWrapping="Wrap"
-      VerticalAlignment="Top"><Run
-        Text="You will always find the latest news related to the component on the project page:" /><LineBreak /><Hyperlink
-        NavigateUri="http://www.hardcodet.net/wpf-notifyicon"><Run
-          Text="http://www.hardcodet.net/wpf-notifyicon" /></Hyperlink><LineBreak /><Run
-        Text="" /><LineBreak /><Run
-        Text="Critical feedback is appreciated - please post bug reports, requests, questions etc. to the CodeProject forum" /><Run
-        Language="de-ch"
-        Text=":" /><LineBreak /><Hyperlink
-        NavigateUri="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx"><Run
-          Text="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx" /></Hyperlink><LineBreak /><Run
-        Text="" /><LineBreak /><Run
-        Language="de-ch"
-        Text="I" /><Run
-        Text="f you love it or hate it, please let me know and leave your rating - thanks!" /></TextBlock>
+      VerticalAlignment="Top">
+      <Run Text="The latest news related to the component can be found on the project page:"/>
+      <LineBreak/>
+      <Hyperlink NavigateUri="http://www.hardcodet.net/wpf-notifyicon">
+      <Run Text="http://www.hardcodet.net/wpf-notifyicon"/>
+      </Hyperlink>
+      <LineBreak/>
+      <LineBreak/>
+      <Run Text="Critical feedback is appreciated - please post bug reports, requests, questions etc. to the CodeProject forum"/>
+      <Run Language="de-ch" Text=":"/>
+      <LineBreak/>
+      <Hyperlink NavigateUri="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx">
+        <Run Text="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx"/>
+      </Hyperlink>
+      <LineBreak/>
+      <LineBreak/>
+      <LineBreak/>
+        <TextBlock FontWeight="Bold">
+          <Run FontWeight="Bold" Text="Love it or hate it? Please let me know and "/>
+          <Hyperlink NavigateUri="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx">
+            <Run Text="rate the project"/>
+          </Hyperlink>
+          <Run Text=" - thanks!" />    
+        </TextBlock>
+        
+      </TextBlock>
     <TextBlock
       Margin="10,0,10,10"
       VerticalAlignment="Bottom"
@@ -176,19 +188,17 @@
       Margin="11,0,17.926,41"
       VerticalAlignment="Bottom"
       Height="1"
-      Data="M11,517 L561.07363,517" />
+      Data="M11,517 L561.07363,517" Opacity="0.33" />
     <Button
-      HorizontalAlignment="Left"
-      Margin="11,397,0,0"
-      Width="164"
+      Margin="11,429,0,0"
       Content="Events"
       VerticalAlignment="Top"
       Height="27"
       x:Name="btnEvents"
-      Click="btnEvents_Click" />
+      Click="btnEvents_Click" Width="164" HorizontalAlignment="Left" />
     <Button
       HorizontalAlignment="Left"
-      Margin="11,434,0,0"
+      Margin="10,392,0,0"
       Width="164"
       Content="Data Binding"
       VerticalAlignment="Top"
