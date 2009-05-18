@@ -31,7 +31,7 @@
       FontStyle="Italic"
       FontWeight="Bold"
       TextWrapping="Wrap"><Run
-        Text="WPF NotifyIcon 1.0.1 - Samples" /></TextBlock>
+        Text="WPF NotifyIcon 1.0.2 - Samples" /></TextBlock>
     <Button
       HorizontalAlignment="Left"
       Margin="10,133,0,0"
@@ -162,10 +162,10 @@
       <LineBreak/>
       <LineBreak/>
       <LineBreak/>
-        <TextBlock FontWeight="Bold">
-          <Run FontWeight="Bold" Text="Love it or hate it? Please let me know and "/>
+        <TextBlock>
+          <Run Text="Love it or hate it? Please let me know and "/>
           <Hyperlink NavigateUri="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx">
-            <Run Text="rate the project"/>
+            <Run FontWeight="Bold" Text="rate the project"/>
           </Hyperlink>
           <Run Text=" - thanks!" />    
         </TextBlock>

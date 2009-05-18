@@ -396,7 +396,7 @@
       FontWeight="Bold"
       FontSize="16"
       HorizontalAlignment="Left"><Run
-        Text="WPF NotifyIcon 1.0.1" /></TextBlock>
+        Text="WPF NotifyIcon 1.0.2" /></TextBlock>
     <TextBlock
       Margin="12,57.62,15.5,0"
       VerticalAlignment="Top"

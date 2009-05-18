@@ -5,7 +5,16 @@ Contact and Information: http://www.hardcodet.net
 
 ----------------------------------------------------------------------------
 
-1.0.1
+1.0.2 (2009.05.18)
+*****
+FIX   Late-bound DataContext did not coerce properly with ContextMenu, thus
+      assigning it the TaskbarIcon rather than the TaskbarIcon's DataContext.
+      Thanks Nic Pillinger for discovering the issue.
+      
+
+----------------------------------------------------------------------------
+
+1.0.1 (2009.05.15)
 *****
 CHG   DataContext is also assigned to ContextMenu (thanks Nic Pilllinger),
       and properly coerced for ToolTips and Popups. Also checks whether

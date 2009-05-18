@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Hardcodet.Wpf.TaskbarNotification;
 using Samples.Tutorials;
 using Samples.Tutorials.Balloons;
 using Samples.Tutorials.Commands;
@@ -32,7 +20,6 @@ namespace Samples
     {
       InitializeComponent();
     }
-
 
 
     /// <summary>
@@ -109,6 +96,5 @@ namespace Samples
       Process.Start(e.Uri.ToString());
       e.Handled = true;
     }
-
   }
 }

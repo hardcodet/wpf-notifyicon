@@ -568,7 +568,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// </summary>
     private void UpdateDataContext(FrameworkElement target, object oldDataContextValue, object newDataContextValue)
     {
-      if (target != null && !target.IsDataContextDataBound() && Equals(oldDataContextValue, target.DataContext))
+      //if there is no target or it's data context is determined through a binding
+      //of its own, keep it
+      if (target == null || target.IsDataContextDataBound()) return;
+
+      //if the target's data context is the NotifyIcon's old DataContext or the NotifyIcon itself,
+      //update it
+      if (ReferenceEquals(this, target.DataContext) || Equals(oldDataContextValue, target.DataContext))
       {
         //assign own data context, if available. If there is no data
         //context at all, assign NotifyIcon itself.
