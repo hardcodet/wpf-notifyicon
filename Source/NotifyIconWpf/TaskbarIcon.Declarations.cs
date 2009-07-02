@@ -712,6 +712,32 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
+    #region DoubleClickCommandTarget dependency property
+
+    /// <summary>
+    /// The target of the command that is fired if the notify icon is double clicked.
+    /// </summary>
+    public static readonly DependencyProperty DoubleClickCommandTargetProperty =
+        DependencyProperty.Register("DoubleClickCommandTarget",
+                                    typeof (IInputElement),
+                                    typeof (TaskbarIcon),
+                                    new FrameworkPropertyMetadata(null));
+
+    /// <summary>
+    /// A property wrapper for the <see cref="DoubleClickCommandTargetProperty"/>
+    /// dependency property:<br/>
+    /// The target of the command that is fired if the notify icon is double clicked.
+    /// </summary>
+    public IInputElement DoubleClickCommandTarget
+    {
+      get { return (IInputElement) GetValue(DoubleClickCommandTargetProperty); }
+      set { SetValue(DoubleClickCommandTargetProperty, value); }
+    }
+
+    #endregion
+
+
+
     #region LeftClickCommand dependency property
 
     /// <summary>
@@ -761,6 +787,31 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
+
+    #region LeftClickCommandTarget dependency property
+
+    /// <summary>
+    /// The target of the command that is fired if the notify icon is clicked.
+    /// </summary>
+    public static readonly DependencyProperty LeftClickCommandTargetProperty =
+        DependencyProperty.Register("LeftClickCommandTarget",
+                                    typeof (IInputElement),
+                                    typeof (TaskbarIcon),
+                                    new FrameworkPropertyMetadata(null));
+
+    /// <summary>
+    /// A property wrapper for the <see cref="LeftClickCommandTargetProperty"/>
+    /// dependency property:<br/>
+    /// The target of the command that is fired if the notify icon is clicked.
+    /// </summary>
+    public IInputElement LeftClickCommandTarget
+    {
+      get { return (IInputElement) GetValue(LeftClickCommandTargetProperty); }
+      set { SetValue(LeftClickCommandTargetProperty, value); }
+    }
+
+    #endregion
+
 
 
     //EVENTS
@@ -1038,7 +1089,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
     protected RoutedEventArgs RaiseTrayMouseDoubleClickEvent()
     {
       RoutedEventArgs args = RaiseTrayMouseDoubleClickEvent(this);
-      DoubleClickCommand.ExecuteIfEnabled(DoubleClickCommandParameter);
+      DoubleClickCommand.ExecuteIfEnabled(DoubleClickCommandParameter, DoubleClickCommandTarget ?? this);
       return args;
     }
 

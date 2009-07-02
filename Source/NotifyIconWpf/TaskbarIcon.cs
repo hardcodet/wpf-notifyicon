@@ -380,7 +380,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
           //show popup once we are sure it's not a double click
           delayedTimerAction = () =>
                                  {
-                                   LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter);
+                                   LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                                    ShowTrayPopup(cursorPosition);
                                  };
           singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
@@ -402,7 +402,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
           //show context menu once we are sure it's not a double click
           delayedTimerAction = () =>
                                  {
-                                   LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter);
+                                   LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                                    ShowContextMenu(cursorPosition);
                                  };
           singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
@@ -419,7 +419,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       if (me == MouseEvent.IconLeftMouseUp && !isLeftClickCommandInvoked)
       {
         //show context menu once we are sure it's not a double click
-        delayedTimerAction = () => LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter);
+        delayedTimerAction = () => LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
         singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
       }
 

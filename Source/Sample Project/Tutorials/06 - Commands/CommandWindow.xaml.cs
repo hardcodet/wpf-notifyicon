@@ -23,10 +23,12 @@ namespace Samples.Tutorials.Commands
       InitializeComponent();
     }
 
+
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
       //clean up notifyicon (would otherwise stay open until application finishes)
-      MyNotifyIcon.Dispose();
+      CustomCommandNotifyIcon.Dispose();
+      RoutedCommandNotifyIcon.Dispose();
 
       base.OnClosing(e);
     }

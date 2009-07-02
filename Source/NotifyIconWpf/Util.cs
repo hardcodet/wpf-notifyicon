@@ -27,7 +27,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Resources;
@@ -263,10 +262,18 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// <param name="command">The command to be executed, or a null reference.</param>
     /// <param name="commandParameter">An optional parameter that is associated with
     /// the command.</param>
-    public static void ExecuteIfEnabled(this ICommand command, object commandParameter)
+    /// <param name="target">The target element on which to raise the command.</param>
+    public static void ExecuteIfEnabled(this ICommand command, object commandParameter, IInputElement target)
     {
       if (command == null) return;
-      if (command.CanExecute(commandParameter))
+
+      RoutedCommand rc = command as RoutedCommand;
+      if (rc != null)
+      {
+        //routed commands work on a target
+        if (rc.CanExecute(commandParameter, target)) rc.Execute(commandParameter, target);
+      }
+      else if (command.CanExecute(commandParameter))
       {
         command.Execute(commandParameter);
       }
