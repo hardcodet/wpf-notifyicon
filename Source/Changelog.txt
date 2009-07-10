@@ -7,7 +7,8 @@ Contact and Information: http://www.hardcodet.net
 
 1.0.3 (2009.07.02)
 *****
-FIX   Commands did not work with RoutedCommands which require an explicit target.
+FIX   Commands did not work with RoutedCommands which require an explicit target
+      (thanks Rodolfo Grave).
 ADD   Added command target properties for both left and double click commands.
       Allows to explicitly define another control as the target of a routed
       command.
