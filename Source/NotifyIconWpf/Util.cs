@@ -22,7 +22,6 @@
 // THIS COPYRIGHT NOTICE MAY NOT BE REMOVED FROM THIS FILE
 
 
-
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -30,6 +29,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Resources;
+using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 
 namespace Hardcodet.Wpf.TaskbarNotification
@@ -40,7 +40,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
   internal static class Util
   {
     public static readonly object SyncRoot = new object();
-
 
     #region IsDesignMode
 
@@ -56,18 +55,17 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-
     #region construction
 
     static Util()
     {
       isDesignMode =
-          (bool)DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement))
-                    .Metadata.DefaultValue;
+          (bool)
+          DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty, typeof (FrameworkElement))
+              .Metadata.DefaultValue;
     }
 
     #endregion
-
 
     #region CreateHelperWindow
 
@@ -80,18 +78,17 @@ namespace Hardcodet.Wpf.TaskbarNotification
     public static Window CreateHelperWindow()
     {
       return new Window
-      {
-        Width = 0,
-        Height = 0,
-        ShowInTaskbar = false,
-        WindowStyle = WindowStyle.None,
-        AllowsTransparency = true,
-        Opacity = 0
-      };
+               {
+                   Width = 0,
+                   Height = 0,
+                   ShowInTaskbar = false,
+                   WindowStyle = WindowStyle.None,
+                   AllowsTransparency = true,
+                   Opacity = 0
+               };
     }
 
     #endregion
-
 
     #region WriteIconData
 
@@ -133,7 +130,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-
     #region GetBalloonFlag
 
     /// <summary>
@@ -158,7 +154,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
-
 
     #region ImageSource to Icon
 
@@ -187,7 +182,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
-
 
     #region evaluate listings
 
@@ -218,7 +212,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
     }
 
     #endregion
-
 
     #region match MouseEvent to PopupActivation
 
@@ -252,7 +245,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
-
     #region execute command
 
     /// <summary>
@@ -281,6 +273,22 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
     #endregion
 
+    /// <summary>
+    /// Returns a dispatcher for multi-threaded scenarios
+    /// </summary>
+    /// <returns></returns>
+    internal static Dispatcher GetDispatcher(this DispatcherObject source)
+    {
+      //use the application's dispatcher by default
+      if (Application.Current != null) return Application.Current.Dispatcher;
+
+      //fallback for WinForms environments
+      if (source.Dispatcher != null) return source.Dispatcher;
+
+      //ultimatively use the thread's dispatcher
+      return Dispatcher.CurrentDispatcher;
+    }
+
 
     /// <summary>
     /// Checks whether the <see cref="FrameworkElement.DataContextProperty"/>
@@ -296,6 +304,5 @@ namespace Hardcodet.Wpf.TaskbarNotification
       if (element == null) throw new ArgumentNullException("element");
       return element.GetBindingExpression(FrameworkElement.DataContextProperty) != null;
     }
-
   }
 }

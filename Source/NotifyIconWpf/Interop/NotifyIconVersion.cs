@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Hardcodet.Wpf.TaskbarNotification.Interop
+﻿namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
   /// <summary>
   /// The notify icon version that is used. The higher

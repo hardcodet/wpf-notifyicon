@@ -30,7 +30,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 using Point=Hardcodet.Wpf.TaskbarNotification.Interop.Point;
@@ -162,10 +162,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// is a null reference.</exception>
     public void ShowCustomBalloon(UIElement balloon, PopupAnimation animation, int? timeout)
     {
-      if (!Application.Current.Dispatcher.CheckAccess())
+      Dispatcher dispatcher = this.GetDispatcher();
+      if (!dispatcher.CheckAccess())
       {
         var action = new Action(() => ShowCustomBalloon(balloon, animation, timeout));
-        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, action);
+        dispatcher.Invoke(DispatcherPriority.Normal, action);
         return;
       }
 
@@ -229,8 +230,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
         //register timer to close the popup
         balloonCloseTimer.Change(timeout.Value, Timeout.Infinite);
       }
-
-      return;
     }
 
 
@@ -261,10 +260,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       if (IsDisposed) return;
 
-      if (!Application.Current.Dispatcher.CheckAccess())
+      Dispatcher dispatcher = this.GetDispatcher();
+      if (!dispatcher.CheckAccess())
       {
         Action action = CloseBalloon;
-        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, action);
+        dispatcher.Invoke(DispatcherPriority.Normal, action);
         return;
       }
 
@@ -310,7 +310,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
       //switch to UI thread
       Action action = CloseBalloon;
-      Application.Current.Dispatcher.Invoke(action);
+      this.GetDispatcher().Invoke(action);
     }
 
     #endregion
@@ -637,9 +637,21 @@ namespace Hardcodet.Wpf.TaskbarNotification
         //open popup
         TrayPopupResolved.IsOpen = true;
 
-        //activate the message window to track deactivation - otherwise, the context menu
-        //does not close if the user clicks somewhere else
-        WinApi.SetForegroundWindow(messageSink.MessageWindowHandle);
+
+        IntPtr handle = IntPtr.Zero;
+        if (TrayPopupResolved.Child != null)
+        {
+          //try to get a handle on the popup itself (via its child)
+          HwndSource source = (HwndSource)PresentationSource.FromVisual(TrayPopupResolved.Child);
+          if (source != null) handle = source.Handle;
+        }
+
+        //if we don't have a handle for the popup, fall back to the message sink
+        if (handle == IntPtr.Zero) handle = messageSink.MessageWindowHandle;
+
+        //activate either popup or message sink to track deactivation.
+        //otherwise, the popup does not close if the user clicks somewhere else
+        WinApi.SetForegroundWindow(handle);
 
         //raise attached event - item should never be null unless developers
         //changed the CustomPopup directly...
@@ -797,7 +809,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         delayedTimerAction = null;
 
         //switch to UI thread
-        Application.Current.Dispatcher.Invoke(action);
+        this.GetDispatcher().Invoke(action);
       }
     }
 

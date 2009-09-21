@@ -5,6 +5,17 @@ Contact and Information: http://www.hardcodet.net
 
 ----------------------------------------------------------------------------
 
+1.0.4 (2009.09.21)
+*****
+
+FIX   If a popup is opened, its window handle is now being set as the foreground.
+      This fixes an issue with certain controls being disabled on popups.
+      (thanks Andrew Smith for pointing me in the right direction!).
+FIX   Changed dispatcher access in order to work in WinForms scenarios, too.
+      
+
+----------------------------------------------------------------------------
+
 1.0.3 (2009.07.02)
 *****
 FIX   Commands did not work with RoutedCommands which require an explicit target

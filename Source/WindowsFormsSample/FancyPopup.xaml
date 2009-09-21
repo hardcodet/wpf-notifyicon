@@ -1,0 +1,115 @@
+﻿<UserControl
+  x:Class="Samples.FancyPopup"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:tb="http://www.hardcodet.net/taskbar"
+  Height="215"
+  Width="300" x:Name="me">
+	<UserControl.Resources>
+		<Storyboard x:Key="RotateIcon">
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="image" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="0"/>
+				<SplineDoubleKeyFrame KeySpline="0,0.284,0.39,1" KeyTime="00:00:01.4000000" Value="360"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+	</UserControl.Resources>
+	<UserControl.Triggers>
+		<EventTrigger RoutedEvent="tb:TaskbarIcon.PopupOpened">
+			<BeginStoryboard Storyboard="{StaticResource RotateIcon}" x:Name="RotateIcon_BeginStoryboard"/>
+		</EventTrigger>
+	</UserControl.Triggers>
+  <Grid>
+    <Border
+      HorizontalAlignment="Stretch"
+      VerticalAlignment="Stretch"
+      Width="Auto"
+      Height="Auto"
+      Margin="5,5,5,5"
+      CornerRadius="10,10,10,10">
+      <Border.Effect>
+        <DropShadowEffect
+          Color="#FF474747" />
+      </Border.Effect>
+      <Border.Background>
+        <LinearGradientBrush
+          EndPoint="0.5,1"
+          StartPoint="0.5,0">
+          <GradientStop
+            Color="#FF58C2FF"
+            Offset="0" />
+          <GradientStop
+            Color="#FFFFFFFF"
+            Offset="1" />
+        </LinearGradientBrush>
+      </Border.Background>
+    </Border>
+    <Image
+      HorizontalAlignment="Left"
+      Margin="19,10,0,0"
+      VerticalAlignment="Top"
+      Width="72"
+      Height="72"
+      Source="/Images/Preferences.png"
+      Stretch="Fill" x:Name="image" RenderTransformOrigin="0.5,0.5" >
+    	<Image.RenderTransform>
+    		<TransformGroup>
+    			<ScaleTransform ScaleX="1" ScaleY="1"/>
+    			<SkewTransform AngleX="0" AngleY="0"/>
+    			<RotateTransform Angle="0"/>
+    			<TranslateTransform X="0" Y="0"/>
+    		</TransformGroup>
+    	</Image.RenderTransform>
+    </Image>
+    <TextBlock
+      Margin="107,10,20,0"
+      TextWrapping="Wrap"
+      Height="Auto"
+      VerticalAlignment="Top"
+      FontSize="16"
+      FontWeight="Bold"
+      Foreground="#FF575757" HorizontalAlignment="Right"><Run
+        Text="This is a fancy Popup..."
+        Language="de-ch" /></TextBlock>
+    <Button
+      Click="OnButtonClick"
+      ToolTip="{Binding Path=ToolTipText}"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Bottom"
+      Width="89"
+      Height="29"
+      Content="Click me"
+      Margin="0,0,20,20"
+      BorderBrush="#FFFFFFFF">
+      <Button.Background>
+        <LinearGradientBrush
+          EndPoint="0,1"
+          StartPoint="0,0">
+          <GradientStop
+            Color="#FFFFFFFF"
+            Offset="1" />
+          <GradientStop
+            Color="#FFFFD197"
+            Offset="0.459" />
+          <GradientStop
+            Color="#FFFFDBAD"
+            Offset="0" />
+          <GradientStop
+            Color="#FFF18E23"
+            Offset="0.508" />
+          <GradientStop
+            Color="#FFF9D4AC"
+            Offset="0.954" />
+        </LinearGradientBrush>
+      </Button.Background>
+    </Button>
+    <TextBlock
+      Margin="19,92,10,49"
+      TextWrapping="Wrap"><Run Text="This user control makes use of the " Language="de-ch"/><Run FontStyle="Italic" FontWeight="Bold" Text="PopupOpened " Language="de-ch"/><Run Text="attached routed event . Whenever the popup is opened, this attached event fires and triggers the rotation animation." Language="de-ch"/></TextBlock>
+    <TextBlock Margin="0,52,20,0" VerticalAlignment="Top" Height="Auto" TextWrapping="Wrap" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Foreground="#FF575757"><Run Text="Clicks: " Language="de-ch"/><InlineUIContainer>
+    		<TextBlock Width="Auto" Height="Auto" Text="{Binding Path=ClickCount, ElementName=me, Mode=Default}" TextWrapping="Wrap"/>
+    	</InlineUIContainer></TextBlock>
+    <Image
+    	Source="{Binding Path=IconSource}" Width="16" HorizontalAlignment="Left" Margin="19,0,0,23" Height="16" VerticalAlignment="Bottom" />
+
+  </Grid>
+</UserControl>
