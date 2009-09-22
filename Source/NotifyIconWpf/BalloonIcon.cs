@@ -25,7 +25,7 @@
 namespace Hardcodet.Wpf.TaskbarNotification
 {
   ///<summary>
-  /// Supported icons for the tray's ballon messages.
+  /// Supported icons for the tray's balloon messages.
   ///</summary>
   public enum BalloonIcon
   {

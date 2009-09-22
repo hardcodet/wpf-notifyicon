@@ -101,7 +101,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// Fired if a balloon ToolTip was either displayed
     /// or closed (indicated by the boolean flag).
     /// </summary>
-    public event Action<bool> BallonToolTipChanged;
+    public event Action<bool> BalloonToolTipChanged;
 
     /// <summary>
     /// Fired if the taskbar was created or restarted. Requires the taskbar
@@ -278,12 +278,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
           break;
 
         case 0x402:
-          BallonToolTipChanged(true);
+          BalloonToolTipChanged(true);
           break;
 
         case 0x403:
         case 0x404:
-          BallonToolTipChanged(false);
+          BalloonToolTipChanged(false);
           break;
 
         case 0x405:

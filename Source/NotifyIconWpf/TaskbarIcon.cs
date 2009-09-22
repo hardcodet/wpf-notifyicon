@@ -135,7 +135,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
       messageSink.MouseEventReceived += OnMouseEvent;
       messageSink.TaskbarCreated += OnTaskbarCreated;
       messageSink.ChangeToolTipStateRequest += OnToolTipChange;
-      messageSink.BallonToolTipChanged += OnBalloonToolTipChanged;
+      messageSink.BalloonToolTipChanged += OnBalloonToolTipChanged;
 
       //init single click / balloon timers
       singleClickTimer = new Timer(DoSingleClickAction);

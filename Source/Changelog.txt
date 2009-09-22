@@ -12,6 +12,8 @@ FIX   If a popup is opened, its window handle is now being set as the foreground
       This fixes an issue with certain controls being disabled on popups.
       (thanks Andrew Smith for pointing me in the right direction!).
 FIX   Changed dispatcher access in order to work in WinForms scenarios, too.
+FIX   Corrected typo in WindowMessageSink.BalloonToolTipChanged event. Used internally
+      (although event is public), so users should be fine.
       
 
 ----------------------------------------------------------------------------

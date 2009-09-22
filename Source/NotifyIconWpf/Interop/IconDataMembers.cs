@@ -29,7 +29,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// </summary>
     State = 0x08,
     /// <summary>
-    /// The ballon ToolTip is set. Accordingly, the following
+    /// The balloon ToolTip is set. Accordingly, the following
     /// members are set: <see cref="NotifyIconData.BalloonText"/>,
     /// <see cref="NotifyIconData.BalloonTitle"/>, <see cref="NotifyIconData.BalloonFlags"/>,
     /// and <see cref="NotifyIconData.VersionOrTimeout"/>.
