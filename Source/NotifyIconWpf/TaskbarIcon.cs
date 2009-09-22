@@ -994,7 +994,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
         IsDisposed = true;
 
         //deregister application event listener
-        Application.Current.Exit -= OnExit;
+        if (Application.Current != null)
+        {
+          Application.Current.Exit -= OnExit;
+        }
 
         //stop timers
         singleClickTimer.Dispose();

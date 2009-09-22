@@ -15,6 +15,8 @@ namespace WindowsFormsSample
 {
   public partial class Form1 : Form
   {
+    private TaskbarIcon notifyIcon;
+
     public Form1()
     {
       InitializeComponent();
@@ -23,11 +25,20 @@ namespace WindowsFormsSample
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-      TaskbarIcon tb = new TaskbarIcon();
-      tb.Icon = Resources.Led;
-      tb.Visibility = Visibility.Visible;
+      notifyIcon = new TaskbarIcon();
+      notifyIcon.Icon = Resources.Led;
+      notifyIcon.ToolTipText = "Left-click to open popup";
+      notifyIcon.Visibility = Visibility.Visible;
 
-      tb.TrayPopup = new FancyPopup();
+      notifyIcon.TrayPopup = new FancyPopup();
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+      base.OnClosed(e);
+
+      //close the notify icon
+      notifyIcon.Dispose();
     }
   }
 }
