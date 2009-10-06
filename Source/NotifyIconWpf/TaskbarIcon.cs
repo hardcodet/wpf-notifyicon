@@ -681,7 +681,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
       if (ContextMenu != null)
       {
-        //use absolute position
+        //use absolute positioning. We need to set the coordinates, or a delayed opening
+        //(e.g. when left-clicked) opens the context menu at the wrong place if the mouse
+        //is moved!
         ContextMenu.Placement = PlacementMode.AbsolutePoint;
         ContextMenu.HorizontalOffset = cursorPosition.X;
         ContextMenu.VerticalOffset = cursorPosition.Y;
