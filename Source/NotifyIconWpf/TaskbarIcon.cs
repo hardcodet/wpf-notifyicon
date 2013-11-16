@@ -23,12 +23,9 @@
 
 
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Runtime.Remoting.Channels;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -199,8 +196,23 @@ namespace Hardcodet.Wpf.TaskbarNotification
       //events or override
       popup.PopupAnimation = animation;
 
-      popup.Child = balloon;
+      //in case the balloon is cleaned up through routed events, the
+      //control didn't removed the balloon from its parent popup when
+      //if was closed the last time - just make sure it doesn't have
+      //a parent that is a popup
+      var parent = LogicalTreeHelper.GetParent(balloon) as Popup;
+      if (parent != null) parent.Child = null;
 
+      if (parent != null)
+      {
+          string msg =
+            "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
+          msg = String.Format(msg, balloon);
+          throw new InvalidOperationException(msg);
+      }
+
+      popup.Child = balloon;
+      
       //don't set the PlacementTarget as it causes the popup to become hidden if the
       //TaskbarIcon's parent is hidden, too...
       //popup.PlacementTarget = this;
@@ -290,6 +302,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             //close the popup
             popup.IsOpen = false;
+
+            //remove the reference of the popup to the balloon in case we want to reuse
+            //the balloon (then added to a new popup)
+            popup.Child = null;
 
             //reset attached property
             if (element != null) SetParentTaskbarIcon(element, null);
