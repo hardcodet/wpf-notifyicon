@@ -361,9 +361,10 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     private void Dispose(bool disposing)
     {
       //don't do anything if the component is already disposed
-      if (IsDisposed || !disposing) return;
+      if (IsDisposed) return;
       IsDisposed = true;
 
+      //always destroy the unmanaged handle (even if called from the GC)
       WinApi.DestroyWindow(MessageWindowHandle);
       messageHandler = null;
     }
