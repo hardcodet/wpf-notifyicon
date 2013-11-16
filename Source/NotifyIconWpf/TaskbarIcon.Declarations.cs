@@ -1818,10 +1818,14 @@ namespace Hardcodet.Wpf.TaskbarNotification
     #region ParentTaskbarIcon
 
     /// <summary>
-    /// An attached property that is assigned to 
+    /// An attached property that is assigned to displayed UI elements (balloos, tooltips, context menus), and
+    /// that can be used to bind to this control. The attached property is being derived, so binding is
+    /// quite straightforward:
+    /// <c></c>
     /// </summary>  
     public static readonly DependencyProperty ParentTaskbarIconProperty =
-        DependencyProperty.RegisterAttached("ParentTaskbarIcon", typeof (TaskbarIcon), typeof (TaskbarIcon));
+        DependencyProperty.RegisterAttached("ParentTaskbarIcon", typeof (TaskbarIcon), typeof (TaskbarIcon),
+            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
     /// <summary>
     /// Gets the ParentTaskbarIcon property.  This dependency property 
