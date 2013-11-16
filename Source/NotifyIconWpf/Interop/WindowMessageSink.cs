@@ -26,6 +26,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
@@ -190,7 +191,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
       if (MessageWindowHandle == IntPtr.Zero)
       {
+#if SILVERLIGHT
+      	throw new Exception("Message window handle was not a valid pointer.");
+#else
         throw new Win32Exception();
+#endif
       }
     }
 

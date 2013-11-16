@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
@@ -48,7 +47,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
     /// <summary>
     /// A handle to the icon that should be displayed. Just
-    /// <see cref="Icon.Handle"/>.
+    /// <c>Icon.Handle</c>.
     /// </summary>
     public IntPtr IconHandle;
 
