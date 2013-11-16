@@ -36,17 +36,17 @@
     </tb:TaskbarIcon>
 
 
-    <!-- This NotifyIcon has its DataContext set - implicit binding is no longer possible -->
+    <!-- This NotifyIcon has its DataContext set (just the string "WPF FTW") - implicit binding is no longer possible -->
     <tb:TaskbarIcon
       x:Name="MyNotifyIcon2"
-      DataContext="WPF IS GREAT: "
+      DataContext="WPF FTW "
       IconSource="/Icons/Inactive.ico"
       ToolTipText="{Binding ElementName=txtToolTip, Path=Text}">
 
       <tb:TaskbarIcon.TrayToolTip>
       
         <!-- 
-          Important: The attached property is assigned to the border!
+          Important: The attached property is assigned to the border, but derived by all controls.
           The NotifyIcon does not touch the underlying controls.
         -->
         <Border
@@ -59,10 +59,9 @@
           Height="40">
           <!-- Implicitly access the DataContext (which is a string this time)-->
           <TextBlock Text="{Binding}">
-          <!-- Explicitly access the NotifyIcon -->
+          <!-- Explicitly access the NotifyIcon, as it is an attached property -->
           <TextBlock
-            Text="{Binding RelativeSource={RelativeSource FindAncestor,
-                                           AncestorType={x:Type Border}},
+            Text="{Binding RelativeSource={RelativeSource Self},
                    Path=(tb:TaskbarIcon.ParentTaskbarIcon).ToolTipText}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center" />
