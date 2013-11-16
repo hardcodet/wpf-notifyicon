@@ -883,11 +883,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             //couldn't create the icon - we can assume this is because explorer is not running (yet!)
             //-> try a bit later again rather than throwing an exception. Typically, if the windows
             // shell is being loaded later, this method is being reinvoked from OnTaskbarCreated
-            Task.Factory.StartNew(() =>
-            {
-                Thread.Sleep(1000);
-                CreateTaskbarIcon();
-            });
+            // (we could also retry after a delay, but that's currently YAGNI)
             return;
           }
 
@@ -900,7 +896,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
       }
     }
 
-
     /// <summary>
     /// Closes the taskbar icon if required.
     /// </summary>
@@ -908,6 +903,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
     {
       lock (this)
       {
+        //make sure we didn't schedule a creation
+
         if (IsTaskbarIconCreated)
         {
           Util.WriteIconData(ref iconData, NotifyCommand.Delete, IconDataMembers.Message);
