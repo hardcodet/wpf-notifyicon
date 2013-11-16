@@ -59,11 +59,11 @@ namespace Samples
     /// <summary>
     /// By subscribing to the <see cref="TaskbarIcon.BalloonClosingEvent"/>
     /// and setting the "Handled" property to true, we suppress the popup
-    /// from being closed in order to display the fade-out animation.
+    /// from being closed in order to display the custom fade-out animation.
     /// </summary>
     private void OnBalloonClosing(object sender, RoutedEventArgs e)
     {
-      e.Handled = true;
+      e.Handled = true; //suppresses the popup from being closed immediately
       isClosing = true;
     }
 
