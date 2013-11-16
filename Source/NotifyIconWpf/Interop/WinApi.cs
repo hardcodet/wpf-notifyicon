@@ -21,15 +21,15 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     [DllImport("USER32.DLL", EntryPoint = "CreateWindowExW", SetLastError = true)]
     public static extern IntPtr CreateWindowEx(int dwExStyle, [MarshalAs(UnmanagedType.LPWStr)] string lpClassName,
                            [MarshalAs(UnmanagedType.LPWStr)] string lpWindowName, int dwStyle, int x, int y,
-                           int nWidth, int nHeight, uint hWndParent, int hMenu, int hInstance,
-                           int lpParam);
+                           int nWidth, int nHeight, IntPtr hWndParent, IntPtr hMenu, IntPtr hInstance,
+                           IntPtr lpParam);
 
 
     /// <summary>
     /// Processes a default windows procedure.
     /// </summary>
     [DllImport("USER32.DLL")]
-    public static extern long DefWindowProc(IntPtr hWnd, uint msg, uint wparam, uint lparam);
+    public static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wparam, IntPtr lparam);
     
     /// <summary>
     /// Registers the helper window class.

@@ -187,14 +187,14 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
       taskbarRestartMessageId = WinApi.RegisterWindowMessage("TaskbarCreated");
 
       // Create the message window
-      MessageWindowHandle = WinApi.CreateWindowEx(0, WindowId, "", 0, 0, 0, 1, 1, 0, 0, 0, 0);
+      MessageWindowHandle = WinApi.CreateWindowEx(0, WindowId, "", 0, 0, 0, 1, 1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
       if (MessageWindowHandle == IntPtr.Zero)
       {
 #if SILVERLIGHT
       	throw new Exception("Message window handle was not a valid pointer.");
 #else
-        throw new Win32Exception();
+        throw new Win32Exception("Message window handle was not a valid pointer");
 #endif
       }
     }
@@ -207,7 +207,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// <summary>
     /// Callback method that receives messages from the taskbar area.
     /// </summary>
-    private long OnWindowMessageReceived(IntPtr hwnd, uint messageId, uint wparam, uint lparam)
+    private IntPtr OnWindowMessageReceived(IntPtr hwnd, uint messageId, IntPtr wparam, IntPtr lparam)
     {
       if (messageId == taskbarRestartMessageId)
       {
@@ -231,15 +231,14 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// or higher, this parameter can be used to resolve mouse coordinates.
     /// Currently not in use.</param>
     /// <param name="lParam">Provides information about the event.</param>
-    private void ProcessWindowMessage(uint msg, uint wParam, uint lParam)
+    private void ProcessWindowMessage(uint msg, IntPtr wParam, IntPtr lParam)
     {
       if (msg != CallbackMessageId) return;
 
-      switch (lParam)
+      switch (lParam.ToInt32())
       {
         case 0x200:
-          MouseEventReceived(MouseEvent.MouseMove);
-          break;
+          MouseEventReceived(MouseEvent.MouseMove);          break;
 
         case 0x201:
           MouseEventReceived(MouseEvent.IconLeftMouseDown);
