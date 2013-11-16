@@ -26,7 +26,9 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.Remoting.Channels;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -878,7 +880,15 @@ namespace Hardcodet.Wpf.TaskbarNotification
           var status = Util.WriteIconData(ref iconData, NotifyCommand.Add, members);
           if (!status)
           {
-            throw new Win32Exception("Could not create icon data");
+            //couldn't create the icon - we can assume this is because explorer is not running (yet!)
+            //-> try a bit later again rather than throwing an exception. Typically, if the windows
+            // shell is being loaded later, this method is being reinvoked from OnTaskbarCreated
+            Task.Factory.StartNew(() =>
+            {
+                Thread.Sleep(1000);
+                CreateTaskbarIcon();
+            });
+            return;
           }
 
           //set to most recent version
