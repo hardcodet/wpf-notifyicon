@@ -703,9 +703,22 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
                 ContextMenu.IsOpen = true;
 
-                //activate the message window to track deactivation - otherwise, the context menu
-                //does not close if the user clicks somewhere else
-                WinApi.SetForegroundWindow(messageSink.MessageWindowHandle);
+                IntPtr handle = IntPtr.Zero;
+
+                //try to get a handle on the context itself
+                HwndSource source = (HwndSource)PresentationSource.FromVisual(ContextMenu);
+                if (source != null)
+                {
+                    handle = source.Handle;
+                }
+
+                //if we don't have a handle for the popup, fall back to the message sink
+                if (handle == IntPtr.Zero) handle = messageSink.MessageWindowHandle;
+
+                //activate the context menu or the message window to track deactivation - otherwise, the context menu
+                //does not close if the user clicks somewhere else. With the message window
+                //fallback, the context menu can't receive keyboard events - should not happen though
+                WinApi.SetForegroundWindow(handle);
 
                 //bubble event
                 RaiseTrayContextMenuOpenEvent();
