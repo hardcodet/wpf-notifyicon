@@ -1,12 +1,11 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 
 namespace Samples
 {
   /// <summary>
   /// Interaction logic for FancyPopup.xaml
   /// </summary>
-  public partial class FancyPopup : UserControl
+  public partial class FancyPopup
   {
     #region ClickCount dependency property
 

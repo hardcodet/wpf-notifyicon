@@ -110,6 +110,5 @@
     	</InlineUIContainer></TextBlock>
     <Image
     	Source="{Binding Path=IconSource}" Width="16" HorizontalAlignment="Left" Margin="19,0,0,23" Height="16" VerticalAlignment="Bottom" />
-
-  </Grid>
+    </Grid>
 </UserControl>

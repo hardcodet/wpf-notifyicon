@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using Hardcodet.Wpf.TaskbarNotification;
@@ -37,7 +31,8 @@ namespace WindowsFormsSample
     {
       base.OnClosed(e);
 
-      //close the notify icon
+      //the notify icon only closes automatically on WPF applications
+      //-> dispose the notify icon manually
       notifyIcon.Dispose();
     }
   }
