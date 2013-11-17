@@ -700,7 +700,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 ContextMenu.Placement = PlacementMode.AbsolutePoint;
                 ContextMenu.HorizontalOffset = cursorPosition.X;
                 ContextMenu.VerticalOffset = cursorPosition.Y;
-
                 ContextMenu.IsOpen = true;
 
                 IntPtr handle = IntPtr.Zero;
