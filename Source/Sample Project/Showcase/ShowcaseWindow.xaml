@@ -65,7 +65,7 @@
       x:Name="tb"
       VerticalAlignment="Top"
       IconSource="{Binding Path=SelectedItem.Source, ElementName=iconList, Mode=Default}"
-      ContextMenu="{DynamicResource tbMenu}"
+      ContextMenu="{StaticResource tbMenu}"
       ToolTipText="{Binding Path=Text, ElementName=txtToolTipText, Mode=Default}"
       Visibility="{Binding Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=iconVisibility, Mode=Default}"
       MenuActivation="{Binding Path=SelectedItem, ElementName=lstMenuTrigger, Mode=Default}"
