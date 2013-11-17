@@ -11,7 +11,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// <summary>
     /// Creates, updates or deletes the taskbar icon.
     /// </summary>
-    [DllImport("shell32.Dll")]
+    [DllImport("shell32.Dll", CharSet = CharSet.Unicode)]
     public static extern bool Shell_NotifyIcon(NotifyCommand cmd, [In]ref NotifyIconData data);
 
 

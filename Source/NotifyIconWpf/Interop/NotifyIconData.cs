@@ -10,7 +10,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
   /// values of the <see cref="IconDataMembers"/>
   /// that were defined.
   /// </summary>
-  [StructLayout(LayoutKind.Sequential)]
+  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
   public struct NotifyIconData
   {
     /// <summary>
@@ -134,7 +134,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
       {
         //we need to set another size on xp/2003- otherwise certain
         //features (e.g. balloon tooltips) don't work.
-        data.cbSize = 504;
+        data.cbSize = 952; // NOTIFYICONDATAW_V3_SIZE
 
         //set to fixed timeout
         data.VersionOrTimeout = 10;
