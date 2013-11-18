@@ -13,22 +13,22 @@ using System.Windows.Shapes;
 
 namespace Samples.Tutorials.ToolTips
 {
-  /// <summary>
-  /// Interaction logic for Window1.xaml
-  /// </summary>
-  public partial class InlineToolTipWindow : Window
-  {
-    public InlineToolTipWindow()
+    /// <summary>
+    /// Interaction logic for Window1.xaml
+    /// </summary>
+    public partial class InlineToolTipWindow : Window
     {
-      InitializeComponent();
-    }
+        public InlineToolTipWindow()
+        {
+            InitializeComponent();
+        }
 
-    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-    {
-      //clean up notifyicon (would otherwise stay open until application finishes)
-      MyNotifyIcon.Dispose();
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            //clean up notifyicon (would otherwise stay open until application finishes)
+            MyNotifyIcon.Dispose();
 
-      base.OnClosing(e);
+            base.OnClosing(e);
+        }
     }
-  }
 }

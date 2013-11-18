@@ -3,25 +3,22 @@ using System.Windows.Input;
 
 namespace Samples.Commands
 {
-  /// <summary>
-  /// Hides the main window.
-  /// </summary>
-  public class HideSampleWindowCommand : CommandBase<HideSampleWindowCommand>
-  {
-
-    public override void Execute(object parameter)
+    /// <summary>
+    /// Hides the main window.
+    /// </summary>
+    public class HideSampleWindowCommand : CommandBase<HideSampleWindowCommand>
     {
-      GetTaskbarWindow(parameter).Hide();
-      CommandManager.InvalidateRequerySuggested();
+        public override void Execute(object parameter)
+        {
+            GetTaskbarWindow(parameter).Hide();
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+
+        public override bool CanExecute(object parameter)
+        {
+            Window win = GetTaskbarWindow(parameter);
+            return win != null && win.IsVisible;
+        }
     }
-
-
-    public override bool CanExecute(object parameter)
-    {
-      Window win = GetTaskbarWindow(parameter);
-      return win != null && win.IsVisible;
-    }
-
-
-  }
 }

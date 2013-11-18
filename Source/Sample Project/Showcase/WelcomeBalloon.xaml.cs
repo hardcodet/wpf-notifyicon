@@ -14,14 +14,14 @@ using System.Windows.Shapes;
 
 namespace Samples
 {
-  /// <summary>
-  /// Interaction logic for WelcomeBalloon.xaml
-  /// </summary>
-  public partial class WelcomeBalloon : UserControl
-  {
-    public WelcomeBalloon()
+    /// <summary>
+    /// Interaction logic for WelcomeBalloon.xaml
+    /// </summary>
+    public partial class WelcomeBalloon : UserControl
     {
-      InitializeComponent();
+        public WelcomeBalloon()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

@@ -2,24 +2,24 @@
 
 namespace Samples.Tutorials.DataBinding
 {
-  /// <summary>
-  /// Interaction logic for DataBoundToolTipWindow.xaml
-  /// </summary>
-  public partial class DataBoundToolTipWindow : Window
-  {
-    public DataBoundToolTipWindow()
+    /// <summary>
+    /// Interaction logic for DataBoundToolTipWindow.xaml
+    /// </summary>
+    public partial class DataBoundToolTipWindow : Window
     {
-      InitializeComponent();
+        public DataBoundToolTipWindow()
+        {
+            InitializeComponent();
+        }
+
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            //clean up notifyicon (would otherwise stay open until application finishes)
+            MyNotifyIcon1.Dispose();
+            MyNotifyIcon2.Dispose();
+
+            base.OnClosing(e);
+        }
     }
-
-
-    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-    {
-      //clean up notifyicon (would otherwise stay open until application finishes)
-      MyNotifyIcon1.Dispose();
-      MyNotifyIcon2.Dispose();
-
-      base.OnClosing(e);
-    }
-  }
 }

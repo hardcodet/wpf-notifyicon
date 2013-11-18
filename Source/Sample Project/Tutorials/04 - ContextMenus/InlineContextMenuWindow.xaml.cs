@@ -32,7 +32,7 @@ namespace Samples.Tutorials.ContextMenus
         private void MyNotifyIcon_PreviewTrayContextMenuOpen(object sender, System.Windows.RoutedEventArgs e)
         {
             //marking the event as handled suppresses the context menu
-            e.Handled = (bool)SuppressContextMenu.IsChecked;
+            e.Handled = (bool) SuppressContextMenu.IsChecked;
 
             PreviewOpenEventCounter.Text = (int.Parse(PreviewOpenEventCounter.Text) + 1).ToString();
         }

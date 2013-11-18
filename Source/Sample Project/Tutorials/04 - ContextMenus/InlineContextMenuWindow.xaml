@@ -46,8 +46,10 @@
         <TextBlock Margin="26,26,24,0"
                    VerticalAlignment="Top"
                    FontWeight="Bold"
-                   TextWrapping="Wrap"><Run Language="de-ch"
-                                            Text="Right-click on NotifyIcon to open Context Menu" /></TextBlock>
+                   TextWrapping="Wrap">
+            <Run Language="de-ch"
+                 Text="Right-click on NotifyIcon to open Context Menu" />
+        </TextBlock>
         <TextBlock HorizontalAlignment="Left"
                    Margin="26,83,0,0"
                    TextWrapping="Wrap"

@@ -115,9 +115,13 @@
         <TextBlock Margin="72,49.2,10,0"
                    VerticalAlignment="Top"
                    Foreground="#FFECAD25"
-                   TextWrapping="Wrap"><Run Text="This is a user control. The animation uses the attached "/><Run FontStyle="Italic"
-                                                                    FontWeight="Bold"
-                                                                    Text="BalloonShowing "/><Run Text="event."/></TextBlock>
+                   TextWrapping="Wrap">
+            <Run Text="This is a user control. The animation uses the attached " />
+            <Run FontStyle="Italic"
+                 FontWeight="Bold"
+                 Text="BalloonShowing " />
+            <Run Text="event." />
+        </TextBlock>
         <Path Fill="#FFFFFFFF"
               Stretch="Fill"
               Margin="72,38.2,34,0"

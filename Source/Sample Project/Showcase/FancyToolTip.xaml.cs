@@ -14,41 +14,38 @@ using Hardcodet.Wpf.TaskbarNotification;
 
 namespace Samples
 {
-	/// <summary>
-	/// Interaction logic for FancyToolTip.xaml
-	/// </summary>
-	public partial class FancyToolTip
-	{
-	  #region InfoText dependency property
+    /// <summary>
+    /// Interaction logic for FancyToolTip.xaml
+    /// </summary>
+    public partial class FancyToolTip
+    {
+        #region InfoText dependency property
 
-	  /// <summary>
-	  /// The tooltip details.
-	  /// </summary>
-	  public static readonly DependencyProperty InfoTextProperty =
-	      DependencyProperty.Register("InfoText",
-	                                  typeof (string),
-	                                  typeof (FancyToolTip),
-	                                  new FrameworkPropertyMetadata(""));
+        /// <summary>
+        /// The tooltip details.
+        /// </summary>
+        public static readonly DependencyProperty InfoTextProperty =
+            DependencyProperty.Register("InfoText",
+                typeof (string),
+                typeof (FancyToolTip),
+                new FrameworkPropertyMetadata(""));
 
-	  /// <summary>
-	  /// A property wrapper for the <see cref="InfoTextProperty"/>
-	  /// dependency property:<br/>
-	  /// The tooltip details.
-	  /// </summary>
-	  public string InfoText
-	  {
-	    get { return (string) GetValue(InfoTextProperty); }
-	    set { SetValue(InfoTextProperty, value); }
-	  }
+        /// <summary>
+        /// A property wrapper for the <see cref="InfoTextProperty"/>
+        /// dependency property:<br/>
+        /// The tooltip details.
+        /// </summary>
+        public string InfoText
+        {
+            get { return (string) GetValue(InfoTextProperty); }
+            set { SetValue(InfoTextProperty, value); }
+        }
 
-	  #endregion
+        #endregion
 
-
-
-		public FancyToolTip()
-		{
-			this.InitializeComponent();
-		}
-
-	}
+        public FancyToolTip()
+        {
+            this.InitializeComponent();
+        }
+    }
 }

@@ -22,9 +22,10 @@
                         <Border Background="{DynamicResource MenuBackground}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
-                            <ScrollViewer Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}"
-                                          Uid="ScrollViewer_9"
-                                          CanContentScroll="True">
+                            <ScrollViewer
+                                Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}"
+                                Uid="ScrollViewer_9"
+                                CanContentScroll="True">
                                 <ItemsPresenter Margin="{TemplateBinding Padding}"
                                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                                 KeyboardNavigation.DirectionalNavigation="Cycle" />

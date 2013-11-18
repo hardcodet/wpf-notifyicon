@@ -14,14 +14,14 @@ using System.Windows.Shapes;
 
 namespace Samples.Tutorials.ToolTips
 {
-  /// <summary>
-  /// Interaction logic for SimpleUserControl.xaml
-  /// </summary>
-  public partial class SimpleUserControl : UserControl
-  {
-    public SimpleUserControl()
+    /// <summary>
+    /// Interaction logic for SimpleUserControl.xaml
+    /// </summary>
+    public partial class SimpleUserControl : UserControl
     {
-      InitializeComponent();
+        public SimpleUserControl()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

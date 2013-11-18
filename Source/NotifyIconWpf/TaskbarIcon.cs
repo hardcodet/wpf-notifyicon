@@ -705,7 +705,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 IntPtr handle = IntPtr.Zero;
 
                 //try to get a handle on the context itself
-                HwndSource source = (HwndSource)PresentationSource.FromVisual(ContextMenu);
+                HwndSource source = (HwndSource) PresentationSource.FromVisual(ContextMenu);
                 if (source != null)
                 {
                     handle = source.Handle;
