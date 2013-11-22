@@ -59,7 +59,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// An action that is being invoked if the
         /// <see cref="singleClickTimer"/> fires.
         /// </summary>
-        private Action delayedTimerAction;
+        private Action singleClickTimerAction;
 
         /// <summary>
         /// A timer that is used to differentiate between single
@@ -104,6 +104,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                        balloon != null && balloon.IsOpen;
             }
         }
+
+        private double scalingFactor = double.NaN;
 
         #endregion
 
@@ -216,6 +218,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             popup.StaysOpen = true;
 
             Point position = TrayInfo.GetTrayLocation();
+            position = GetDeviceCoordinates(position);
             popup.HorizontalOffset = position.X - 1;
             popup.VerticalOffset = position.Y - 1;
 
@@ -381,7 +384,17 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             //get mouse coordinates
             Point cursorPosition = new Point();
-            WinApi.GetCursorPos(ref cursorPosition);
+            if (messageSink.Version == NotifyIconVersion.Vista)
+            {
+                //physical cursor position is supported for Vista and above
+                WinApi.GetPhysicalCursorPos(ref cursorPosition);
+            }
+            else
+            {
+                WinApi.GetCursorPos(ref cursorPosition);
+            }
+
+            cursorPosition = GetDeviceCoordinates(cursorPosition);
 
             bool isLeftClickCommandInvoked = false;
 
@@ -391,7 +404,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 if (me == MouseEvent.IconLeftMouseUp)
                 {
                     //show popup once we are sure it's not a double click
-                    delayedTimerAction = () =>
+                    singleClickTimerAction = () =>
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                         ShowTrayPopup(cursorPosition);
@@ -413,7 +426,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 if (me == MouseEvent.IconLeftMouseUp)
                 {
                     //show context menu once we are sure it's not a double click
-                    delayedTimerAction = () =>
+                    singleClickTimerAction = () =>
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                         ShowContextMenu(cursorPosition);
@@ -432,8 +445,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
             if (me == MouseEvent.IconLeftMouseUp && !isLeftClickCommandInvoked)
             {
                 //show context menu once we are sure it's not a double click
-                delayedTimerAction =
-                    () => LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
+                singleClickTimerAction = () =>
+                {
+                    LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
+                };
                 singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
             }
         }
@@ -650,7 +665,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 //open popup
                 TrayPopupResolved.IsOpen = true;
 
-
                 IntPtr handle = IntPtr.Zero;
                 if (TrayPopupResolved.Child != null)
                 {
@@ -703,7 +717,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 ContextMenu.IsOpen = true;
 
                 IntPtr handle = IntPtr.Zero;
-
+                
                 //try to get a handle on the context itself
                 HwndSource source = (HwndSource) PresentationSource.FromVisual(ContextMenu);
                 if (source != null)
@@ -830,11 +844,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
             if (IsDisposed) return;
 
             //run action
-            Action action = delayedTimerAction;
+            Action action = singleClickTimerAction;
             if (action != null)
             {
                 //cleanup action
-                delayedTimerAction = null;
+                singleClickTimerAction = null;
 
                 //switch to UI thread
                 this.GetDispatcher().Invoke(action);
@@ -938,6 +952,35 @@ namespace Hardcodet.Wpf.TaskbarNotification
         }
 
         #endregion
+
+        /// <summary>
+        /// Recalculates OS coordinates in order to support WPFs coordinate
+        /// system if OS scaling (DPIs) is not 100%.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        private Point GetDeviceCoordinates(Point point)
+        {
+            if (double.IsNaN(scalingFactor))
+            {
+                //calculate scaling factor in order to support non-standard DPIs
+                var presentationSource = PresentationSource.FromVisual(this);
+                if (presentationSource == null)
+                {
+                    scalingFactor = 1;
+                }
+                else
+                {
+                    var transform = presentationSource.CompositionTarget.TransformToDevice;
+                    scalingFactor = 1/transform.M11;
+                }
+            }
+
+            //on standard DPI settings, just return the point
+            if(scalingFactor == 1.0) return point;
+
+            return new Point() {X = (int) (point.X*scalingFactor), Y = (int) (point.Y*scalingFactor)};
+        }
 
         #region Dispose / Exit
 
