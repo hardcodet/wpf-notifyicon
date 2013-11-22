@@ -522,7 +522,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             if (tt == null && TrayToolTip != null)
             {
-                //create an invisible tooltip that hosts the UIElement
+                //create an invisible wrapper tooltip that hosts the UIElement
                 tt = new ToolTip();
                 tt.Placement = PlacementMode.Mouse;
 
@@ -542,7 +542,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
             else if (tt == null && !String.IsNullOrEmpty(ToolTipText))
             {
-                //create a simple tooltip for the string
+                //create a simple tooltip for the ToolTipText string
                 tt = new ToolTip();
                 tt.Content = ToolTipText;
             }

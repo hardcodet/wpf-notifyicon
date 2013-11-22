@@ -298,10 +298,20 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <param name="e">Provides information about the updated property.</param>
         private void OnToolTipTextPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
-            //only recreate tooltip if we're not using a custom control
-            if (TrayToolTipResolved == null || TrayToolTipResolved.Content is string)
+            //do not touch tooltips if we have a custom tooltip element
+            if (TrayToolTip == null)
             {
-                CreateCustomToolTip();
+                ToolTip currentToolTip = TrayToolTipResolved;
+                if (currentToolTip == null)
+                {
+                    //if we don't have a wrapper tooltip for the tooltip text, create it now
+                    CreateCustomToolTip();
+                }
+                else
+                {
+                    //if we have a wrapper tooltip that shows the old tooltip text, just update content
+                    currentToolTip.Content = e.NewValue;
+                }
             }
 
             WriteToolTipSettings();
