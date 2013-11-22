@@ -6,6 +6,7 @@ using Samples.Tutorials.Commands;
 using Samples.Tutorials.ContextMenus;
 using Samples.Tutorials.DataBinding;
 using Samples.Tutorials.Events;
+using Samples.Tutorials.MvvmSample;
 using Samples.Tutorials.Popups;
 using Samples.Tutorials.ToolTips;
 
@@ -80,6 +81,11 @@ namespace Samples
         {
             ShowDialog(new DataBoundToolTipWindow());
         }
+		
+		private void btnMvvm_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			ShowDialog(new MvvmSampleWindow());
+		}
 
         private void btnMainSample_Click(object sender, RoutedEventArgs e)
         {

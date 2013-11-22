@@ -34,6 +34,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <ExpressionBlendVersion>12.0.41002.1</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,6 +57,21 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Tutorials\09 - MVVM\ClockPopup.xaml.cs">
+      <DependentUpon>ClockPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tutorials\09 - MVVM\MvvmSampleViewModel.cs" />
+    <Compile Include="Tutorials\09 - MVVM\MvvmSampleWindow.xaml.cs">
+      <DependentUpon>MvvmSampleWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Tutorials\09 - MVVM\ClockPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Tutorials\09 - MVVM\MvvmSampleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -103,6 +119,7 @@
     <Compile Include="Showcase\FancyToolTip.xaml.cs">
       <DependentUpon>FancyToolTip.xaml</DependentUpon>
     </Compile>
+    <Resource Include="Tutorials\09 - MVVM\Clock.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -325,6 +342,7 @@
       <Name>NotifyIconWpf</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
