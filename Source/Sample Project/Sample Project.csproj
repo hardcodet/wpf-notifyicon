@@ -119,6 +119,7 @@
     <Compile Include="Showcase\FancyToolTip.xaml.cs">
       <DependentUpon>FancyToolTip.xaml</DependentUpon>
     </Compile>
+    <Resource Include="Images\Logo.png" />
     <Resource Include="Tutorials\09 - MVVM\Clock.png" />
   </ItemGroup>
   <ItemGroup>

@@ -230,6 +230,16 @@
         	Height="27"
         	x:Name="btnMvvm"
         	Click="btnMvvm_Click" />
+        <Image Margin="562.24,-19,-41.24,440" Source="Images/Logo.png" Stretch="Fill" RenderTransformOrigin="0.5,0.5" Opacity="0.235">
+        	<Image.RenderTransform>
+        		<TransformGroup>
+        			<ScaleTransform/>
+        			<SkewTransform/>
+        			<RotateTransform Angle="-50.502"/>
+        			<TranslateTransform/>
+        		</TransformGroup>
+        	</Image.RenderTransform>
+        </Image>
 
     </Grid>
 </Window>
