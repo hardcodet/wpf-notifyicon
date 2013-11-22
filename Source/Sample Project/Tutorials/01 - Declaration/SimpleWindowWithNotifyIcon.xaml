@@ -7,15 +7,14 @@
     Width="300">
     <Grid>
 
-        <!-- in order to declare a NotifyIcon, all you need is the
-      namespace declaration (see above on line 5) and a single line -->
-        <tb:TaskbarIcon
-            x:Name="MyNotifyIcon"
-            IconSource="/Icons/Error.ico"
-            ToolTipText="hello world" />
-        <TextBlock Margin="26,26,24,0" VerticalAlignment="Top" FontWeight="Bold" TextWrapping="Wrap">
-            <Run Text="You should see an icon in the tray." Language="de-ch" />
-        </TextBlock>
+        <!-- in order to declare a NotifyIcon, all you need is the namespace declaration (see above on line 5) and a single line -->
+        <tb:TaskbarIcon x:Name="MyNotifyIcon" IconSource="/Icons/Error.ico" ToolTipText="hello world" />
+
+        <TextBlock Margin="26,26,24,0"
+                   VerticalAlignment="Top"
+                   FontWeight="Bold"
+                   TextWrapping="Wrap"
+                   Text="You should see an icon in the tray." />
 
     </Grid>
 </Window>

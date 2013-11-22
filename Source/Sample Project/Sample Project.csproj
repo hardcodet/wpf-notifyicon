@@ -99,6 +99,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Commands\CloseWindowCommand.cs" />
     <Compile Include="Showcase\FancyToolTip.xaml.cs">
       <DependentUpon>FancyToolTip.xaml</DependentUpon>
     </Compile>
