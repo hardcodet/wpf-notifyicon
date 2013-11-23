@@ -514,7 +514,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <see cref="Popup"/> because there was no way to prevent a
         /// popup from causing cyclic open/close commands if it was
         /// placed under the mouse. ToolTip internally uses a Popup of
-        /// its own, but takes advance of Popup's internal <see cref="Popup.HitTestable"/>
+        /// its own, but takes advance of Popup's internal <see cref="UIElement.IsHitTestVisible"/>
         /// property which prevents this issue.</remarks>
         private void CreateCustomToolTip()
         {
@@ -600,7 +600,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <see cref="Popup"/> because there was no way to prevent a
         /// popup from causing cyclic open/close commands if it was
         /// placed under the mouse. ToolTip internally uses a Popup of
-        /// its own, but takes advance of Popup's internal <see cref="Popup.HitTestable"/>
+        /// its own, but takes advance of Popup's internal <see cref="UIElement.IsHitTestVisible"/>
         /// property which prevents this issue.</remarks>
         private void CreatePopup()
         {
@@ -986,8 +986,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #region Dispose / Exit
 
         /// <summary>
-        /// Set to true as soon as <see cref="Dispose"/>
-        /// has been invoked.
+        /// Set to true as soon as <c>Dispose</c> has been invoked.
         /// </summary>
         public bool IsDisposed { get; private set; }
 

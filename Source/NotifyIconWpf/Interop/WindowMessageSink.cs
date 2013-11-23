@@ -71,7 +71,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
         /// <summary>
         /// Handle for the message window.
-        /// </summary
+        /// </summary> 
         internal IntPtr MessageWindowHandle { get; private set; }
 
         /// <summary>
@@ -309,8 +309,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         #region Dispose
 
         /// <summary>
-        /// Set to true as soon as <see cref="Dispose"/>
-        /// has been invoked.
+        /// Set to true as soon as <c>Dispose</c> has been invoked.
         /// </summary>
         public bool IsDisposed { get; private set; }
 

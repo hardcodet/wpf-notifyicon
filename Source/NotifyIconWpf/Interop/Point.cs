@@ -8,7 +8,13 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct Point
     {
+        /// <summary>
+        /// X coordinate.
+        /// </summary>
         public int X;
+        /// <summary>
+        /// Y coordinate.
+        /// </summary>
         public int Y;
     }
 }

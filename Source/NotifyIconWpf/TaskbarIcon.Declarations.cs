@@ -142,6 +142,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             = DependencyProperty.RegisterReadOnly("CustomBalloon", typeof (Popup), typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
 
+        /// <summary>
+        /// Maintains a currently displayed custom balloon.
+        /// </summary>
         public static readonly DependencyProperty CustomBalloonProperty
             = CustomBalloonPropertyKey.DependencyProperty;
 

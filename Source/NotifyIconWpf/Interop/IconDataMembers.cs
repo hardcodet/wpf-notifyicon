@@ -40,10 +40,9 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// </summary>
         Info = 0x10,
 
-        /// <summary>
-        /// Internal identifier is set. Reserved, thus commented out.
-        /// </summary>
+        // Internal identifier is set. Reserved, thus commented out.
         //Guid = 0x20,
+
         /// <summary>
         /// Windows Vista (Shell32.dll version 6.0.6) and later. If the ToolTip
         /// cannot be displayed immediately, discard it.<br/>

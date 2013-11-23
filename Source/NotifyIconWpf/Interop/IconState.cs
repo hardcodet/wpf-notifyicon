@@ -16,9 +16,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// </summary>
         Hidden = 0x01,
 
-        /// <summary>
-        /// The icon is shared - currently not supported, thus commented out.
-        /// </summary>
+        // The icon is shared - currently not supported, thus commented out.
         //Shared = 0x02
     }
 }
