@@ -13,12 +13,16 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("hardcodet.net")]
 [assembly: AssemblyProduct("NotifyIcon WPF")]
-[assembly: AssemblyCopyright("Copyright © Philipp Sumi 2046")]
+[assembly: AssemblyCopyright("Copyright © Philipp Sumi 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-//provides simplified declaration
 
+[assembly: AssemblyVersion("1.0.5.0")]
+[assembly: AssemblyFileVersion("1.0.5.0")]
+
+
+//provides simplified declaration in XAML
 [assembly: XmlnsPrefix("http://www.hardcodet.net/taskbar", "tb")]
 [assembly: XmlnsDefinition("http://www.hardcodet.net/taskbar", "Hardcodet.Wpf.TaskbarNotification")]
 
@@ -58,5 +62,3 @@ using System.Windows.Markup;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.5.0")]
-[assembly: AssemblyFileVersion("1.0.5.0")]
