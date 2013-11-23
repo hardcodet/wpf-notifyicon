@@ -1,0 +1,8 @@
+﻿<Window x:Class="Windowless_Sample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <TextBlock Text="Have a look at App.xaml and App.xaml.cs to see how things are working" />
+    </Grid>
+</Window>
