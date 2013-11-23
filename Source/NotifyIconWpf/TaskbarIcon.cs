@@ -1,5 +1,5 @@
 ﻿// hardcodet.net NotifyIcon for WPF
-// Copyright (c) 2009 Philipp Sumi
+// Copyright (c) 2009 - 2013 Philipp Sumi
 // Contact and Information: http://www.hardcodet.net
 //
 // This library is free software; you can redistribute it and/or
@@ -194,7 +194,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             popup.PopupAnimation = animation;
 
             //in case the balloon is cleaned up through routed events, the
-            //control didn't removed the balloon from its parent popup when
+            //control didn't remove the balloon from its parent popup when
             //if was closed the last time - just make sure it doesn't have
             //a parent that is a popup
             var parent = LogicalTreeHelper.GetParent(balloon) as Popup;
@@ -445,10 +445,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
             if (me == MouseEvent.IconLeftMouseUp && !isLeftClickCommandInvoked)
             {
                 //show context menu once we are sure it's not a double click
-                singleClickTimerAction = () =>
-                {
-                    LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
-                };
+                singleClickTimerAction =
+                    () =>
+                    {
+                        LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
+                    };
                 singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
             }
         }
@@ -717,7 +718,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 ContextMenu.IsOpen = true;
 
                 IntPtr handle = IntPtr.Zero;
-                
+
                 //try to get a handle on the context itself
                 HwndSource source = (HwndSource) PresentationSource.FromVisual(ContextMenu);
                 if (source != null)
@@ -977,7 +978,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
 
             //on standard DPI settings, just return the point
-            if(scalingFactor == 1.0) return point;
+            if (scalingFactor == 1.0) return point;
 
             return new Point() {X = (int) (point.X*scalingFactor), Y = (int) (point.Y*scalingFactor)};
         }

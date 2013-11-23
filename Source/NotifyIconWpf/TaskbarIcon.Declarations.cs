@@ -1,5 +1,5 @@
 ﻿// hardcodet.net NotifyIcon for WPF
-// Copyright (c) 2009 Philipp Sumi
+// Copyright (c) 2009 - 2013 Philipp Sumi
 // Contact and Information: http://www.hardcodet.net
 //
 // This library is free software; you can redistribute it and/or
@@ -380,13 +380,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 //remove the taskbar icon reference from the previously used element
                 SetParentTaskbarIcon((DependencyObject) e.OldValue, null);
             }
-            
+
             if (e.NewValue != null)
             {
                 //set this taskbar icon as a reference to the new tooltip element
                 SetParentTaskbarIcon((DependencyObject) e.NewValue, this);
             }
-            
+
             //update tooltip settings - needed to make sure a string is set, even
             //if the ToolTipText property is not set. Otherwise, the event that
             //triggers tooltip display is never fired.
