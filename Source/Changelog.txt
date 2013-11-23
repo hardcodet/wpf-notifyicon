@@ -1,6 +1,22 @@
 hardcodet.net NotifyIcon for WPF - Changelog
-Copyright (c) 2009 Philipp Sumi
+Copyright (c) 2009-2013 Philipp Sumi
 Contact and Information: http://www.hardcodet.net
+
+
+1.0.5 (2013.11.20)
+*****
+
+FIX   Support for x64 applications targeting .NET 4 x64 or higher (big thanks to Mark Junker for submitting a patch!)
+CHG   Component does no longer throw an exception is no Explorer shell is present,
+      but waits for it to be created.
+CHG   NotifyIcon is not only removed on user-initiated disposal, but also garbage collection.
+CHG   The attached ParentTaskbarIconProperty is now derived, so data binding to the attached DP
+      becomes much simpler
+	  (e.g. <TextBlock Text="{Binding RelativeSource={RelativeSource Self}, Path=(tb:TaskbarIcon.ParentTaskbarIcon).ToolTipText}" />)
+CHG   WinAPI interop now uses Unicode in order to prevent issues with Asian languages. Thanks to JO Hyeong-Ryeol for posting an easy fix!
+FIX   Context menues receiving keyboard events, which allows for TextBoxes in context menus.
+FIX   Coordinates calculated properly on operating systems with non-standard DPIs. Thanks Rusi Filipov for bug reporting and testing.
+FIX   Data-bound ToolTipText may have caused ToolTips to remain open in case of property changes.
 
 
 ----------------------------------------------------------------------------
@@ -42,7 +58,7 @@ FIX   Late-bound DataContext did not coerce properly with ContextMenu, thus
 
 1.0.1 (2009.05.15)
 *****
-CHG   DataContext is also assigned to ContextMenu (thanks Nic Pilllinger),
+CHG   DataContext is also assigned to ContextMenu (thanks Nic Pillinger),
       and properly coerced for ToolTips and Popups. Also checks whether
       target item has a binding on the DataContext
       (does not just override if DataContext is null).
