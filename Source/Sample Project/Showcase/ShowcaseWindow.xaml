@@ -6,7 +6,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="WPF NotifyIcon"
     Height="874"
-    Width="880"
+    Width="936.387"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -33,14 +33,13 @@
     </Window.Resources>
     <Window.Background>
         <LinearGradientBrush
-            EndPoint="0.5,1"
-            StartPoint="0.5,0">
+            EndPoint="0.771,0.907"
+            StartPoint="0.229,0.093">
             <GradientStop
                 Color="#FFFFFFFF"
-                Offset="0" />
-            <GradientStop
-                Color="#FFFFE7D1"
                 Offset="1" />
+            <GradientStop
+                Color="#FFDAE9FF" />
         </LinearGradientBrush>
     </Window.Background>
     <Window.Triggers>
@@ -93,16 +92,16 @@
 
 
         <Grid
-            Margin="486.5,578.58,0,0"
+            Margin="509.567,578.58,0,0"
             VerticalAlignment="Top"
             Height="248"
             x:Name="Balloons"
-            Width="372"
+            Width="405.32"
             HorizontalAlignment="Left">
             <Border
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                BorderBrush="#FF000000"
+                BorderBrush="Black"
                 BorderThickness="2,2,2,2" />
             <TextBox
                 Margin="125,0,17,133"
@@ -215,7 +214,7 @@
             HorizontalAlignment="Left"
             Margin="12,543.88,0,0"
             VerticalAlignment="Top"
-            Width="445.5"
+            Width="469.5"
             Height="282.7"
             x:Name="Popups">
             <Border
@@ -290,8 +289,7 @@
             x:Name="ToolTips"
             Height="255.88"
             VerticalAlignment="Top"
-            d:LayoutOverrides="HorizontalAlignment, VerticalAlignment"
-            Width="447.5"
+            Width="471.5"
             HorizontalAlignment="Left">
             <Border
                 HorizontalAlignment="Stretch"
@@ -396,12 +394,11 @@
         </Grid>
         <Grid
             HorizontalAlignment="Left"
-            Margin="488,114.5,0,0"
-            Width="370.5"
+            Margin="509.567,114.5,0,0"
+            Width="405.32"
             x:Name="ContextMenus"
             Height="255.88"
-            VerticalAlignment="Top"
-            d:LayoutOverrides="VerticalAlignment">
+            VerticalAlignment="Top">
             <Border
                 BorderBrush="#FF000000"
                 BorderThickness="2,2,2,2" />
@@ -495,13 +492,12 @@
             </Hyperlink>
         </TextBlock>
         <Grid
-            Margin="486.5,380.38,0,0"
+            Margin="509.567,380.38,0,0"
             x:Name="CustomBalloons"
             Height="188.2"
             VerticalAlignment="Top"
-            Width="372"
-            HorizontalAlignment="Left"
-            d:LayoutOverrides="VerticalAlignment">
+            Width="405.32"
+            HorizontalAlignment="Left">
             <Border
                 HorizontalAlignment="Stretch"
                 Width="Auto"
@@ -580,9 +576,9 @@
         <Grid
             Margin="10,114.5,0,0"
             VerticalAlignment="Top"
-            Height="138.38"
+            Height="147.351"
             x:Name="Common"
-            Width="447.5"
+            Width="471.5"
             HorizontalAlignment="Left">
             <Border
                 BorderThickness="2,2,2,2"
@@ -604,8 +600,8 @@
                 SelectedIndex="0"
                 Width="123"
                 HorizontalAlignment="Left"
-                Height="51"
-                VerticalAlignment="Top">
+                Height="59.971"
+                VerticalAlignment="Top" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Image
                     Width="16"
                     Margin="0,4,0,0"

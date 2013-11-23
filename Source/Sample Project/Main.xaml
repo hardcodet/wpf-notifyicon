@@ -30,10 +30,7 @@
             FontSize="14"
             FontStyle="Italic"
             FontWeight="Bold"
-            TextWrapping="Wrap">
-            <Run
-                Text="WPF NotifyIcon 1.0.4 - Samples" />
-        </TextBlock>
+            TextWrapping="Wrap" Text="WPF NotifyIcon 1.0.5 - Samples"/>
         <Button
             HorizontalAlignment="Left"
             Margin="10,133,0,0"
@@ -235,7 +232,7 @@
         		<TransformGroup>
         			<ScaleTransform/>
         			<SkewTransform/>
-        			<RotateTransform Angle="-50.502"/>
+        			<RotateTransform Angle="-34.915"/>
         			<TranslateTransform/>
         		</TransformGroup>
         	</Image.RenderTransform>
