@@ -1,0 +1,21 @@
+﻿<Application x:Class="Windowless_Sample.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+
+        <!--
+            Note that this application does not have a StartupUri declared, so no Window is automatically loaded.
+            Also, the ShutdownMode was set to explicit, so we have to close the application programmatically
+        -->
+        
+        
+        <!-- merge NotifyIcon and related stuff into the application -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="NotifyIconResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Application.Resources>
+</Application>

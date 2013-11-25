@@ -1,0 +1,64 @@
+﻿<Window
+    x:Class="Samples.Tutorials.Commands.CommandWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    xmlns:local="clr-namespace:Samples.Tutorials.Commands"
+    Height="300"
+    Width="300"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Grid>
+
+        <!-- declare the command as a local resource -->
+        <Grid.Resources>
+            <local:ShowMessageCommand
+                x:Key="MessageCommand" />
+        </Grid.Resources>
+
+        <!-- declare the NotifyIcon and configure commands with parameters -->
+        <tb:TaskbarIcon
+            x:Name="CustomCommandNotifyIcon"
+            IconSource="/Icons/Error.ico"
+            LeftClickCommand="{StaticResource MessageCommand}"
+            LeftClickCommandParameter="Left mouse button was clicked"
+            DoubleClickCommand="{StaticResource MessageCommand}"
+            DoubleClickCommandParameter="Double click on NotifyIcon" />
+
+        <!-- declare the NotifyIcon and configure commands with targets -->
+        <tb:TaskbarIcon
+            x:Name="RoutedCommandNotifyIcon"
+            IconSource="/Icons/Inactive.ico"
+            LeftClickCommand="ApplicationCommands.Cut"
+            LeftClickCommandTarget="{Binding ElementName=txtInput}"
+            DoubleClickCommand="ApplicationCommands.Paste"
+            DoubleClickCommandTarget="{Binding ElementName=txtInput}" />
+
+
+        <TextBlock
+            Margin="26,26,24,0"
+            VerticalAlignment="Top"
+            FontWeight="Bold"
+            TextWrapping="Wrap">
+            <Run
+                Language="de-ch"
+                Text="Left / Double clicks on red NotifyIcon executes simple custom commands." />
+        </TextBlock>
+        <TextBlock
+            Margin="26,112,24,80"
+            FontWeight="Bold"
+            TextWrapping="Wrap">
+            <Run Language="de-ch" Text="Left / Double clicks on grey NotifyIcon executes routed commands." />
+            <LineBreak /><Run Language="de-ch" Text="Single click: Cuts selected text" /><LineBreak />
+            <Run Language="de-ch" Text="Double click: Paste text from clipboard" />
+        </TextBlock>
+        <TextBox
+            Margin="26,0,24,48"
+            VerticalAlignment="Bottom"
+            Height="22"
+            Text="hello world"
+            TextWrapping="Wrap"
+            x:Name="txtInput" />
+    </Grid>
+</Window>

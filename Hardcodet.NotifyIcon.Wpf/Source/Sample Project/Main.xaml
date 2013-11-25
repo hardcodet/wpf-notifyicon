@@ -1,0 +1,242 @@
+﻿<Window
+    x:Class="Samples.Main"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="NotifyIcon Samples"
+    Height="626"
+    Width="703"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" ResizeMode="NoResize">
+    <Grid
+        Hyperlink.RequestNavigate="OnNavigationRequest">
+        <Grid.Background>
+            <LinearGradientBrush
+                EndPoint="0.673,0.95"
+                StartPoint="0.274,0.137">
+                <GradientStop
+                    Color="#FFFFFFFF"
+                    Offset="0" />
+                <GradientStop
+                    Color="#FFB4C6D8"
+                    Offset="0.982" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <TextBlock
+            HorizontalAlignment="Left"
+            Margin="10,10,0,0"
+            VerticalAlignment="Top"
+            FontSize="14"
+            FontStyle="Italic"
+            FontWeight="Bold"
+            TextWrapping="Wrap" Text="WPF NotifyIcon 1.0.5 - Samples"/>
+        <Button
+            HorizontalAlignment="Left"
+            Margin="10,133,0,0"
+            VerticalAlignment="Top"
+            Width="164"
+            Height="27"
+            Content="NotifyIcon Declaration"
+            x:Name="btnDeclaration"
+            Click="btnDeclaration_Click" />
+        <TextBlock
+            HorizontalAlignment="Left"
+            Margin="10,50,0,0"
+            VerticalAlignment="Top"
+            FontWeight="Bold"
+            TextWrapping="Wrap">
+            <Run
+                Text="Tutorials:" />
+        </TextBlock>
+        <TextBlock
+            HorizontalAlignment="Left"
+            Margin="10,75.96,0,0"
+            VerticalAlignment="Top"
+            TextWrapping="Wrap"
+            Width="224.31"
+            Height="47.04"
+            d:LayoutOverrides="HorizontalAlignment">
+            <Run
+                Text="Tutorials follow the contents of the CodeProject article. Check the &quot;Tutorials&quot; folder for the source code." />
+        </TextBlock>
+        <Button
+            HorizontalAlignment="Left"
+            Margin="10,170,0,0"
+            Width="164"
+            Content="ToolTips - Inline Declaration"
+            VerticalAlignment="Top"
+            Height="27"
+            x:Name="btnInlineToolTip"
+            Click="btnInlineToolTip_Click" />
+        <Button
+            HorizontalAlignment="Left"
+            Margin="10,244,0,0"
+            Width="164"
+            Content="Popups"
+            VerticalAlignment="Top"
+            Height="27"
+            x:Name="btnPopups"
+            Click="btnPopups_Click" />
+        <Button
+            HorizontalAlignment="Left"
+            Margin="10,281,0,0"
+            Width="164"
+            Content="Context Menus"
+            VerticalAlignment="Top"
+            Height="27"
+            x:Name="btnContextMenus"
+            Click="btnContextMenus_Click" />
+        <Button
+            HorizontalAlignment="Left"
+            Margin="10,318,0,0"
+            Width="164"
+            Content="Balloon Tips"
+            VerticalAlignment="Top"
+            Height="27"
+            x:Name="btnBalloons"
+            Click="btnBalloons_Click" />
+        <Button
+            HorizontalAlignment="Left"
+            Margin="10,355,0,0"
+            Width="164"
+            Content="Commands"
+            VerticalAlignment="Top"
+            Height="27"
+            x:Name="btnCommands"
+            Click="btnCommands_Click" />
+        <Button
+            HorizontalAlignment="Left"
+            Margin="10,207,0,0"
+            Width="164"
+            Content="ToolTip User Control"
+            Height="27"
+            VerticalAlignment="Top"
+            x:Name="btnToolTipControl"
+            Click="btnToolTipControl_Click" />
+        <TextBlock
+            Margin="255.31,50,0,0"
+            VerticalAlignment="Top"
+            FontWeight="Bold"
+            TextWrapping="Wrap"
+            HorizontalAlignment="Left" Width="110.93">
+            <Run
+                Text="Showcase Sample:" />
+        </TextBlock>
+        <TextBlock
+            Margin="255.31,75.96,145.38,0"
+            VerticalAlignment="Top"
+            TextWrapping="Wrap"
+            Height="47.04">
+            <Run
+                Text="An interactive sample that shows off most features on a single NotifyIcon." />
+        </TextBlock>
+        <Button
+            Margin="255.31,133,0,0"
+            VerticalAlignment="Top"
+            Height="27"
+            Content="Open Sample Window"
+            x:Name="btnMainSample"
+            Click="btnMainSample_Click"
+            Width="164"
+            HorizontalAlignment="Left" />
+        <Path
+            Fill="#FFFFFFFF"
+            Stretch="Fill"
+            Stroke="#FF60758A"
+            HorizontalAlignment="Left"
+            Margin="244.31,50,0,66"
+            Width="1"
+            Data="M269,57 L269,390.18163" Opacity="0.325" />
+        <TextBlock
+            Margin="255.31,191,10,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top">
+            <Run Text="The latest news related to the component can be found on the project page:" />
+            <LineBreak />
+            <Hyperlink NavigateUri="http://www.hardcodet.net/wpf-notifyicon">
+                <Run Text="http://www.hardcodet.net/wpf-notifyicon" />
+            </Hyperlink>
+            <LineBreak />
+            <LineBreak />
+            <Run
+                Text="Critical feedback is appreciated - please post bug reports, requests, questions etc. to the CodeProject forum" />
+            <Run Language="de-ch" Text=":" />
+            <LineBreak />
+            <Hyperlink NavigateUri="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx">
+                <Run Text="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx" />
+            </Hyperlink>
+            <LineBreak />
+            <LineBreak />
+            <LineBreak />
+            <TextBlock>
+                <Run Text="Love it or hate it? Please let me know and " />
+                <Hyperlink NavigateUri="http://www.codeproject.com/KB/WPF/wpf_notifyicon.aspx">
+                    <Run FontWeight="Bold" Text="rate the project" />
+                </Hyperlink>
+                <Run Text=" - thanks!" />
+            </TextBlock>
+
+        </TextBlock>
+        <TextBlock
+            Margin="10,0,10,10"
+            VerticalAlignment="Bottom"
+            Height="22.42"
+            TextWrapping="Wrap"
+            FontWeight="Bold">
+            <Run
+                Text="WPF NotifyIcon is free software, released under the" />
+            <Run
+                Text=" " />
+            <Hyperlink
+                NavigateUri="http://www.codeproject.com/info/cpol10.aspx">
+                <Run
+                    Text="CodeProject Open License" />
+            </Hyperlink>
+        </TextBlock>
+        <Path
+            Fill="#FFFFFFFF"
+            Stretch="Fill"
+            Stroke="#FF60758A"
+            Margin="11,0,17.926,41"
+            VerticalAlignment="Bottom"
+            Height="1"
+            Data="M11,517 L561.07363,517" Opacity="0.33" />
+        <Button
+            Margin="10,466,0,0"
+            Content="Events"
+            VerticalAlignment="Top"
+            Height="27"
+            x:Name="btnEvents"
+            Click="btnEvents_Click" Width="164" HorizontalAlignment="Left" />
+        <Button
+            HorizontalAlignment="Left"
+            Margin="10,392,0,0"
+            Width="164"
+            Content="Data Binding"
+            VerticalAlignment="Top"
+            Height="27"
+            x:Name="btnDataBinding"
+            Click="btnDataBinding_Click" />
+        <Button
+        	HorizontalAlignment="Left"
+        	Margin="10,429,0,0"
+        	Width="164"
+        	Content="MVVM"
+        	VerticalAlignment="Top"
+        	Height="27"
+        	x:Name="btnMvvm"
+        	Click="btnMvvm_Click" />
+        <Image Margin="562.24,-19,-41.24,440" Source="Images/Logo.png" Stretch="Fill" RenderTransformOrigin="0.5,0.5" Opacity="0.235">
+        	<Image.RenderTransform>
+        		<TransformGroup>
+        			<ScaleTransform/>
+        			<SkewTransform/>
+        			<RotateTransform Angle="-34.915"/>
+        			<TranslateTransform/>
+        		</TransformGroup>
+        	</Image.RenderTransform>
+        </Image>
+
+    </Grid>
+</Window>

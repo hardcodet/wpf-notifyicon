@@ -1,0 +1,37 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Samples.Tutorials.MvvmSample.ClockPopup"
+             x:Name="UserControl"
+             Height="141"
+             Width="304">
+    <UserControl.Background>
+        <LinearGradientBrush EndPoint="0.5,1"
+                             StartPoint="0.5,0">
+            <GradientStop Color="#FFA8A8A8"
+                          Offset="0" />
+            <GradientStop Color="White"
+                          Offset="1" />
+        </LinearGradientBrush>
+    </UserControl.Background>
+
+    <Grid x:Name="LayoutRoot">
+        <Rectangle Stroke="#FF727272"/>
+        <Image Source="Clock.png"
+               Stretch="Fill"
+               Height="128"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Left"
+               Width="128"
+               Margin="10,10,0,0" />
+    	<TextBlock HorizontalAlignment="Left"
+    		Margin="143,0,0,0"
+    		TextWrapping="Wrap"
+    		Text="{Binding Timestamp}"
+    		VerticalAlignment="Center"
+    		FontSize="40"
+    		Foreground="#F2346172" />
+    </Grid>
+</UserControl>
