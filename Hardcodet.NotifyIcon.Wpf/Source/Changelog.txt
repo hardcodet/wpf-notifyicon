@@ -7,7 +7,7 @@ Contact and Information: http://www.hardcodet.net
 *****
 
 FIX   Support for x64 applications targeting .NET 4 x64 or higher (big thanks to Mark Junker for submitting a patch!)
-CHG   Component does no longer throw an exception is no Explorer shell is present,
+CHG   Component does no longer throw an exception if no Explorer shell is present,
       but waits for it to be created.
 CHG   NotifyIcon is not only removed on user-initiated disposal, but also garbage collection.
 CHG   The attached ParentTaskbarIconProperty is now derived, so data binding to the attached DP
