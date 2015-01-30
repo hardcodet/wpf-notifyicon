@@ -962,25 +962,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <returns></returns>
         private Point GetDeviceCoordinates(Point point)
         {
-            if (double.IsNaN(scalingFactor))
-            {
-                //calculate scaling factor in order to support non-standard DPIs
-                var presentationSource = PresentationSource.FromVisual(this);
-                if (presentationSource == null)
-                {
-                    scalingFactor = 1;
-                }
-                else
-                {
-                    var transform = presentationSource.CompositionTarget.TransformToDevice;
-                    scalingFactor = 1/transform.M11;
-                }
-            }
-
-            //on standard DPI settings, just return the point
-            if (scalingFactor == 1.0) return point;
-
-            return new Point() {X = (int) (point.X*scalingFactor), Y = (int) (point.Y*scalingFactor)};
+          return new Point() { X = (int)(point.X / SystemInfo.DpiXFactor), Y = (int)(point.Y / SystemInfo.DpiYFactor) };
         }
 
         #region Dispose / Exit
