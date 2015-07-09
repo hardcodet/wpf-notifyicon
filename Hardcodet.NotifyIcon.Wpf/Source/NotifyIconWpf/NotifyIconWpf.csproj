@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BalloonIcon.cs" />
+    <Compile Include="Interop\SystemInfo.cs" />
     <Compile Include="Interop\TrayInfo.cs">
       <SubType>Code</SubType>
     </Compile>

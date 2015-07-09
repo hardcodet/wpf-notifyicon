@@ -3,6 +3,7 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
@@ -18,6 +19,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// <returns>Tray coordinates.</returns>
         public static Point GetTrayLocation()
         {
+            int space = 2;
             var info = new AppBarInfo();
             info.GetSystemTaskBarPosition();
 
@@ -26,31 +28,42 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             int x = 0, y = 0;
             if (info.Edge == AppBarInfo.ScreenEdge.Left)
             {
-                x = rcWorkArea.Left + 2;
+                x = rcWorkArea.Right + space;
                 y = rcWorkArea.Bottom;
             }
             else if (info.Edge == AppBarInfo.ScreenEdge.Bottom)
             {
                 x = rcWorkArea.Right;
-                y = rcWorkArea.Bottom;
+                y = rcWorkArea.Bottom - rcWorkArea.Height - space;
             }
             else if (info.Edge == AppBarInfo.ScreenEdge.Top)
             {
                 x = rcWorkArea.Right;
-                y = rcWorkArea.Top;
+                y = rcWorkArea.Top + rcWorkArea.Height + space;
             }
             else if (info.Edge == AppBarInfo.ScreenEdge.Right)
             {
-                x = rcWorkArea.Right;
+                x = rcWorkArea.Right - rcWorkArea.Width - space;
                 y = rcWorkArea.Bottom;
             }
 
-            return new Point {X = x, Y = y};
+            return GetDeviceCoordinates(new Point {X = x, Y = y});
+        }
+
+        /// <summary>
+        /// Recalculates OS coordinates in order to support WPFs coordinate
+        /// system if OS scaling (DPIs) is not 100%.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public static Point GetDeviceCoordinates(Point point)
+        {
+          return new Point() { X = (int)(point.X / SystemInfo.DpiXFactor), Y = (int)(point.Y / SystemInfo.DpiYFactor) };
         }
     }
 
 
-    internal class AppBarInfo
+    public class AppBarInfo
     {
         [DllImport("user32.dll")]
         private static extern IntPtr FindWindow(String lpClassName, String lpWindowName);
@@ -80,27 +93,15 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             get { return (ScreenEdge) m_data.uEdge; }
         }
 
-
         public Rectangle WorkArea
         {
-            get
-            {
-                Int32 bResult = 0;
-                var rc = new RECT();
-                IntPtr rawRect = Marshal.AllocHGlobal(Marshal.SizeOf(rc));
-                bResult = SystemParametersInfo(SPI_GETWORKAREA, 0, rawRect, 0);
-                rc = (RECT) Marshal.PtrToStructure(rawRect, rc.GetType());
-
-                if (bResult == 1)
-                {
-                    Marshal.FreeHGlobal(rawRect);
-                    return new Rectangle(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
-                }
-
-                return new Rectangle(0, 0, 0, 0);
-            }
+          get { return GetRectangle(m_data.rc); }
         }
 
+        private Rectangle GetRectangle(RECT rc)
+        {
+            return new Rectangle(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
+        }     
 
         public void GetPosition(string strClassName, string strWindowName)
         {
