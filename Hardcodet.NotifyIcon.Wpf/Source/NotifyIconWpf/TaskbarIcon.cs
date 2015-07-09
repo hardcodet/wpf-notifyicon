@@ -68,6 +68,14 @@ namespace Hardcodet.Wpf.TaskbarNotification
         private readonly Timer singleClickTimer;
 
         /// <summary>
+        /// The time we should wait for a double click.
+        /// </summary>
+        private int doubleClickWaitTime
+        {
+            get { return NoLeftClickDelay ? 0 : WinApi.GetDoubleClickTime(); }
+        }
+
+        /// <summary>
         /// A timer that is used to close open balloon tooltips.
         /// </summary>
         private readonly Timer balloonCloseTimer;
@@ -409,7 +417,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                         ShowTrayPopup(cursorPosition);
                     };
-                    singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+                    singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
                 }
                 else
@@ -431,7 +439,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                         ShowContextMenu(cursorPosition);
                     };
-                    singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+                    singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
                 }
                 else
@@ -450,7 +458,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                     };
-                singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+                singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
             }
         }
 
