@@ -861,6 +861,33 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         #endregion
 
+        #region NoLeftClickDelay dependency property
+
+        /// <summary>
+        /// Set to true to make left clicks work without delay.
+        /// </summary>
+        public static readonly DependencyProperty NoLeftClickDelayProperty =
+            DependencyProperty.Register("NoLeftClickDelay",
+                typeof(bool),
+                typeof(TaskbarIcon),
+                new FrameworkPropertyMetadata(false));
+
+
+        /// <summary>
+        /// A property wrapper for the <see cref="NoLeftClickDelayProperty"/>
+        /// dependency property:<br/>
+        /// Set to true to make left clicks work without delay.
+        /// </summary>
+        [Category(CategoryName)]
+        [Description("Set to true to make left clicks work without delay.")]
+        public bool NoLeftClickDelay
+        {
+            get { return (bool)GetValue(NoLeftClickDelayProperty); }
+            set { SetValue(NoLeftClickDelayProperty, value); }
+        }
+
+        #endregion
+
         //EVENTS
 
         #region TrayLeftMouseDown
