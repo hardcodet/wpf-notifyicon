@@ -68,6 +68,14 @@ namespace Hardcodet.Wpf.TaskbarNotification
         private readonly Timer singleClickTimer;
 
         /// <summary>
+        /// The time we should wait for a double click.
+        /// </summary>
+        private int doubleClickWaitTime
+        {
+            get { return NoLeftClickDelay ? 0 : WinApi.GetDoubleClickTime(); }
+        }
+
+        /// <summary>
         /// A timer that is used to close open balloon tooltips.
         /// </summary>
         private readonly Timer balloonCloseTimer;
@@ -145,6 +153,14 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #endregion
 
         #region Custom Balloons
+        public delegate Point GetCustomPopupPosition();
+
+        public GetCustomPopupPosition CustomPopupPosition;
+
+        public Point GetPopupTrayPosition()
+        {
+          return TrayInfo.GetTrayLocation();
+        }                                              
 
         /// <summary>
         /// Shows a custom control as a tooltip in the tray location.
@@ -217,8 +233,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
             popup.Placement = PlacementMode.AbsolutePoint;
             popup.StaysOpen = true;
 
-            Point position = TrayInfo.GetTrayLocation();
-            position = GetDeviceCoordinates(position);
+            
+            Point position = this.CustomPopupPosition != null ? this.CustomPopupPosition() : this.GetPopupTrayPosition();
             popup.HorizontalOffset = position.X - 1;
             popup.VerticalOffset = position.Y - 1;
 
@@ -394,7 +410,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 WinApi.GetCursorPos(ref cursorPosition);
             }
 
-            cursorPosition = GetDeviceCoordinates(cursorPosition);
+            cursorPosition = TrayInfo.GetDeviceCoordinates(cursorPosition);
 
             bool isLeftClickCommandInvoked = false;
 
@@ -409,7 +425,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                         ShowTrayPopup(cursorPosition);
                     };
-                    singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+                    singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
                 }
                 else
@@ -431,7 +447,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                         ShowContextMenu(cursorPosition);
                     };
-                    singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+                    singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
                 }
                 else
@@ -450,7 +466,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                     };
-                singleClickTimer.Change(WinApi.GetDoubleClickTime(), Timeout.Infinite);
+                singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
             }
         }
 
@@ -954,34 +970,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         #endregion
 
-        /// <summary>
-        /// Recalculates OS coordinates in order to support WPFs coordinate
-        /// system if OS scaling (DPIs) is not 100%.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        private Point GetDeviceCoordinates(Point point)
-        {
-            if (double.IsNaN(scalingFactor))
-            {
-                //calculate scaling factor in order to support non-standard DPIs
-                var presentationSource = PresentationSource.FromVisual(this);
-                if (presentationSource == null)
-                {
-                    scalingFactor = 1;
-                }
-                else
-                {
-                    var transform = presentationSource.CompositionTarget.TransformToDevice;
-                    scalingFactor = 1/transform.M11;
-                }
-            }
 
-            //on standard DPI settings, just return the point
-            if (scalingFactor == 1.0) return point;
-
-            return new Point() {X = (int) (point.X*scalingFactor), Y = (int) (point.Y*scalingFactor)};
-        }
 
         #region Dispose / Exit
 
