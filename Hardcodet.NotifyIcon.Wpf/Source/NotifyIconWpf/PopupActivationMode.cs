@@ -70,6 +70,17 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <summary>
         /// The item is displayed whenever a click occurs.
         /// </summary>
+        AnyClick,
+
+        /// <summary>
+        /// The mouse is hovering over the Notify Icon (ToolTip behavior).
+        /// </summary>
+        Hover,
+
+        /// <summary>
+        /// The item is displayed whenever a click occurs, or the mouse hovers
+        /// over the icon (ToolTip behavior).
+        /// </summary>
         All
     }
 }

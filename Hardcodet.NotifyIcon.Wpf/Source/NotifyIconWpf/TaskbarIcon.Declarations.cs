@@ -96,7 +96,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// TrayToolTipResolved Read-Only Dependency Property
         /// </summary>
         private static readonly DependencyPropertyKey TrayToolTipResolvedPropertyKey
-            = DependencyProperty.RegisterReadOnly("TrayToolTipResolved", typeof (ToolTip), typeof (TaskbarIcon),
+            = DependencyProperty.RegisterReadOnly("TrayToolTipResolved", typeof(Popup), typeof(TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
 
 
@@ -116,9 +116,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
         [Category(CategoryName)]
         [Browsable(true)]
         [Bindable(true)]
-        public ToolTip TrayToolTipResolved
+        public Popup TrayToolTipResolved
         {
-            get { return (ToolTip) GetValue(TrayToolTipResolvedProperty); }
+            get { return (Popup)GetValue(TrayToolTipResolvedProperty); }
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// property.  
         /// </summary>
         /// <param name="value">The new value for the property.</param>
-        protected void SetTrayToolTipResolved(ToolTip value)
+        protected void SetTrayToolTipResolved(Popup value)
         {
             SetValue(TrayToolTipResolvedPropertyKey, value);
         }
@@ -304,7 +304,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             //do not touch tooltips if we have a custom tooltip element
             if (TrayToolTip == null)
             {
-                ToolTip currentToolTip = TrayToolTipResolved;
+                Popup currentToolTip = TrayToolTipResolved;
                 if (currentToolTip == null)
                 {
                     //if we don't have a wrapper tooltip for the tooltip text, create it now
@@ -313,7 +313,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 else
                 {
                     //if we have a wrapper tooltip that shows the old tooltip text, just update content
-                    currentToolTip.Content = e.NewValue;
+                    currentToolTip.Child = new ContentControl {Content = e.NewValue}; //TODO hackery
                 }
             }
 
@@ -375,7 +375,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <param name="e">Provides information about the updated property.</param>
         private void OnTrayToolTipPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
-            //recreate tooltip control
+            //recreate tooltip popup
             CreateCustomToolTip();
 
             if (e.OldValue != null)
@@ -388,12 +388,45 @@ namespace Hardcodet.Wpf.TaskbarNotification
             {
                 //set this taskbar icon as a reference to the new tooltip element
                 SetParentTaskbarIcon((DependencyObject) e.NewValue, this);
+
+                TrayToolTip.IsHitTestVisible = IsToolTipInteractive;
             }
 
             //update tooltip settings - needed to make sure a string is set, even
             //if the ToolTipText property is not set. Otherwise, the event that
             //triggers tooltip display is never fired.
             WriteToolTipSettings();
+        }
+
+        #endregion
+
+        #region IsToolTipInteractive
+        
+        public static readonly DependencyProperty IsToolTipInteractiveProperty =
+            DependencyProperty.Register("IsToolTipInteractive", typeof(bool), typeof(TaskbarIcon),
+                new FrameworkPropertyMetadata(true, OnIsToolTipInteractiveChanged));
+
+        [Bindable(true)]
+        [Category(CategoryName)]
+        [DisplayName("Clickable ToolTip")]
+        [Description("Whether the ToolTip can be selected / clicked on.")]
+        public bool IsToolTipInteractive
+        {
+            get { return (bool)GetValue(IsToolTipInteractiveProperty); }
+            set { SetValue(IsToolTipInteractiveProperty, value); }
+        }
+
+        /// <summary>
+        /// Handles changes to the IsToolTipInteractive property.
+        /// </summary>
+        private static void OnIsToolTipInteractiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (TaskbarIcon)d;
+
+            if (target.TrayToolTip != null)
+            {
+                target.TrayToolTip.IsHitTestVisible = target.IsToolTipInteractive;
+            }
         }
 
         #endregion

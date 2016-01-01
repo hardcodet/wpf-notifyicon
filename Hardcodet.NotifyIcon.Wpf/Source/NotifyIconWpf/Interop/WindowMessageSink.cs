@@ -25,7 +25,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
@@ -290,10 +289,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     MouseEventReceived(MouseEvent.BalloonToolTipClicked);
                     break;
 
+                //show ToolTip
                 case 0x406:
                     ChangeToolTipStateRequest(true);
                     break;
 
+                //hide ToolTip
                 case 0x407:
                     ChangeToolTipStateRequest(false);
                     break;

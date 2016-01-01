@@ -53,6 +53,7 @@
     <Compile Include="Interop\Point.cs" />
     <Compile Include="Interop\WindowClass.cs" />
     <Compile Include="PopupActivationMode.cs" />
+    <Compile Include="PopupHandler.cs" />
     <Compile Include="RoutedEventHelper.cs" />
     <Compile Include="Interop\WinApi.cs" />
     <Compile Include="Interop\MouseEvent.cs" />
@@ -68,6 +69,7 @@
     </Compile>
     <Compile Include="TaskbarIcon.cs" />
     <Compile Include="TaskbarIcon.Declarations.cs" />
+    <Compile Include="ToolTipObserver.cs" />
     <Compile Include="Util.cs" />
     <None Include="Diagrams\TaskbarIcon Overview.cd" />
     <AppDesigner Include="Properties\" />

@@ -29,6 +29,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
@@ -66,6 +67,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// and double clicks.
         /// </summary>
         private readonly Timer singleClickTimer;
+
+        /// <summary>
+        /// Maintains opened tooltip popups.
+        /// </summary>
+        private ToolTipObserver toolTipObserver;
 
         /// <summary>
         /// A timer that is used to close open balloon tooltips.
@@ -466,21 +472,23 @@ namespace Hardcodet.Wpf.TaskbarNotification
         private void OnToolTipChange(bool visible)
         {
             //if we don't have a tooltip, there's nothing to do here...
-            if (TrayToolTipResolved == null) return;
+            //if (TrayToolTipResolved == null) return;
 
             if (visible)
             {
-                if (IsPopupOpen)
+                if (IsPopupOpen) //TODO return if IsEnabled is  false
                 {
                     //ignore if we are already displaying something down there
                     return;
                 }
 
                 var args = RaisePreviewTrayToolTipOpenEvent();
+
+                //if the user handled the event by herself, we're done
                 if (args.Handled) return;
 
-                TrayToolTipResolved.IsOpen = true;
-
+                toolTipObserver.ShowToolTip();
+                
                 //raise attached event first
                 if (TrayToolTip != null) RaiseToolTipOpenedEvent(TrayToolTip);
 
@@ -493,11 +501,16 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 if (args.Handled) return;
 
                 //raise attached event first
-                if (TrayToolTip != null) RaiseToolTipCloseEvent(TrayToolTip);
+                if (TrayToolTip != null) RaiseToolTipCloseEvent(TrayToolTip); //TODO this must be fired with a delay once the observer really closed it!
 
-                TrayToolTipResolved.IsOpen = false;
+                //TrayToolTipResolved.IsOpen = false;
+                if (!toolTipObserver.IsMouseOverToolTip)
+                {
+                    toolTipObserver.BeginCloseToolTip();
+                }
 
                 //bubble event
+                //TODO this must be fired with a delay once the observer really closed it!
                 RaiseTrayToolTipCloseEvent();
             }
         }
@@ -519,44 +532,64 @@ namespace Hardcodet.Wpf.TaskbarNotification
         private void CreateCustomToolTip()
         {
             //check if the item itself is a tooltip
-            ToolTip tt = TrayToolTip as ToolTip;
+            var popup = TrayToolTip as Popup;
 
-            if (tt == null && TrayToolTip != null)
+            if (popup == null && TrayToolTip != null)
             {
-                //create an invisible wrapper tooltip that hosts the UIElement
-                tt = new ToolTip();
-                tt.Placement = PlacementMode.Mouse;
+                //create an invisible popup that hosts the UIElement
+                popup = new Popup();
+                popup.AllowsTransparency = true;
+                
+                //don't animate by default - devs can use attached
+                //events or override
+                popup.PopupAnimation = PopupAnimation.None; //TODO make this configurable
+
+                //the CreateRootPopup method outputs binding errors in the debug window because
+                //it tries to bind to "Popup-specific" properties in case they are provided by the child.
+                //We don't need that so just assign the control as the child.
+                popup.Child = TrayToolTip;
 
                 //do *not* set the placement target, as it causes the popup to become hidden if the
                 //TaskbarIcon's parent is hidden, too. At runtime, the parent can be resolved through
                 //the ParentTaskbarIcon attached dependency property:
-                //tt.PlacementTarget = this;
+                //popup.PlacementTarget = this;
 
-                //make sure the tooltip is invisible
-                tt.HasDropShadow = false;
-                tt.BorderThickness = new Thickness(0);
-                tt.Background = System.Windows.Media.Brushes.Transparent;
-
-                //setting the 
-                tt.StaysOpen = true;
-                tt.Content = TrayToolTip;
+                popup.Placement = PlacementMode.Mouse;
             }
-            else if (tt == null && !String.IsNullOrEmpty(ToolTipText))
+            else if (popup == null && !String.IsNullOrEmpty(ToolTipText))
             {
-                //create a simple tooltip for the ToolTipText string
-                tt = new ToolTip();
-                tt.Content = ToolTipText;
+                //TODO create means to show a regular tooltip instead of this hackery
+                var toolTip = new ToolTip();
+                popup = new Popup(); //TODO hack
+                popup.ToolTip = toolTip;
+                toolTip.Content = ToolTipText;
+
+                //wire max width
+                var binding = new Binding
+                {
+                    Path = new PropertyPath(Popup.IsOpenProperty),
+                    Mode = BindingMode.OneWay,
+                    Source = popup
+                };
+                BindingOperations.SetBinding(toolTip, System.Windows.Controls.ToolTip.IsOpenProperty, binding);
             }
 
             //the tooltip explicitly gets the DataContext of this instance.
             //If there is no DataContext, the TaskbarIcon assigns itself
-            if (tt != null)
+            if (popup != null)
             {
-                UpdateDataContext(tt, null, DataContext);
+                UpdateDataContext(popup, null, DataContext);
             }
 
             //store a reference to the used tooltip
-            SetTrayToolTipResolved(tt);
+            SetTrayToolTipResolved(popup);
+
+            if (popup != null)
+            {
+                //TODO that should just become a property setter on the observer, with null allowed
+                if(toolTipObserver == null) toolTipObserver = new ToolTipObserver(this, 500);
+                toolTipObserver.Popup = popup;
+            }
         }
 
 
@@ -666,20 +699,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 //open popup
                 TrayPopupResolved.IsOpen = true;
 
-                IntPtr handle = IntPtr.Zero;
-                if (TrayPopupResolved.Child != null)
-                {
-                    //try to get a handle on the popup itself (via its child)
-                    HwndSource source = (HwndSource) PresentationSource.FromVisual(TrayPopupResolved.Child);
-                    if (source != null) handle = source.Handle;
-                }
-
-                //if we don't have a handle for the popup, fall back to the message sink
-                if (handle == IntPtr.Zero) handle = messageSink.MessageWindowHandle;
-
-                //activate either popup or message sink to track deactivation.
-                //otherwise, the popup does not close if the user clicks somewhere else
-                WinApi.SetForegroundWindow(handle);
+                //activate element
+                FocusElement(TrayPopupResolved);
 
                 //raise attached event - item should never be null unless developers
                 //changed the CustomPopup directly...
@@ -688,6 +709,29 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 //bubble routed event
                 RaiseTrayPopupOpenEvent();
             }
+        }
+
+
+        /// <summary>
+        /// Activates a given UI element.
+        /// </summary>
+        private void FocusElement(Popup popup)
+        {
+            IntPtr handle = IntPtr.Zero;
+            if (popup.Child != null)
+            {
+                //try to get a handle on the popup itself (via its child)
+                HwndSource source = (HwndSource)PresentationSource.FromVisual(popup.Child);
+                if (source != null) handle = source.Handle;
+            }
+
+            //if we don't have a handle for the popup, fall back to the message sink
+            if (handle == IntPtr.Zero) handle = messageSink.MessageWindowHandle;
+
+            //activate either popup or message sink to track deactivation.
+            //otherwise, the popup does not close if the user clicks somewhere else
+            WinApi.SetForegroundWindow(handle);
+
         }
 
         #endregion

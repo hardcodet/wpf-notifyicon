@@ -25,6 +25,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -202,14 +203,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// is a null reference.</exception>
         public static bool Is<T>(this T value, params T[] candidates)
         {
-            if (candidates == null) return false;
-
-            foreach (var t in candidates)
-            {
-                if (value.Equals(t)) return true;
-            }
-
-            return false;
+            return candidates != null && candidates.Contains(value);
         }
 
         #endregion
@@ -236,9 +230,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     return me.Is(MouseEvent.IconDoubleClick);
                 case PopupActivationMode.MiddleClick:
                     return me == MouseEvent.IconMiddleMouseUp;
-                case PopupActivationMode.All:
+                case PopupActivationMode.AnyClick:
                     //return true for everything except mouse movements
                     return me != MouseEvent.MouseMove;
+                case PopupActivationMode.All:
+                    return true;
                 default:
                     throw new ArgumentOutOfRangeException("activationMode");
             }
