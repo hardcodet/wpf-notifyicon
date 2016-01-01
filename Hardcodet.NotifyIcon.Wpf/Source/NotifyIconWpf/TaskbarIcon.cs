@@ -792,7 +792,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
         }
 
-
         /// <summary>
         /// Displays a balloon tip with the specified title,
         /// text, and a custom icon in the taskbar for the specified time period.
@@ -800,15 +799,21 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <param name="title">The title to display on the balloon tip.</param>
         /// <param name="message">The text to display on the balloon tip.</param>
         /// <param name="customIcon">A custom icon.</param>
+        /// <param name="largeIcon">True to allow large icons (Windows Vista and later).</param>
         /// <exception cref="ArgumentNullException">If <paramref name="customIcon"/>
         /// is a null reference.</exception>
-        public void ShowBalloonTip(string title, string message, Icon customIcon)
+        public void ShowBalloonTip(string title, string message, Icon customIcon, bool largeIcon = false)
         {
             if (customIcon == null) throw new ArgumentNullException("customIcon");
 
             lock (this)
             {
-                ShowBalloonTip(title, message, BalloonFlags.User, customIcon.Handle);
+                var flags = BalloonFlags.User;
+
+                if (largeIcon)
+                    flags |= BalloonFlags.LargeIcon;
+
+                ShowBalloonTip(title, message, flags, customIcon.Handle);
             }
         }
 
