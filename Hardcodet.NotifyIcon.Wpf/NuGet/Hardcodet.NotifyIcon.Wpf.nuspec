@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Hardcodet.NotifyIcon.Wpf</id>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
         <title>Hardcodet WPF NotifyIcon</title>
         <authors>Philipp Sumi</authors>
         <owners>Philipp Sumi</owners>
@@ -13,8 +13,8 @@
 
 Source code and extensive sample application available at http://www.hardcodet.net/projects/wpf-notifyicon</description>
         <summary>NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform.</summary>
-        <releaseNotes>Mostly bug fixes and full x64 / Win 8 support. Contains source and binaries for .NET 3.5 - 4.51.</releaseNotes>
-        <copyright>Copyright (c) 2013 Philipp Sumi</copyright>
+        <releaseNotes>Some bugfixes plus option to switch off double-click delays. Contains source and binaries for .NET 3.5 - 4.51.</releaseNotes>
+        <copyright>Copyright (c) 2016 Philipp Sumi</copyright>
         <language />
         <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>
     </metadata>
@@ -37,6 +37,6 @@ Source code and extensive sample application available at http://www.hardcodet.n
         <file src="..\Binaries\net451\Hardcodet.Wpf.TaskbarNotification.dll" target="lib\net451\Hardcodet.Wpf.TaskbarNotification.dll" />
         <file src="..\Binaries\net451\Hardcodet.Wpf.TaskbarNotification.pdb" target="lib\net451\Hardcodet.Wpf.TaskbarNotification.pdb" />
         <file src="..\Binaries\net451\Hardcodet.Wpf.TaskbarNotification.xml" target="lib\net451\Hardcodet.Wpf.TaskbarNotification.xml" />
-        <file src="readme.1.0.5.txt" target="readme.txt" />
+        <file src="readme.txt" target="readme.txt" />
     </files>
 </package>
