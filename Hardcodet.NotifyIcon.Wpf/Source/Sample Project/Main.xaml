@@ -30,7 +30,7 @@
             FontSize="14"
             FontStyle="Italic"
             FontWeight="Bold"
-            TextWrapping="Wrap" Text="WPF NotifyIcon 1.0.5 - Samples"/>
+            TextWrapping="Wrap" Text="WPF NotifyIcon 1.0.6 - Samples"/>
         <Button
             HorizontalAlignment="Left"
             Margin="10,133,0,0"

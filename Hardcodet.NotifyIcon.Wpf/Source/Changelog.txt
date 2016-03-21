@@ -2,6 +2,13 @@ hardcodet.net NotifyIcon for WPF - Changelog
 Copyright (c) 2009-2013 Philipp Sumi
 Contact and Information: http://www.hardcodet.net
 
+1.0.6 (2016.03.20)
+*****
+
+FIX   GetDeviceCoordinates now uses new SystemInfo class, which resolves potential null reference issues. Thanks  Alexandr Reshetnikov.
+ADD   Added "NoLeftClickDelay" TaskbarIcon dependency property, to optionally make left clicks work without delay. Thanks John Reynolds.
+ADD   Overload to show built-in tray tooltips with big icons. Thanks amulware.
+
 
 1.0.5 (2013.11.20)
 *****
