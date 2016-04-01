@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Hardcodet.NotifyIcon.Wpf</id>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
         <title>Hardcodet WPF NotifyIcon</title>
         <authors>Philipp Sumi</authors>
         <owners>Philipp Sumi</owners>
@@ -13,7 +13,7 @@
 
 Source code and extensive sample application available at http://www.hardcodet.net/projects/wpf-notifyicon</description>
         <summary>NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform.</summary>
-        <releaseNotes>Some bugfixes plus option to switch off double-click delays. Contains source and binaries for .NET 3.5 - 4.51.</releaseNotes>
+        <releaseNotes>Bugfixes. Contains source and binaries for .NET 3.5 - 4.51.</releaseNotes>
         <copyright>Copyright (c) 2016 Philipp Sumi</copyright>
         <language />
         <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>

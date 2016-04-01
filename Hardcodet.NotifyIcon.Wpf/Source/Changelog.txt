@@ -1,6 +1,12 @@
 hardcodet.net NotifyIcon for WPF - Changelog
-Copyright (c) 2009-2013 Philipp Sumi
+Copyright (c) 2009-2016 Philipp Sumi
 Contact and Information: http://www.hardcodet.net
+
+1.0.7 (2016.04.01)
+*****
+
+FIX   Potential null-reference exceptions with the control trying to fire events before it registered event listeners. Thanks Maxim Miroshnikov.
+
 
 1.0.6 (2016.03.20)
 *****
