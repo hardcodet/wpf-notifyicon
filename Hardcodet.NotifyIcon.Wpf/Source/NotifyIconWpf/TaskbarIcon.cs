@@ -142,6 +142,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             messageSink.ChangeToolTipStateRequest += OnToolTipChange;
             messageSink.BalloonToolTipChanged += OnBalloonToolTipChanged;
 
+            //start listening once we registered to events
+            if(!Util.IsDesignMode) messageSink.Listen();
+
             //init single click / balloon timers
             singleClickTimer = new Timer(DoSingleClickAction);
             balloonCloseTimer = new Timer(CloseBalloonCallback);

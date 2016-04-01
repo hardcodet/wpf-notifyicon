@@ -25,7 +25,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
@@ -119,7 +118,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         public WindowMessageSink(NotifyIconVersion version)
         {
             Version = version;
-            CreateMessageWindow();
         }
 
 
@@ -127,6 +125,10 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         {
         }
 
+        internal void Listen()
+        {
+            CreateMessageWindow();
+        }
 
         /// <summary>
         /// Creates a dummy instance that provides an empty
@@ -154,7 +156,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         private void CreateMessageWindow()
         {
             //generate a unique ID for the window
-            WindowId = "WPFTaskbarIcon_" + DateTime.Now.Ticks;
+            WindowId = "WPFTaskbarIcon_" + Guid.NewGuid();
 
             //register window message handler
             messageHandler = OnWindowMessageReceived;
