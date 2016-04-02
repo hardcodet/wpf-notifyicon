@@ -70,7 +70,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <summary>
         /// The time we should wait for a double click.
         /// </summary>
-        private int doubleClickWaitTime
+        private int DoubleClickWaitTime
         {
             get { return NoLeftClickDelay ? 0 : WinApi.GetDoubleClickTime(); }
         }
@@ -141,9 +141,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
             messageSink.TaskbarCreated += OnTaskbarCreated;
             messageSink.ChangeToolTipStateRequest += OnToolTipChange;
             messageSink.BalloonToolTipChanged += OnBalloonToolTipChanged;
-
-            //start listening once we registered to events
-            if(!Util.IsDesignMode) messageSink.Listen();
 
             //init single click / balloon timers
             singleClickTimer = new Timer(DoSingleClickAction);
@@ -428,7 +425,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                         ShowTrayPopup(cursorPosition);
                     };
-                    singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
+                    singleClickTimer.Change(DoubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
                 }
                 else
@@ -450,7 +447,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                         ShowContextMenu(cursorPosition);
                     };
-                    singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
+                    singleClickTimer.Change(DoubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
                 }
                 else
@@ -469,7 +466,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
                     };
-                singleClickTimer.Change(doubleClickWaitTime, Timeout.Infinite);
+                singleClickTimer.Change(DoubleClickWaitTime, Timeout.Infinite);
             }
         }
 
