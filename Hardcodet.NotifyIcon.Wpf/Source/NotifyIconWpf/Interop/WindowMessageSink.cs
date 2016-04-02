@@ -118,16 +118,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         public WindowMessageSink(NotifyIconVersion version)
         {
             Version = version;
+            CreateMessageWindow();
         }
 
 
         private WindowMessageSink()
         {
-        }
-
-        internal void Listen()
-        {
-            CreateMessageWindow();
         }
 
         /// <summary>
@@ -209,7 +205,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             if (messageId == taskbarRestartMessageId)
             {
                 //recreate the icon if the taskbar was restarted (e.g. due to Win Explorer shutdown)
-                TaskbarCreated();
+                var listener = TaskbarCreated;
+                if(listener != null) listener();
             }
 
             //forward message
@@ -280,12 +277,14 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     break;
 
                 case 0x402:
-                    BalloonToolTipChanged(true);
+                    var listener = BalloonToolTipChanged;
+                    if (listener != null) listener(true);
                     break;
 
                 case 0x403:
                 case 0x404:
-                    BalloonToolTipChanged(false);
+                    listener = BalloonToolTipChanged;
+                    if (listener != null) listener(false);
                     break;
 
                 case 0x405:
@@ -293,11 +292,13 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     break;
 
                 case 0x406:
-                    ChangeToolTipStateRequest(true);
+                    listener = ChangeToolTipStateRequest;
+                    if (listener != null) listener(true);
                     break;
 
                 case 0x407:
-                    ChangeToolTipStateRequest(false);
+                    listener = ChangeToolTipStateRequest;
+                    if (listener != null) listener(false);
                     break;
 
                 default:
