@@ -4,23 +4,6 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-
-[assembly: AssemblyTitle("NotifyIcon for WPF")]
-[assembly: AssemblyDescription("NotifyIcon implementation for the WPF platform.")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("hardcodet.net")]
-[assembly: AssemblyProduct("NotifyIcon WPF")]
-[assembly: AssemblyCopyright("Copyright © Philipp Sumi 2013")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-
-[assembly: AssemblyVersion("1.0.5.0")]
-[assembly: AssemblyFileVersion("1.0.5.0")]
-
 
 //provides simplified declaration in XAML
 [assembly: XmlnsPrefix("http://www.hardcodet.net/taskbar", "tb")]
