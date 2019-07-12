@@ -1,0 +1,14 @@
+; Top-most http://editorconfig.org/ file
+root = true
+
+[*]
+end_of_line = CRLF
+
+; 4-column tab indentation
+[*.{cs,xaml,xml}]
+indent_style = space
+indent_size = 4
+
+[*.{csproj,props,targets,md,yml}]
+indent_style = space
+indent_size = 2
