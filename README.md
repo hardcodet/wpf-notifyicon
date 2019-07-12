@@ -2,8 +2,7 @@
 
 :rocket: **This is the new official repository of the Hardcodet WPF NotifyIcon** :rocket:
 
-Current version: 1.0.8
-https://www.nuget.org/packages/Hardcodet.NotifyIcon.Wpf/
+Current version: [![Nuget](https://img.shields.io/nuget/v/Hardcodet.NotifyIcon.Wpf.svg)](https://www.nuget.org/packages/Hardcodet.NotifyIcon.Wpf/)
 
 ## Description
 
