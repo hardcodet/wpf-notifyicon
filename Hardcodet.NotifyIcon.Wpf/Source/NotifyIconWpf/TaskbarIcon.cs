@@ -72,10 +72,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <summary>
         /// The time we should wait for a double click.
         /// </summary>
-        private int DoubleClickWaitTime
-        {
-            get { return NoLeftClickDelay ? 0 : WinApi.GetDoubleClickTime(); }
-        }
+        private int DoubleClickWaitTime => NoLeftClickDelay ? 0 : WinApi.GetDoubleClickTime();
 
         /// <summary>
         /// A timer that is used to close open balloon tooltips.
@@ -92,10 +89,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// on the OS. Windows Vista or higher is required in order to
         /// support this feature.
         /// </summary>
-        public bool SupportsCustomToolTips
-        {
-            get { return messageSink.Version == NotifyIconVersion.Vista; }
-        }
+        public bool SupportsCustomToolTips => messageSink.Version == NotifyIconVersion.Vista;
 
 
         /// <summary>
@@ -156,10 +150,20 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #endregion
 
         #region Custom Balloons
+        /// <summary>
+        /// A delegate to handle customer popup positions.
+        /// </summary>
         public delegate Point GetCustomPopupPosition();
 
-        public GetCustomPopupPosition CustomPopupPosition;
+        /// <summary>
+        /// Specify a custom popup position
+        /// </summary>
+        public GetCustomPopupPosition CustomPopupPosition { get; set; }
 
+        /// <summary>
+        /// Returns the location of the system tray
+        /// </summary>
+        /// <returns>Point</returns>
         public Point GetPopupTrayPosition()
         {
             return TrayInfo.GetTrayLocation();
@@ -171,13 +175,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <param name="balloon"></param>
         /// <param name="animation">An optional animation for the popup.</param>
         /// <param name="timeout">The time after which the popup is being closed.
-        /// Submit null in order to keep the balloon open inde
+        /// Submit null in order to keep the balloon open indefinitely
         /// </param>
         /// <exception cref="ArgumentNullException">If <paramref name="balloon"/>
         /// is a null reference.</exception>
         public void ShowCustomBalloon(UIElement balloon, PopupAnimation animation, int? timeout)
         {
-            Dispatcher dispatcher = this.GetDispatcher();
+            var dispatcher = this.GetDispatcher();
             if (!dispatcher.CheckAccess())
             {
                 var action = new Action(() => ShowCustomBalloon(balloon, animation, timeout));
@@ -185,7 +189,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 return;
             }
 
-            if (balloon == null) throw new ArgumentNullException("balloon");
+            if (balloon == null) throw new ArgumentNullException(nameof(balloon));
             if (timeout.HasValue && timeout < 500)
             {
                 string msg = "Invalid timeout of {0} milliseconds. Timeout must be at least 500 ms";
@@ -819,6 +823,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
                 if (largeIcon)
                 {
+                    // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
                     flags |= BalloonFlags.LargeIcon;
                 }
 

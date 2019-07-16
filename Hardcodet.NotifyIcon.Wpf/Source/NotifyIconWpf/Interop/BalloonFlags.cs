@@ -6,7 +6,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// Flags that define the icon that is shown on a balloon
     /// tooltip.
     /// </summary>
-    [Flags]
     public enum BalloonFlags
     {
         /// <summary>

@@ -82,7 +82,7 @@ namespace Samples.Commands
         /// Resolves the window that owns the TaskbarIcon class.
         /// </summary>
         /// <param name="commandParameter"></param>
-        /// <returns></returns>
+        /// <returns>Window</returns>
         protected Window GetTaskbarWindow(object commandParameter)
         {
             if (IsDesignMode) return null;

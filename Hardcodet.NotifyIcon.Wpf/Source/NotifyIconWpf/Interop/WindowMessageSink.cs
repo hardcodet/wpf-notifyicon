@@ -131,7 +131,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// pointer rather than a real window handler.<br/>
         /// Used at design time.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>WindowMessageSink</returns>
         internal static WindowMessageSink CreateEmpty()
         {
             return new WindowMessageSink

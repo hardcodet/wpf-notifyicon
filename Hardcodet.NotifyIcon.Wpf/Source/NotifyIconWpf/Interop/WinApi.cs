@@ -43,7 +43,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// Registers a listener for a window message.
         /// </summary>
         /// <param name="lpString"></param>
-        /// <returns></returns>
+        /// <returns>uint</returns>
         [DllImport(User32, EntryPoint = "RegisterWindowMessageW")]
         public static extern uint RegisterWindowMessage([MarshalAs(UnmanagedType.LPWStr)] string lpString);
 
@@ -52,7 +52,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// taskbar icon.
         /// </summary>
         /// <param name="hWnd"></param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         [DllImport(User32, SetLastError = true)]
         public static extern bool DestroyWindow(IntPtr hWnd);
 
@@ -61,7 +61,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// Gives focus to a given window.
         /// </summary>
         /// <param name="hWnd"></param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         [DllImport(User32)]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 

@@ -49,8 +49,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// Recalculates OS coordinates in order to support WPFs coordinate
         /// system if OS scaling (DPIs) is not 100%.
         /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
+        /// <param name="point">Point</param>
+        /// <returns>Point</returns>
         public static Point GetDeviceCoordinates(Point point)
         {
           return new Point

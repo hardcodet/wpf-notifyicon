@@ -277,7 +277,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <summary>
         /// Returns a dispatcher for multi-threaded scenarios
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Dispatcher</returns>
         internal static Dispatcher GetDispatcher(this DispatcherObject source)
         {
             //use the application's dispatcher by default
@@ -286,7 +286,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             //fallback for WinForms environments
             if (source.Dispatcher != null) return source.Dispatcher;
 
-            //ultimatively use the thread's dispatcher
+            // ultimately use the thread's dispatcher
             return Dispatcher.CurrentDispatcher;
         }
 

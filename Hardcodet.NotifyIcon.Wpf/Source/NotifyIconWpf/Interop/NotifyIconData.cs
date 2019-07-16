@@ -123,7 +123,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// a hidden taskbar icon without the icon being set.
         /// </summary>
         /// <param name="handle"></param>
-        /// <returns></returns>
+        /// <returns>NotifyIconData</returns>
         public static NotifyIconData CreateDefault(IntPtr handle)
         {
             var data = new NotifyIconData();
