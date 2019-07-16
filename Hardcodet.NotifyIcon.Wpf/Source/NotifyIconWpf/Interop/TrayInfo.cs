@@ -53,7 +53,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// <returns></returns>
         public static Point GetDeviceCoordinates(Point point)
         {
-          return new Point() { X = (int)(point.X / SystemInfo.DpiXFactor), Y = (int)(point.Y / SystemInfo.DpiYFactor) };
+          return new Point
+          {
+              X = (int)(point.X / SystemInfo.DpiFactorX),
+              Y = (int)(point.Y / SystemInfo.DpiFactorY)
+          };
         }
     }
 }

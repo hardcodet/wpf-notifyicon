@@ -2,41 +2,34 @@ using System.Windows.Interop;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
+    /// <summary>
+    /// This class is a helper for system information, currently to get the DPI factors
+    /// </summary>
     public static class SystemInfo
     {
-        private static System.Windows.Point? dpiFactors;
+        private static readonly System.Windows.Point DpiFactors;
 
-        private static System.Windows.Point? DpiFactors
+        static SystemInfo()
         {
-            get
+            using (var source = new HwndSource(new HwndSourceParameters()))
             {
-                if (dpiFactors == null)
+                if (source.CompositionTarget?.TransformToDevice != null)
                 {
-                    using (var source = new HwndSource(new HwndSourceParameters()))
-                    {
-                        dpiFactors = new System.Windows.Point(source.CompositionTarget.TransformToDevice.M11, source.CompositionTarget.TransformToDevice.M22);
-                    }
+                    DpiFactors = new System.Windows.Point(source.CompositionTarget.TransformToDevice.M11, source.CompositionTarget.TransformToDevice.M22);
+                    return;
                 }
-                return dpiFactors;
+                DpiFactors = new System.Windows.Point(1, 1);
             }
         }
 
-        public static double DpiXFactor
-        {
-            get
-            {
-                var factors = DpiFactors;
-                return factors?.X ?? 1;
-            }
-        }
+        /// <summary>
+        /// Returns the DPI X Factor
+        /// </summary>
+        public static double DpiFactorX => DpiFactors.X;
 
-        public static double DpiYFactor
-        {
-            get
-            {
-                var factors = DpiFactors;
-                return factors?.Y ?? 1;
-            }
-        }
+        /// <summary>
+        /// Returns the DPI Y Factor
+        /// </summary>
+        public static double DpiFactorY => DpiFactors.Y;
     }
 }
