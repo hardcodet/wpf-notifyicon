@@ -225,17 +225,17 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         {
             if (msg != CallbackMessageId) return;
 
-            switch (lParam.ToInt32())
+            switch ((WindowsMessages)lParam.ToInt32())
             {
-                case 0x200:
+                case WindowsMessages.WM_MOUSEMOVE:
                     MouseEventReceived(MouseEvent.MouseMove);
                     break;
 
-                case 0x201:
+                case WindowsMessages.WM_LBUTTONDOWN:
                     MouseEventReceived(MouseEvent.IconLeftMouseDown);
                     break;
 
-                case 0x202:
+                case WindowsMessages.WM_LBUTTONUP:
                     if (!isDoubleClick)
                     {
                         MouseEventReceived(MouseEvent.IconLeftMouseUp);
@@ -243,56 +243,56 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     isDoubleClick = false;
                     break;
 
-                case 0x203:
+                case WindowsMessages.WM_LBUTTONDBLCLK:
                     isDoubleClick = true;
                     MouseEventReceived(MouseEvent.IconDoubleClick);
                     break;
 
-                case 0x204:
+                case WindowsMessages.WM_RBUTTONDOWN:
                     MouseEventReceived(MouseEvent.IconRightMouseDown);
                     break;
 
-                case 0x205:
+                case WindowsMessages.WM_RBUTTONUP:
                     MouseEventReceived(MouseEvent.IconRightMouseUp);
                     break;
 
-                case 0x206:
+                case WindowsMessages.WM_RBUTTONDBLCLK:
                     //double click with right mouse button - do not trigger event
                     break;
 
-                case 0x207:
+                case WindowsMessages.WM_MBUTTONDOWN:
                     MouseEventReceived(MouseEvent.IconMiddleMouseDown);
                     break;
 
-                case 520:
+                case WindowsMessages.WM_MBUTTONUP:
                     MouseEventReceived(MouseEvent.IconMiddleMouseUp);
                     break;
 
-                case 0x209:
+                case WindowsMessages.WM_MBUTTONDBLCLK:
                     //double click with middle mouse button - do not trigger event
                     break;
 
-                case 0x402:
+                case WindowsMessages.WM_USER2:
                     var listener = BalloonToolTipChanged;
                     listener?.Invoke(true);
                     break;
 
-                case 0x403:
-                case 0x404:
+                case WindowsMessages.WM_USER3:
+                case WindowsMessages.WM_USER4:
                     listener = BalloonToolTipChanged;
                     listener?.Invoke(false);
                     break;
 
-                case 0x405:
+                case WindowsMessages.WM_USER5:
                     MouseEventReceived(MouseEvent.BalloonToolTipClicked);
                     break;
 
-                case 0x406:
+                case WindowsMessages.WM_USER6:
                     listener = ChangeToolTipStateRequest;
                     listener?.Invoke(true);
                     break;
 
-                case 0x407:
+                case WindowsMessages.WM_USER7:
                     listener = ChangeToolTipStateRequest;
                     listener?.Invoke(false);
                     break;
