@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows;
 
 namespace Samples.Tutorials.ContextMenus
 {
@@ -24,12 +21,12 @@ namespace Samples.Tutorials.ContextMenus
             base.OnClosing(e);
         }
 
-        private void MyNotifyIcon_TrayContextMenuOpen(object sender, System.Windows.RoutedEventArgs e)
+        private void MyNotifyIcon_TrayContextMenuOpen(object sender, RoutedEventArgs e)
         {
             OpenEventCounter.Text = (int.Parse(OpenEventCounter.Text) + 1).ToString();
         }
 
-        private void MyNotifyIcon_PreviewTrayContextMenuOpen(object sender, System.Windows.RoutedEventArgs e)
+        private void MyNotifyIcon_PreviewTrayContextMenuOpen(object sender, RoutedEventArgs e)
         {
             //marking the event as handled suppresses the context menu
             e.Handled = (bool) SuppressContextMenu.IsChecked;

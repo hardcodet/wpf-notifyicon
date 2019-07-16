@@ -54,7 +54,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// TrayPopupResolved Read-Only Dependency Property
         /// </summary>
         private static readonly DependencyPropertyKey TrayPopupResolvedPropertyKey
-            = DependencyProperty.RegisterReadOnly("TrayPopupResolved", typeof (Popup), typeof (TaskbarIcon),
+            = DependencyProperty.RegisterReadOnly(nameof(TrayPopupResolved), typeof (Popup), typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
 
 
@@ -96,7 +96,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// TrayToolTipResolved Read-Only Dependency Property
         /// </summary>
         private static readonly DependencyPropertyKey TrayToolTipResolvedPropertyKey
-            = DependencyProperty.RegisterReadOnly("TrayToolTipResolved", typeof (ToolTip), typeof (TaskbarIcon),
+            = DependencyProperty.RegisterReadOnly(nameof(TrayToolTipResolved), typeof (ToolTip), typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
 
 
@@ -139,7 +139,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// CustomBalloon Read-Only Dependency Property
         /// </summary>
         private static readonly DependencyPropertyKey CustomBalloonPropertyKey
-            = DependencyProperty.RegisterReadOnly("CustomBalloon", typeof (Popup), typeof (TaskbarIcon),
+            = DependencyProperty.RegisterReadOnly(nameof(CustomBalloon), typeof (Popup), typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// Resolves an image source and updates the <see cref="Icon" /> property accordingly.
         /// </summary>
         public static readonly DependencyProperty IconSourceProperty =
-            DependencyProperty.Register("IconSource",
+            DependencyProperty.Register(nameof(IconSource),
                 typeof (ImageSource),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null, IconSourcePropertyChanged));
@@ -256,10 +256,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// was set or if custom tooltips are not supported.
         /// </summary>
         public static readonly DependencyProperty ToolTipTextProperty =
-            DependencyProperty.Register("ToolTipText",
+            DependencyProperty.Register(nameof(ToolTipText),
                 typeof (string),
                 typeof (TaskbarIcon),
-                new FrameworkPropertyMetadata(String.Empty, ToolTipTextPropertyChanged));
+                new FrameworkPropertyMetadata(string.Empty, ToolTipTextPropertyChanged));
 
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// the <see cref="ToolTipText"/> property is set as well.
         /// </summary>
         public static readonly DependencyProperty TrayToolTipProperty =
-            DependencyProperty.Register("TrayToolTip",
+            DependencyProperty.Register(nameof(TrayToolTip),
                 typeof (UIElement),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null, TrayToolTipPropertyChanged));
@@ -404,7 +404,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// A control that is displayed as a popup when the taskbar icon is clicked.
         /// </summary>
         public static readonly DependencyProperty TrayPopupProperty =
-            DependencyProperty.Register("TrayPopup",
+            DependencyProperty.Register(nameof(TrayPopup),
                 typeof (UIElement),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null, TrayPopupPropertyChanged));
@@ -473,7 +473,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// Defaults to <see cref="PopupActivationMode.RightClick"/>.
         /// </summary>
         public static readonly DependencyProperty MenuActivationProperty =
-            DependencyProperty.Register("MenuActivation",
+            DependencyProperty.Register(nameof(MenuActivation),
                 typeof (PopupActivationMode),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(PopupActivationMode.RightClick));
@@ -501,7 +501,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// Default is <see cref="PopupActivationMode.LeftClick" />.
         /// </summary>
         public static readonly DependencyProperty PopupActivationProperty =
-            DependencyProperty.Register("PopupActivation",
+            DependencyProperty.Register(nameof(PopupActivation),
                 typeof (PopupActivationMode),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(PopupActivationMode.LeftClick));
@@ -673,7 +673,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// double clicked.
         /// </summary>
         public static readonly DependencyProperty DoubleClickCommandProperty =
-            DependencyProperty.Register("DoubleClickCommand",
+            DependencyProperty.Register(nameof(DoubleClickCommand),
                 typeof (ICommand),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
@@ -700,7 +700,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// Command parameter for the <see cref="DoubleClickCommand"/>.
         /// </summary>
         public static readonly DependencyProperty DoubleClickCommandParameterProperty =
-            DependencyProperty.Register("DoubleClickCommandParameter",
+            DependencyProperty.Register(nameof(DoubleClickCommandParameter),
                 typeof (object),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
@@ -726,7 +726,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// The target of the command that is fired if the notify icon is double clicked.
         /// </summary>
         public static readonly DependencyProperty DoubleClickCommandTargetProperty =
-            DependencyProperty.Register("DoubleClickCommandTarget",
+            DependencyProperty.Register(nameof(DoubleClickCommandTarget),
                 typeof (IInputElement),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
@@ -753,7 +753,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// double clicked.
         /// </summary>
         public static readonly DependencyProperty LeftClickCommandProperty =
-            DependencyProperty.Register("LeftClickCommand",
+            DependencyProperty.Register(nameof(LeftClickCommand),
                 typeof (ICommand),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
@@ -780,7 +780,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// Command parameter for the <see cref="LeftClickCommand"/>.
         /// </summary>
         public static readonly DependencyProperty LeftClickCommandParameterProperty =
-            DependencyProperty.Register("LeftClickCommandParameter",
+            DependencyProperty.Register(nameof(LeftClickCommandParameter),
                 typeof (object),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
@@ -807,7 +807,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// The target of the command that is fired if the notify icon is clicked.
         /// </summary>
         public static readonly DependencyProperty LeftClickCommandTargetProperty =
-            DependencyProperty.Register("LeftClickCommandTarget",
+            DependencyProperty.Register(nameof(LeftClickCommandTarget),
                 typeof (IInputElement),
                 typeof (TaskbarIcon),
                 new FrameworkPropertyMetadata(null));
@@ -834,7 +834,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// Set to true to make left clicks work without delay.
         /// </summary>
         public static readonly DependencyProperty NoLeftClickDelayProperty =
-            DependencyProperty.Register("NoLeftClickDelay",
+            DependencyProperty.Register(nameof(NoLeftClickDelay),
                 typeof(bool),
                 typeof(TaskbarIcon),
                 new FrameworkPropertyMetadata(false));
@@ -893,8 +893,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayLeftMouseDownEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayLeftMouseDownEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -935,8 +934,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayRightMouseDownEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayRightMouseDownEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -977,8 +975,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayMiddleMouseDownEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayMiddleMouseDownEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1018,8 +1015,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayLeftMouseUpEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayLeftMouseUpEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1059,8 +1055,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayRightMouseUpEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayRightMouseUpEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1101,8 +1096,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayMiddleMouseUpEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayMiddleMouseUpEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1145,8 +1139,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayMouseDoubleClickEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayMouseDoubleClickEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1186,8 +1179,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            var args = new RoutedEventArgs();
-            args.RoutedEvent = TrayMouseMoveEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayMouseMoveEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1228,8 +1220,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayBalloonTipShownEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayBalloonTipShownEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1270,8 +1261,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayBalloonTipClosedEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayBalloonTipClosedEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1312,8 +1302,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayBalloonTipClickedEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayBalloonTipClickedEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1354,8 +1343,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayContextMenuOpenEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayContextMenuOpenEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1392,8 +1380,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = PreviewTrayContextMenuOpenEvent;
+            RoutedEventArgs args = new RoutedEventArgs(PreviewTrayContextMenuOpenEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1433,8 +1420,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayPopupOpenEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayPopupOpenEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1471,8 +1457,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = PreviewTrayPopupOpenEvent;
+            RoutedEventArgs args = new RoutedEventArgs(PreviewTrayPopupOpenEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1512,8 +1497,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayToolTipOpenEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayToolTipOpenEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1550,8 +1534,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = PreviewTrayToolTipOpenEvent;
+            RoutedEventArgs args = new RoutedEventArgs(PreviewTrayToolTipOpenEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1591,8 +1574,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = TrayToolTipCloseEvent;
+            RoutedEventArgs args = new RoutedEventArgs(TrayToolTipCloseEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1629,8 +1611,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = PreviewTrayToolTipCloseEvent;
+            RoutedEventArgs args = new RoutedEventArgs(PreviewTrayToolTipCloseEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1675,8 +1656,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = PopupOpenedEvent;
+            RoutedEventArgs args = new RoutedEventArgs(PopupOpenedEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1719,8 +1699,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = ToolTipOpenedEvent;
+            RoutedEventArgs args = new RoutedEventArgs(ToolTipOpenedEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1763,8 +1742,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (target == null) return null;
 
-            RoutedEventArgs args = new RoutedEventArgs();
-            args.RoutedEvent = ToolTipCloseEvent;
+            RoutedEventArgs args = new RoutedEventArgs(ToolTipCloseEvent);
             RoutedEventHelper.RaiseEvent(target, args);
             return args;
         }
@@ -1864,7 +1842,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #region ParentTaskbarIcon
 
         /// <summary>
-        /// An attached property that is assigned to displayed UI elements (balloos, tooltips, context menus), and
+        /// An attached property that is assigned to displayed UI elements (balloons, tooltips, context menus), and
         /// that can be used to bind to this control. The attached property is being derived, so binding is
         /// quite straightforward:
         /// <code>
@@ -1907,11 +1885,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
             VisibilityProperty.OverrideMetadata(typeof (TaskbarIcon), md);
 
             //register change listener for the DataContext property
-            md = new FrameworkPropertyMetadata(new PropertyChangedCallback(DataContextPropertyChanged));
+            md = new FrameworkPropertyMetadata(DataContextPropertyChanged);
             DataContextProperty.OverrideMetadata(typeof (TaskbarIcon), md);
 
             //register change listener for the ContextMenu property
-            md = new FrameworkPropertyMetadata(new PropertyChangedCallback(ContextMenuPropertyChanged));
+            md = new FrameworkPropertyMetadata(ContextMenuPropertyChanged);
             ContextMenuProperty.OverrideMetadata(typeof (TaskbarIcon), md);
         }
     }

@@ -43,6 +43,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
     /// </summary>
     public partial class TaskbarIcon : FrameworkElement, IDisposable
     {
+        private readonly object lockObject = new object();
+
         #region Members
 
         /// <summary>
@@ -113,41 +115,42 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
         }
 
-        private double scalingFactor = double.NaN;
-
         #endregion
 
         #region Construction
 
         /// <summary>
-        /// Inits the taskbar icon and registers a message listener
+        /// Initializes the taskbar icon and registers a message listener
         /// in order to receive events from the taskbar area.
         /// </summary>
         public TaskbarIcon()
         {
-            //using dummy sink in design mode
+            // using dummy sink in design mode
             messageSink = Util.IsDesignMode
                 ? WindowMessageSink.CreateEmpty()
                 : new WindowMessageSink(NotifyIconVersion.Win95);
 
-            //init icon data structure
+            // init icon data structure
             iconData = NotifyIconData.CreateDefault(messageSink.MessageWindowHandle);
 
-            //create the taskbar icon
+            // create the taskbar icon
             CreateTaskbarIcon();
 
-            //register event listeners
+            // register event listeners
             messageSink.MouseEventReceived += OnMouseEvent;
             messageSink.TaskbarCreated += OnTaskbarCreated;
             messageSink.ChangeToolTipStateRequest += OnToolTipChange;
             messageSink.BalloonToolTipChanged += OnBalloonToolTipChanged;
 
-            //init single click / balloon timers
+            // init single click / balloon timers
             singleClickTimer = new Timer(DoSingleClickAction);
             balloonCloseTimer = new Timer(CloseBalloonCallback);
 
-            //register listener in order to get notified when the application closes
-            if (Application.Current != null) Application.Current.Exit += OnExit;
+            // register listener in order to get notified when the application closes
+            if (Application.Current != null)
+            {
+                Application.Current.Exit += OnExit;
+            }
         }
 
         #endregion
@@ -159,8 +162,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         public Point GetPopupTrayPosition()
         {
-          return TrayInfo.GetTrayLocation();
-        }                                              
+            return TrayInfo.GetTrayLocation();
+        }
 
         /// <summary>
         /// Shows a custom control as a tooltip in the tray location.
@@ -186,41 +189,41 @@ namespace Hardcodet.Wpf.TaskbarNotification
             if (timeout.HasValue && timeout < 500)
             {
                 string msg = "Invalid timeout of {0} milliseconds. Timeout must be at least 500 ms";
-                msg = String.Format(msg, timeout);
-                throw new ArgumentOutOfRangeException("timeout", msg);
+                msg = string.Format(msg, timeout);
+                throw new ArgumentOutOfRangeException(nameof(timeout), msg);
             }
 
             EnsureNotDisposed();
 
-            //make sure we don't have an open balloon
-            lock (this)
+            // make sure we don't have an open balloon
+            lock (lockObject)
             {
                 CloseBalloon();
             }
 
-            //create an invisible popup that hosts the UIElement
-            Popup popup = new Popup();
-            popup.AllowsTransparency = true;
+            // create an invisible popup that hosts the UIElement
+            Popup popup = new Popup
+            {
+                AllowsTransparency = true
+            };
 
-            //provide the popup with the taskbar icon's data context
+            // provide the popup with the taskbar icon's data context
             UpdateDataContext(popup, null, DataContext);
 
-            //don't animate by default - devs can use attached
-            //events or override
+            // don't animate by default - developers can use attached events or override
             popup.PopupAnimation = animation;
 
-            //in case the balloon is cleaned up through routed events, the
-            //control didn't remove the balloon from its parent popup when
-            //if was closed the last time - just make sure it doesn't have
-            //a parent that is a popup
+            // in case the balloon is cleaned up through routed events, the
+            // control didn't remove the balloon from its parent popup when
+            // if was closed the last time - just make sure it doesn't have
+            // a parent that is a popup
             var parent = LogicalTreeHelper.GetParent(balloon) as Popup;
             if (parent != null) parent.Child = null;
 
             if (parent != null)
             {
-                string msg =
-                    "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
-                msg = String.Format(msg, balloon);
+                string msg = "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
+                msg = string.Format(msg, balloon);
                 throw new InvalidOperationException(msg);
             }
 
@@ -233,29 +236,29 @@ namespace Hardcodet.Wpf.TaskbarNotification
             popup.Placement = PlacementMode.AbsolutePoint;
             popup.StaysOpen = true;
 
-            
-            Point position = this.CustomPopupPosition != null ? this.CustomPopupPosition() : this.GetPopupTrayPosition();
+
+            Point position = CustomPopupPosition != null ? CustomPopupPosition() : GetPopupTrayPosition();
             popup.HorizontalOffset = position.X - 1;
             popup.VerticalOffset = position.Y - 1;
 
             //store reference
-            lock (this)
+            lock (lockObject)
             {
                 SetCustomBalloon(popup);
             }
 
-            //assign this instance as an attached property
+            // assign this instance as an attached property
             SetParentTaskbarIcon(balloon, this);
 
-            //fire attached event
+            // fire attached event
             RaiseBalloonShowingEvent(balloon, this);
 
-            //display item
+            // display item
             popup.IsOpen = true;
 
             if (timeout.HasValue)
             {
-                //register timer to close the popup
+                // register timer to close the popup
                 balloonCloseTimer.Change(timeout.Value, Timeout.Infinite);
             }
         }
@@ -272,7 +275,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (IsDisposed) return;
 
-            lock (this)
+            lock (lockObject)
             {
                 //reset timer in any case
                 balloonCloseTimer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -296,38 +299,40 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 return;
             }
 
-            lock (this)
+            lock (lockObject)
             {
-                //reset timer in any case
+                // reset timer in any case
                 balloonCloseTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
-                //reset old popup, if we still have one
+                // reset old popup, if we still have one
                 Popup popup = CustomBalloon;
-                if (popup != null)
+                if (popup == null)
                 {
-                    UIElement element = popup.Child;
-
-                    //announce closing
-                    RoutedEventArgs eventArgs = RaiseBalloonClosingEvent(element, this);
-                    if (!eventArgs.Handled)
-                    {
-                        //if the event was handled, clear the reference to the popup,
-                        //but don't close it - the handling code has to manage this stuff now
-
-                        //close the popup
-                        popup.IsOpen = false;
-
-                        //remove the reference of the popup to the balloon in case we want to reuse
-                        //the balloon (then added to a new popup)
-                        popup.Child = null;
-
-                        //reset attached property
-                        if (element != null) SetParentTaskbarIcon(element, null);
-                    }
-
-                    //remove custom balloon anyway
-                    SetCustomBalloon(null);
+                    return;
                 }
+
+                UIElement element = popup.Child;
+
+                // announce closing
+                RoutedEventArgs eventArgs = RaiseBalloonClosingEvent(element, this);
+                if (!eventArgs.Handled)
+                {
+                    // if the event was handled, clear the reference to the popup,
+                    // but don't close it - the handling code has to manage this stuff now
+
+                    // close the popup
+                    popup.IsOpen = false;
+
+                    // remove the reference of the popup to the balloon in case we want to reuse
+                    // the balloon (then added to a new popup)
+                    popup.Child = null;
+
+                    // reset attached property
+                    if (element != null) SetParentTaskbarIcon(element, null);
+                }
+
+                // remove custom balloon anyway
+                SetCustomBalloon(null);
             }
         }
 
@@ -340,7 +345,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (IsDisposed) return;
 
-            //switch to UI thread
+            // switch to UI thread
             Action action = CloseBalloon;
             this.GetDispatcher().Invoke(action);
         }
@@ -364,7 +369,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             {
                 case MouseEvent.MouseMove:
                     RaiseTrayMouseMoveEvent();
-                    //immediately return - there's nothing left to evaluate
+                    // immediately return - there's nothing left to evaluate
                     return;
                 case MouseEvent.IconRightMouseDown:
                     RaiseTrayRightMouseDownEvent();
@@ -385,24 +390,24 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     RaiseTrayMiddleMouseUpEvent();
                     break;
                 case MouseEvent.IconDoubleClick:
-                    //cancel single click timer
+                    // cancel single click timer
                     singleClickTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                    //bubble event
+                    // bubble event
                     RaiseTrayMouseDoubleClickEvent();
                     break;
                 case MouseEvent.BalloonToolTipClicked:
                     RaiseTrayBalloonTipClickedEvent();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("me", "Missing handler for mouse event flag: " + me);
+                    throw new ArgumentOutOfRangeException(nameof(me), "Missing handler for mouse event flag: " + me);
             }
 
 
-            //get mouse coordinates
+            // get mouse coordinates
             Point cursorPosition = new Point();
             if (messageSink.Version == NotifyIconVersion.Vista)
             {
-                //physical cursor position is supported for Vista and above
+                // physical cursor position is supported for Vista and above
                 WinApi.GetPhysicalCursorPos(ref cursorPosition);
             }
             else
@@ -414,12 +419,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             bool isLeftClickCommandInvoked = false;
 
-            //show popup, if requested
+            // show popup, if requested
             if (me.IsMatch(PopupActivation))
             {
                 if (me == MouseEvent.IconLeftMouseUp)
                 {
-                    //show popup once we are sure it's not a double click
+                    // show popup once we are sure it's not a double click
                     singleClickTimerAction = () =>
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
@@ -430,18 +435,18 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 }
                 else
                 {
-                    //show popup immediately
+                    // show popup immediately
                     ShowTrayPopup(cursorPosition);
                 }
             }
 
 
-            //show context menu, if requested
+            // show context menu, if requested
             if (me.IsMatch(MenuActivation))
             {
                 if (me == MouseEvent.IconLeftMouseUp)
                 {
-                    //show context menu once we are sure it's not a double click
+                    // show context menu once we are sure it's not a double click
                     singleClickTimerAction = () =>
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
@@ -452,15 +457,15 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 }
                 else
                 {
-                    //show context menu immediately
+                    // show context menu immediately
                     ShowContextMenu(cursorPosition);
                 }
             }
 
-            //make sure the left click command is invoked on mouse clicks
+            // make sure the left click command is invoked on mouse clicks
             if (me == MouseEvent.IconLeftMouseUp && !isLeftClickCommandInvoked)
             {
-                //show context menu once we are sure it's not a double click
+                // show context menu once we are sure it's not a double click
                 singleClickTimerAction =
                     () =>
                     {
@@ -481,14 +486,14 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <param name="visible">Whether to show or hide the tooltip.</param>
         private void OnToolTipChange(bool visible)
         {
-            //if we don't have a tooltip, there's nothing to do here...
+            // if we don't have a tooltip, there's nothing to do here...
             if (TrayToolTipResolved == null) return;
 
             if (visible)
             {
                 if (IsPopupOpen)
                 {
-                    //ignore if we are already displaying something down there
+                    // ignore if we are already displaying something down there
                     return;
                 }
 
@@ -497,10 +502,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
                 TrayToolTipResolved.IsOpen = true;
 
-                //raise attached event first
+                // raise attached event first
                 if (TrayToolTip != null) RaiseToolTipOpenedEvent(TrayToolTip);
 
-                //bubble routed event
+                // bubble routed event
                 RaiseTrayToolTipOpenEvent();
             }
             else
@@ -508,12 +513,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 var args = RaisePreviewTrayToolTipCloseEvent();
                 if (args.Handled) return;
 
-                //raise attached event first
+                // raise attached event first
                 if (TrayToolTip != null) RaiseToolTipCloseEvent(TrayToolTip);
 
                 TrayToolTipResolved.IsOpen = false;
 
-                //bubble event
+                // bubble event
                 RaiseTrayToolTipCloseEvent();
             }
         }
@@ -534,44 +539,46 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// property which prevents this issue.</remarks>
         private void CreateCustomToolTip()
         {
-            //check if the item itself is a tooltip
+            // check if the item itself is a tooltip
             ToolTip tt = TrayToolTip as ToolTip;
 
             if (tt == null && TrayToolTip != null)
             {
-                //create an invisible wrapper tooltip that hosts the UIElement
-                tt = new ToolTip();
-                tt.Placement = PlacementMode.Mouse;
+                // create an invisible wrapper tooltip that hosts the UIElement
+                tt = new ToolTip
+                {
+                    Placement = PlacementMode.Mouse,
+                    // do *not* set the placement target, as it causes the popup to become hidden if the
+                    // TaskbarIcon's parent is hidden, too. At runtime, the parent can be resolved through
+                    // the ParentTaskbarIcon attached dependency property:
+                    // PlacementTarget = this;
 
-                //do *not* set the placement target, as it causes the popup to become hidden if the
-                //TaskbarIcon's parent is hidden, too. At runtime, the parent can be resolved through
-                //the ParentTaskbarIcon attached dependency property:
-                //tt.PlacementTarget = this;
-
-                //make sure the tooltip is invisible
-                tt.HasDropShadow = false;
-                tt.BorderThickness = new Thickness(0);
-                tt.Background = System.Windows.Media.Brushes.Transparent;
-
-                //setting the 
-                tt.StaysOpen = true;
-                tt.Content = TrayToolTip;
+                    // make sure the tooltip is invisible
+                    HasDropShadow = false,
+                    BorderThickness = new Thickness(0),
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    // setting the 
+                    StaysOpen = true,
+                    Content = TrayToolTip
+                };
             }
-            else if (tt == null && !String.IsNullOrEmpty(ToolTipText))
+            else if (tt == null && !string.IsNullOrEmpty(ToolTipText))
             {
-                //create a simple tooltip for the ToolTipText string
-                tt = new ToolTip();
-                tt.Content = ToolTipText;
+                // create a simple tooltip for the ToolTipText string
+                tt = new ToolTip
+                {
+                    Content = ToolTipText
+                };
             }
 
-            //the tooltip explicitly gets the DataContext of this instance.
-            //If there is no DataContext, the TaskbarIcon assigns itself
+            // the tooltip explicitly gets the DataContext of this instance.
+            // If there is no DataContext, the TaskbarIcon assigns itself
             if (tt != null)
             {
                 UpdateDataContext(tt, null, DataContext);
             }
 
-            //store a reference to the used tooltip
+            // store a reference to the used tooltip
             SetTrayToolTipResolved(tt);
         }
 
@@ -587,17 +594,17 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             if (messageSink.Version == NotifyIconVersion.Vista)
             {
-                //we need to set a tooltip text to get tooltip events from the
-                //taskbar icon
-                if (String.IsNullOrEmpty(iconData.ToolTipText) && TrayToolTipResolved != null)
+                // we need to set a tooltip text to get tooltip events from the
+                // taskbar icon
+                if (string.IsNullOrEmpty(iconData.ToolTipText) && TrayToolTipResolved != null)
                 {
-                    //if we have not tooltip text but a custom tooltip, we
-                    //need to set a dummy value (we're displaying the ToolTip control, not the string)
+                    // if we have not tooltip text but a custom tooltip, we
+                    // need to set a dummy value (we're displaying the ToolTip control, not the string)
                     iconData.ToolTipText = "ToolTip";
                 }
             }
 
-            //update the tooltip text
+            // update the tooltip text
             Util.WriteIconData(ref iconData, NotifyCommand.Modify, flags);
         }
 
@@ -620,90 +627,89 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// property which prevents this issue.</remarks>
         private void CreatePopup()
         {
-            //check if the item itself is a popup
+            // check if the item itself is a popup
             Popup popup = TrayPopup as Popup;
 
             if (popup == null && TrayPopup != null)
             {
-                //create an invisible popup that hosts the UIElement
-                popup = new Popup();
-                popup.AllowsTransparency = true;
+                // create an invisible popup that hosts the UIElement
+                popup = new Popup
+                {
+                    AllowsTransparency = true,
+                    // don't animate by default - developers can use attached events or override
+                    PopupAnimation = PopupAnimation.None,
+                    // the CreateRootPopup method outputs binding errors in the debug window because
+                    // it tries to bind to "Popup-specific" properties in case they are provided by the child.
+                    // We don't need that so just assign the control as the child.
+                    Child = TrayPopup,
+                    // do *not* set the placement target, as it causes the popup to become hidden if the
+                    // TaskbarIcon's parent is hidden, too. At runtime, the parent can be resolved through
+                    // the ParentTaskbarIcon attached dependency property:
+                    // PlacementTarget = this;
 
-                //don't animate by default - devs can use attached
-                //events or override
-                popup.PopupAnimation = PopupAnimation.None;
-
-                //the CreateRootPopup method outputs binding errors in the debug window because
-                //it tries to bind to "Popup-specific" properties in case they are provided by the child.
-                //We don't need that so just assign the control as the child.
-                popup.Child = TrayPopup;
-
-                //do *not* set the placement target, as it causes the popup to become hidden if the
-                //TaskbarIcon's parent is hidden, too. At runtime, the parent can be resolved through
-                //the ParentTaskbarIcon attached dependency property:
-                //popup.PlacementTarget = this;
-
-                popup.Placement = PlacementMode.AbsolutePoint;
-                popup.StaysOpen = false;
+                    Placement = PlacementMode.AbsolutePoint,
+                    StaysOpen = false
+                };
             }
 
-            //the popup explicitly gets the DataContext of this instance.
-            //If there is no DataContext, the TaskbarIcon assigns itself
+            // the popup explicitly gets the DataContext of this instance.
+            // If there is no DataContext, the TaskbarIcon assigns itself
             if (popup != null)
             {
                 UpdateDataContext(popup, null, DataContext);
             }
 
-            //store a reference to the used tooltip
+            // store a reference to the used tooltip
             SetTrayPopupResolved(popup);
         }
 
 
         /// <summary>
-        /// Displays the <see cref="TrayPopup"/> control if
-        /// it was set.
+        /// Displays the <see cref="TrayPopup"/> control if it was set.
         /// </summary>
         private void ShowTrayPopup(Point cursorPosition)
         {
             if (IsDisposed) return;
 
-            //raise preview event no matter whether popup is currently set
-            //or not (enables client to set it on demand)
+            // raise preview event no matter whether popup is currently set
+            // or not (enables client to set it on demand)
             var args = RaisePreviewTrayPopupOpenEvent();
             if (args.Handled) return;
 
-            if (TrayPopup != null)
+            if (TrayPopup == null)
             {
-                //use absolute position, but place the popup centered above the icon
-                TrayPopupResolved.Placement = PlacementMode.AbsolutePoint;
-                TrayPopupResolved.HorizontalOffset = cursorPosition.X;
-                TrayPopupResolved.VerticalOffset = cursorPosition.Y;
-
-                //open popup
-                TrayPopupResolved.IsOpen = true;
-
-                IntPtr handle = IntPtr.Zero;
-                if (TrayPopupResolved.Child != null)
-                {
-                    //try to get a handle on the popup itself (via its child)
-                    HwndSource source = (HwndSource) PresentationSource.FromVisual(TrayPopupResolved.Child);
-                    if (source != null) handle = source.Handle;
-                }
-
-                //if we don't have a handle for the popup, fall back to the message sink
-                if (handle == IntPtr.Zero) handle = messageSink.MessageWindowHandle;
-
-                //activate either popup or message sink to track deactivation.
-                //otherwise, the popup does not close if the user clicks somewhere else
-                WinApi.SetForegroundWindow(handle);
-
-                //raise attached event - item should never be null unless developers
-                //changed the CustomPopup directly...
-                if (TrayPopup != null) RaisePopupOpenedEvent(TrayPopup);
-
-                //bubble routed event
-                RaiseTrayPopupOpenEvent();
+                return;
             }
+
+            // use absolute position, but place the popup centered above the icon
+            TrayPopupResolved.Placement = PlacementMode.AbsolutePoint;
+            TrayPopupResolved.HorizontalOffset = cursorPosition.X;
+            TrayPopupResolved.VerticalOffset = cursorPosition.Y;
+
+            // open popup
+            TrayPopupResolved.IsOpen = true;
+
+            IntPtr handle = IntPtr.Zero;
+            if (TrayPopupResolved.Child != null)
+            {
+                // try to get a handle on the popup itself (via its child)
+                HwndSource source = (HwndSource)PresentationSource.FromVisual(TrayPopupResolved.Child);
+                if (source != null) handle = source.Handle;
+            }
+
+            // if we don't have a handle for the popup, fall back to the message sink
+            if (handle == IntPtr.Zero) handle = messageSink.MessageWindowHandle;
+
+            // activate either popup or message sink to track deactivation.
+            // otherwise, the popup does not close if the user clicks somewhere else
+            WinApi.SetForegroundWindow(handle);
+
+            // raise attached event - item should never be null unless developers
+            // changed the CustomPopup directly...
+            if (TrayPopup != null) RaisePopupOpenedEvent(TrayPopup);
+
+            // bubble routed event
+            RaiseTrayPopupOpenEvent();
         }
 
         #endregion
@@ -711,48 +717,49 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #region Context Menu
 
         /// <summary>
-        /// Displays the <see cref="ContextMenu"/> if
-        /// it was set.
+        /// Displays the <see cref="ContextMenu"/> if it was set.
         /// </summary>
         private void ShowContextMenu(Point cursorPosition)
         {
             if (IsDisposed) return;
 
-            //raise preview event no matter whether context menu is currently set
-            //or not (enables client to set it on demand)
+            // raise preview event no matter whether context menu is currently set
+            // or not (enables client to set it on demand)
             var args = RaisePreviewTrayContextMenuOpenEvent();
             if (args.Handled) return;
 
-            if (ContextMenu != null)
+            if (ContextMenu == null)
             {
-                //use absolute positioning. We need to set the coordinates, or a delayed opening
-                //(e.g. when left-clicked) opens the context menu at the wrong place if the mouse
-                //is moved!
-                ContextMenu.Placement = PlacementMode.AbsolutePoint;
-                ContextMenu.HorizontalOffset = cursorPosition.X;
-                ContextMenu.VerticalOffset = cursorPosition.Y;
-                ContextMenu.IsOpen = true;
-
-                IntPtr handle = IntPtr.Zero;
-
-                //try to get a handle on the context itself
-                HwndSource source = (HwndSource) PresentationSource.FromVisual(ContextMenu);
-                if (source != null)
-                {
-                    handle = source.Handle;
-                }
-
-                //if we don't have a handle for the popup, fall back to the message sink
-                if (handle == IntPtr.Zero) handle = messageSink.MessageWindowHandle;
-
-                //activate the context menu or the message window to track deactivation - otherwise, the context menu
-                //does not close if the user clicks somewhere else. With the message window
-                //fallback, the context menu can't receive keyboard events - should not happen though
-                WinApi.SetForegroundWindow(handle);
-
-                //bubble event
-                RaiseTrayContextMenuOpenEvent();
+                return;
             }
+
+            // use absolute positioning. We need to set the coordinates, or a delayed opening
+            // (e.g. when left-clicked) opens the context menu at the wrong place if the mouse
+            // is moved!
+            ContextMenu.Placement = PlacementMode.AbsolutePoint;
+            ContextMenu.HorizontalOffset = cursorPosition.X;
+            ContextMenu.VerticalOffset = cursorPosition.Y;
+            ContextMenu.IsOpen = true;
+
+            IntPtr handle = IntPtr.Zero;
+
+            // try to get a handle on the context itself
+            HwndSource source = (HwndSource)PresentationSource.FromVisual(ContextMenu);
+            if (source != null)
+            {
+                handle = source.Handle;
+            }
+
+            // if we don't have a handle for the popup, fall back to the message sink
+            if (handle == IntPtr.Zero) handle = messageSink.MessageWindowHandle;
+
+            // activate the context menu or the message window to track deactivation - otherwise, the context menu
+            // does not close if the user clicks somewhere else. With the message window
+            // fallback, the context menu can't receive keyboard events - should not happen though
+            WinApi.SetForegroundWindow(handle);
+
+            // bubble event
+            RaiseTrayContextMenuOpenEvent();
         }
 
         #endregion
@@ -786,7 +793,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <param name="symbol">A symbol that indicates the severity.</param>
         public void ShowBalloonTip(string title, string message, BalloonIcon symbol)
         {
-            lock (this)
+            lock (lockObject)
             {
                 ShowBalloonTip(title, message, symbol.GetBalloonFlag(), IntPtr.Zero);
             }
@@ -804,14 +811,16 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// is a null reference.</exception>
         public void ShowBalloonTip(string title, string message, Icon customIcon, bool largeIcon = false)
         {
-            if (customIcon == null) throw new ArgumentNullException("customIcon");
+            if (customIcon == null) throw new ArgumentNullException(nameof(customIcon));
 
-            lock (this)
+            lock (lockObject)
             {
                 var flags = BalloonFlags.User;
 
                 if (largeIcon)
+                {
                     flags |= BalloonFlags.LargeIcon;
+                }
 
                 ShowBalloonTip(title, message, flags, customIcon.Handle);
             }
@@ -831,8 +840,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             EnsureNotDisposed();
 
-            iconData.BalloonText = message ?? String.Empty;
-            iconData.BalloonTitle = title ?? String.Empty;
+            iconData.BalloonText = message ?? string.Empty;
+            iconData.BalloonTitle = title ?? string.Empty;
 
             iconData.BalloonFlags = flags;
             iconData.CustomBalloonIconHandle = balloonIconHandle;
@@ -847,8 +856,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             EnsureNotDisposed();
 
-            //reset balloon by just setting the info to an empty string
-            iconData.BalloonText = iconData.BalloonTitle = String.Empty;
+            // reset balloon by just setting the info to an empty string
+            iconData.BalloonText = iconData.BalloonTitle = string.Empty;
             Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Info);
         }
 
@@ -865,14 +874,14 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             if (IsDisposed) return;
 
-            //run action
+            // run action
             Action action = singleClickTimerAction;
             if (action != null)
             {
-                //cleanup action
+                // cleanup action
                 singleClickTimerAction = null;
 
-                //switch to UI thread
+                // switch to UI thread
                 this.GetDispatcher().Invoke(action);
             }
         }
@@ -886,18 +895,18 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// </summary>
         private void SetVersion()
         {
-            iconData.VersionOrTimeout = (uint) NotifyIconVersion.Vista;
+            iconData.VersionOrTimeout = (uint)NotifyIconVersion.Vista;
             bool status = WinApi.Shell_NotifyIcon(NotifyCommand.SetVersion, ref iconData);
 
             if (!status)
             {
-                iconData.VersionOrTimeout = (uint) NotifyIconVersion.Win2000;
+                iconData.VersionOrTimeout = (uint)NotifyIconVersion.Win2000;
                 status = Util.WriteIconData(ref iconData, NotifyCommand.SetVersion);
             }
 
             if (!status)
             {
-                iconData.VersionOrTimeout = (uint) NotifyIconVersion.Win95;
+                iconData.VersionOrTimeout = (uint)NotifyIconVersion.Win95;
                 status = Util.WriteIconData(ref iconData, NotifyCommand.SetVersion);
             }
 
@@ -928,31 +937,33 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// </summary>
         private void CreateTaskbarIcon()
         {
-            lock (this)
+            lock (lockObject)
             {
-                if (!IsTaskbarIconCreated)
+                if (IsTaskbarIconCreated)
                 {
-                    const IconDataMembers members = IconDataMembers.Message
-                                                    | IconDataMembers.Icon
-                                                    | IconDataMembers.Tip;
-
-                    //write initial configuration
-                    var status = Util.WriteIconData(ref iconData, NotifyCommand.Add, members);
-                    if (!status)
-                    {
-                        //couldn't create the icon - we can assume this is because explorer is not running (yet!)
-                        //-> try a bit later again rather than throwing an exception. Typically, if the windows
-                        // shell is being loaded later, this method is being reinvoked from OnTaskbarCreated
-                        // (we could also retry after a delay, but that's currently YAGNI)
-                        return;
-                    }
-
-                    //set to most recent version
-                    SetVersion();
-                    messageSink.Version = (NotifyIconVersion) iconData.VersionOrTimeout;
-
-                    IsTaskbarIconCreated = true;
+                    return;
                 }
+
+                const IconDataMembers members = IconDataMembers.Message
+                                                | IconDataMembers.Icon
+                                                | IconDataMembers.Tip;
+
+                //write initial configuration
+                var status = Util.WriteIconData(ref iconData, NotifyCommand.Add, members);
+                if (!status)
+                {
+                    // couldn't create the icon - we can assume this is because explorer is not running (yet!)
+                    // -> try a bit later again rather than throwing an exception. Typically, if the windows
+                    // shell is being loaded later, this method is being re-invoked from OnTaskbarCreated
+                    // (we could also retry after a delay, but that's currently YAGNI)
+                    return;
+                }
+
+                //set to most recent version
+                SetVersion();
+                messageSink.Version = (NotifyIconVersion)iconData.VersionOrTimeout;
+
+                IsTaskbarIconCreated = true;
             }
         }
 
@@ -961,15 +972,17 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// </summary>
         private void RemoveTaskbarIcon()
         {
-            lock (this)
+            lock (lockObject)
             {
-                //make sure we didn't schedule a creation
+                // make sure we didn't schedule a creation
 
-                if (IsTaskbarIconCreated)
+                if (!IsTaskbarIconCreated)
                 {
-                    Util.WriteIconData(ref iconData, NotifyCommand.Delete, IconDataMembers.Message);
-                    IsTaskbarIconCreated = false;
+                    return;
                 }
+
+                Util.WriteIconData(ref iconData, NotifyCommand.Delete, IconDataMembers.Message);
+                IsTaskbarIconCreated = false;
             }
         }
 
@@ -1010,8 +1023,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// method does not get called. This gives this base class the
         /// opportunity to finalize.
         /// <para>
-        /// Important: Do not provide destructors in types derived from
-        /// this class.
+        /// Important: Do not provide destructor in types derived from this class.
         /// </para>
         /// </summary>
         ~TaskbarIcon()
@@ -1031,7 +1043,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             Dispose(true);
 
             // This object will be cleaned up by the Dispose method.
-            // Therefore, you should call GC.SupressFinalize to
+            // Therefore, you should call GC.SuppressFinalize to
             // take this object off the finalization queue 
             // and prevent finalization code for this object
             // from executing a second time.
@@ -1056,27 +1068,27 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// the method has already been called.</remarks>
         private void Dispose(bool disposing)
         {
-            //don't do anything if the component is already disposed
+            // don't do anything if the component is already disposed
             if (IsDisposed || !disposing) return;
 
-            lock (this)
+            lock (lockObject)
             {
                 IsDisposed = true;
 
-                //deregister application event listener
+                // de-register application event listener
                 if (Application.Current != null)
                 {
                     Application.Current.Exit -= OnExit;
                 }
 
-                //stop timers
+                // stop timers
                 singleClickTimer.Dispose();
                 balloonCloseTimer.Dispose();
 
-                //dispose message sink
+                // dispose message sink
                 messageSink.Dispose();
 
-                //remove icon
+                // remove icon
                 RemoveTaskbarIcon();
             }
         }

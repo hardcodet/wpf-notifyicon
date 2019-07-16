@@ -56,7 +56,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// the terminating NULL. For Version 5.0 and later, szTip can have a maximum of
         /// 128 characters, including the terminating NULL.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public string ToolTipText;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public string ToolTipText;
 
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
         /// <summary>
         /// A value that specifies which bits of the state member are retrieved or modified.
-        /// For example, setting this member to <see cref="Interop.IconState.Hidden"/>
+        /// For example, setting this member to <see cref="TaskbarNotification.Interop.IconState.Hidden"/>
         /// causes only the item's hidden
         /// state to be retrieved.
         /// </summary>
@@ -76,12 +77,13 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// String with the text for a balloon ToolTip. It can have a maximum of 255 characters.
         /// To remove the ToolTip, set the NIF_INFO flag in uFlags and set szInfo to an empty string.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string BalloonText;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string BalloonText;
 
         /// <summary>
         /// Mainly used to set the version when <see cref="WinApi.Shell_NotifyIcon"/> is invoked
         /// with <see cref="NotifyCommand.SetVersion"/>. However, for legacy operations,
-        /// the same member is also used to set timouts for balloon ToolTips.
+        /// the same member is also used to set timeouts for balloon ToolTips.
         /// </summary>
         public uint VersionOrTimeout;
 
@@ -89,7 +91,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// String containing a title for a balloon ToolTip. This title appears in boldface
         /// above the text. It can have a maximum of 63 characters.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)] public string BalloonTitle;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string BalloonTitle;
 
         /// <summary>
         /// Adds an icon to a balloon ToolTip, which is placed to the left of the title. If the
@@ -108,7 +111,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// <summary>
         /// Windows Vista (Shell32.dll version 6.0.6) and later. The handle of a customized
         /// balloon icon provided by the application that should be used independently
-        /// of the tray icon. If this member is non-NULL and the <see cref="Interop.BalloonFlags.User"/>
+        /// of the tray icon. If this member is non-NULL and the <see cref="TaskbarNotification.Interop.BalloonFlags.User"/>
         /// flag is set, this icon is used as the balloon icon.<br/>
         /// If this member is NULL, the legacy behavior is carried out.
         /// </summary>
@@ -157,7 +160,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                                 | IconDataMembers.Tip;
 
             //reset strings
-            data.ToolTipText = data.BalloonText = data.BalloonTitle = String.Empty;
+            data.ToolTipText = data.BalloonText = data.BalloonTitle = string.Empty;
 
             return data;
         }

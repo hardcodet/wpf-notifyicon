@@ -175,7 +175,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             if (streamInfo == null)
             {
                 string msg = "The supplied image source '{0}' could not be resolved.";
-                msg = String.Format(msg, imageSource);
+                msg = string.Format(msg, imageSource);
                 throw new ArgumentException(msg);
             }
 
