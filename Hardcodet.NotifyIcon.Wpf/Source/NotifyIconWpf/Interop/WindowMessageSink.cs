@@ -185,11 +185,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
             if (MessageWindowHandle == IntPtr.Zero)
             {
-#if SILVERLIGHT
-      	throw new Exception("Message window handle was not a valid pointer.");
-#else
                 throw new Win32Exception("Message window handle was not a valid pointer");
-#endif
             }
         }
 
@@ -200,7 +196,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// <summary>
         /// Callback method that receives messages from the taskbar area.
         /// </summary>
-        private IntPtr OnWindowMessageReceived(IntPtr hWnd, uint messageId, IntPtr wparam, IntPtr lparam)
+        private IntPtr OnWindowMessageReceived(IntPtr hWnd, uint messageId, IntPtr wParam, IntPtr lParam)
         {
             if (messageId == taskbarRestartMessageId)
             {
@@ -210,10 +206,10 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             }
 
             //forward message
-            ProcessWindowMessage(messageId, wparam, lparam);
+            ProcessWindowMessage(messageId, wParam, lParam);
 
             // Pass the message to the default window procedure
-            return WinApi.DefWindowProc(hWnd, messageId, wparam, lparam);
+            return WinApi.DefWindowProc(hWnd, messageId, wParam, lParam);
         }
 
 
