@@ -82,17 +82,19 @@ namespace Samples
             ShowDialog(new DataBoundToolTipWindow());
         }
 		
-		private void btnMvvm_Click(object sender, System.Windows.RoutedEventArgs e)
+		private void btnMvvm_Click(object sender, RoutedEventArgs e)
 		{
 			ShowDialog(new MvvmSampleWindow());
 		}
 
         private void btnMainSample_Click(object sender, RoutedEventArgs e)
         {
-            var sampleWindow = new ShowcaseWindow();
+            var sampleWindow = new ShowcaseWindow
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
 
-            sampleWindow.Owner = this;
-            sampleWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             sampleWindow.ShowDialog();
         }
 

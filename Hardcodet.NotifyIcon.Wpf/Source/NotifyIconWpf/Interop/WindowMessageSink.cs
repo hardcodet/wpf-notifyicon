@@ -131,7 +131,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// pointer rather than a real window handler.<br/>
         /// Used at design time.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>WindowMessageSink</returns>
         internal static WindowMessageSink CreateEmpty()
         {
             return new WindowMessageSink
@@ -169,7 +169,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             wc.hIcon = IntPtr.Zero;
             wc.hCursor = IntPtr.Zero;
             wc.hbrBackground = IntPtr.Zero;
-            wc.lpszMenuName = "";
+            wc.lpszMenuName = string.Empty;
             wc.lpszClassName = WindowId;
 
             // Register the window class
@@ -185,11 +185,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
             if (MessageWindowHandle == IntPtr.Zero)
             {
-#if SILVERLIGHT
-      	throw new Exception("Message window handle was not a valid pointer.");
-#else
                 throw new Win32Exception("Message window handle was not a valid pointer");
-#endif
             }
         }
 
@@ -200,20 +196,20 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// <summary>
         /// Callback method that receives messages from the taskbar area.
         /// </summary>
-        private IntPtr OnWindowMessageReceived(IntPtr hwnd, uint messageId, IntPtr wparam, IntPtr lparam)
+        private IntPtr OnWindowMessageReceived(IntPtr hWnd, uint messageId, IntPtr wParam, IntPtr lParam)
         {
             if (messageId == taskbarRestartMessageId)
             {
                 //recreate the icon if the taskbar was restarted (e.g. due to Win Explorer shutdown)
                 var listener = TaskbarCreated;
-                if(listener != null) listener();
+                listener?.Invoke();
             }
 
             //forward message
-            ProcessWindowMessage(messageId, wparam, lparam);
+            ProcessWindowMessage(messageId, wParam, lParam);
 
             // Pass the message to the default window procedure
-            return WinApi.DefWindowProc(hwnd, messageId, wparam, lparam);
+            return WinApi.DefWindowProc(hWnd, messageId, wParam, lParam);
         }
 
 
@@ -278,13 +274,13 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
                 case 0x402:
                     var listener = BalloonToolTipChanged;
-                    if (listener != null) listener(true);
+                    listener?.Invoke(true);
                     break;
 
                 case 0x403:
                 case 0x404:
                     listener = BalloonToolTipChanged;
-                    if (listener != null) listener(false);
+                    listener?.Invoke(false);
                     break;
 
                 case 0x405:
@@ -293,12 +289,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
                 case 0x406:
                     listener = ChangeToolTipStateRequest;
-                    if (listener != null) listener(true);
+                    listener?.Invoke(true);
                     break;
 
                 case 0x407:
                     listener = ChangeToolTipStateRequest;
-                    if (listener != null) listener(false);
+                    listener?.Invoke(false);
                     break;
 
                 default:
@@ -328,7 +324,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             Dispose(true);
 
             // This object will be cleaned up by the Dispose method.
-            // Therefore, you should call GC.SupressFinalize to
+            // Therefore, you should call GC.SuppressFinalize to
             // take this object off the finalization queue 
             // and prevent finalization code for this object
             // from executing a second time.
@@ -340,7 +336,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// method does not get called. This gives this base class the
         /// opportunity to finalize.
         /// <para>
-        /// Important: Do not provide destructors in types derived from
+        /// Important: Do not provide destructor in types derived from
         /// this class.
         /// </para>
         /// </summary>

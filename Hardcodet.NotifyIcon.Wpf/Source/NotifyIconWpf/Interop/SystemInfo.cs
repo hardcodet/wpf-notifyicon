@@ -2,37 +2,34 @@ using System.Windows.Interop;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
-  public static class SystemInfo
-  {
-    private static System.Windows.Point? dpiFactors;
-
-    private static System.Windows.Point? DpiFactors
+    /// <summary>
+    /// This class is a helper for system information, currently to get the DPI factors
+    /// </summary>
+    public static class SystemInfo
     {
-      get
-      {
-        if (dpiFactors == null)        
-          using (var source = new HwndSource(new HwndSourceParameters()))
-            dpiFactors = new System.Windows.Point(source.CompositionTarget.TransformToDevice.M11, source.CompositionTarget.TransformToDevice.M22);        
-        return dpiFactors;
-      }
+        private static readonly System.Windows.Point DpiFactors;
+
+        static SystemInfo()
+        {
+            using (var source = new HwndSource(new HwndSourceParameters()))
+            {
+                if (source.CompositionTarget?.TransformToDevice != null)
+                {
+                    DpiFactors = new System.Windows.Point(source.CompositionTarget.TransformToDevice.M11, source.CompositionTarget.TransformToDevice.M22);
+                    return;
+                }
+                DpiFactors = new System.Windows.Point(1, 1);
+            }
+        }
+
+        /// <summary>
+        /// Returns the DPI X Factor
+        /// </summary>
+        public static double DpiFactorX => DpiFactors.X;
+
+        /// <summary>
+        /// Returns the DPI Y Factor
+        /// </summary>
+        public static double DpiFactorY => DpiFactors.Y;
     }
-
-    public static double DpiXFactor
-    {
-      get
-      {
-        var factors = DpiFactors;
-        return factors.HasValue ? factors.Value.X : 1;
-      }
-    }
-
-    public static double DpiYFactor
-    {
-      get
-      {
-        var factors = DpiFactors;
-        return factors.HasValue ? factors.Value.Y : 1;
-      }
-    }         
-  }
 }
