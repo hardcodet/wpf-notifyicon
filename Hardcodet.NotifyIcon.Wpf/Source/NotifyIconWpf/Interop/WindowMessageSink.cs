@@ -227,6 +227,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
             switch ((WindowsMessages)lParam.ToInt32())
             {
+                case WindowsMessages.WM_CONTEXTMENU:
+                    // TODO: Handle WM_CONTEXTMENU, see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+                    Debug.WriteLine("Unhandled WM_CONTEXTMENU");
+                    break;
+
                 case WindowsMessages.WM_MOUSEMOVE:
                     MouseEventReceived(MouseEvent.MouseMove);
                     break;
@@ -272,29 +277,34 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     //double click with middle mouse button - do not trigger event
                     break;
 
-                case WindowsMessages.WM_USER2:
+                case WindowsMessages.NIN_BALLOONSHOW:
                     var listener = BalloonToolTipChanged;
                     listener?.Invoke(true);
                     break;
 
-                case WindowsMessages.WM_USER3:
-                case WindowsMessages.WM_USER4:
+                case WindowsMessages.NIN_BALLOONHIDE:
+                case WindowsMessages.NIN_BALLOONTIMEOUT:
                     listener = BalloonToolTipChanged;
                     listener?.Invoke(false);
                     break;
 
-                case WindowsMessages.WM_USER5:
+                case WindowsMessages.NIN_BALLOONUSERCLICK:
                     MouseEventReceived(MouseEvent.BalloonToolTipClicked);
                     break;
 
-                case WindowsMessages.WM_USER6:
+                case WindowsMessages.NIN_POPUPOPEN:
                     listener = ChangeToolTipStateRequest;
                     listener?.Invoke(true);
                     break;
 
-                case WindowsMessages.WM_USER7:
+                case WindowsMessages.NIN_POPUPCLOSE:
                     listener = ChangeToolTipStateRequest;
                     listener?.Invoke(false);
+                    break;
+
+                case WindowsMessages.NIN_SELECT:
+                    // TODO: Handle NIN_SELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+                    Debug.WriteLine("Unhandled NIN_SELECT");
                     break;
 
                 default:
