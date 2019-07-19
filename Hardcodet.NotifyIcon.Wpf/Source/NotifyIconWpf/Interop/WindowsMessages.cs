@@ -147,6 +147,13 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         NIN_SELECT = WM_USER,
 
         /// <summary>
+        /// This message is only send when using NOTIFYICON_VERSION_4, the Shell now sends the associated application an NIN_SELECT notification.
+        /// Send when a notify icon is activated with SPACEBAR or ENTER key.
+        /// Earlier versions send WM_RBUTTONDOWN and WM_RBUTTONUP messages.
+        /// </summary>
+        NIN_KEYSELECT = WM_USER + 1,
+
+        /// <summary>
         /// Sent when the balloon is shown (balloons are queued).
         /// </summary>
         NIN_BALLOONSHOW = WM_USER + 2,

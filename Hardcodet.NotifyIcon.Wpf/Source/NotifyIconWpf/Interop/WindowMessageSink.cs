@@ -225,7 +225,9 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         {
             if (msg != CallbackMessageId) return;
 
-            switch ((WindowsMessages)lParam.ToInt32())
+            var message = (WindowsMessages) lParam.ToInt32();
+            Debug.WriteLine("Got message " + message);
+            switch (message)
             {
                 case WindowsMessages.WM_CONTEXTMENU:
                     // TODO: Handle WM_CONTEXTMENU, see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
@@ -305,6 +307,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                 case WindowsMessages.NIN_SELECT:
                     // TODO: Handle NIN_SELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
                     Debug.WriteLine("Unhandled NIN_SELECT");
+                    break;
+
+                case WindowsMessages.NIN_KEYSELECT:
+                    // TODO: Handle NIN_KEYSELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+                    Debug.WriteLine("Unhandled NIN_KEYSELECT");
                     break;
 
                 default:
