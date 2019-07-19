@@ -235,32 +235,32 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     break;
 
                 case WindowsMessages.WM_MOUSEMOVE:
-                    MouseEventReceived(MouseEvent.MouseMove);
+                    MouseEventReceived?.Invoke(MouseEvent.MouseMove);
                     break;
 
                 case WindowsMessages.WM_LBUTTONDOWN:
-                    MouseEventReceived(MouseEvent.IconLeftMouseDown);
+                    MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseDown);
                     break;
 
                 case WindowsMessages.WM_LBUTTONUP:
                     if (!isDoubleClick)
                     {
-                        MouseEventReceived(MouseEvent.IconLeftMouseUp);
+                        MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseUp);
                     }
                     isDoubleClick = false;
                     break;
 
                 case WindowsMessages.WM_LBUTTONDBLCLK:
                     isDoubleClick = true;
-                    MouseEventReceived(MouseEvent.IconDoubleClick);
+                    MouseEventReceived?.Invoke(MouseEvent.IconDoubleClick);
                     break;
 
                 case WindowsMessages.WM_RBUTTONDOWN:
-                    MouseEventReceived(MouseEvent.IconRightMouseDown);
+                    MouseEventReceived?.Invoke(MouseEvent.IconRightMouseDown);
                     break;
 
                 case WindowsMessages.WM_RBUTTONUP:
-                    MouseEventReceived(MouseEvent.IconRightMouseUp);
+                    MouseEventReceived?.Invoke(MouseEvent.IconRightMouseUp);
                     break;
 
                 case WindowsMessages.WM_RBUTTONDBLCLK:
@@ -268,11 +268,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     break;
 
                 case WindowsMessages.WM_MBUTTONDOWN:
-                    MouseEventReceived(MouseEvent.IconMiddleMouseDown);
+                    MouseEventReceived?.Invoke(MouseEvent.IconMiddleMouseDown);
                     break;
 
                 case WindowsMessages.WM_MBUTTONUP:
-                    MouseEventReceived(MouseEvent.IconMiddleMouseUp);
+                    MouseEventReceived?.Invoke(MouseEvent.IconMiddleMouseUp);
                     break;
 
                 case WindowsMessages.WM_MBUTTONDBLCLK:
@@ -280,28 +280,24 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     break;
 
                 case WindowsMessages.NIN_BALLOONSHOW:
-                    var listener = BalloonToolTipChanged;
-                    listener?.Invoke(true);
+                    BalloonToolTipChanged?.Invoke(true);
                     break;
 
                 case WindowsMessages.NIN_BALLOONHIDE:
                 case WindowsMessages.NIN_BALLOONTIMEOUT:
-                    listener = BalloonToolTipChanged;
-                    listener?.Invoke(false);
+                    BalloonToolTipChanged?.Invoke(false);
                     break;
 
                 case WindowsMessages.NIN_BALLOONUSERCLICK:
-                    MouseEventReceived(MouseEvent.BalloonToolTipClicked);
+                    MouseEventReceived?.Invoke(MouseEvent.BalloonToolTipClicked);
                     break;
 
                 case WindowsMessages.NIN_POPUPOPEN:
-                    listener = ChangeToolTipStateRequest;
-                    listener?.Invoke(true);
+                    ChangeToolTipStateRequest?.Invoke(true);
                     break;
 
                 case WindowsMessages.NIN_POPUPCLOSE:
-                    listener = ChangeToolTipStateRequest;
-                    listener?.Invoke(false);
+                    ChangeToolTipStateRequest?.Invoke(false);
                     break;
 
                 case WindowsMessages.NIN_SELECT:
@@ -361,7 +357,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         {
             Dispose(false);
         }
-
 
         /// <summary>
         /// Removes the windows hook that receives window
