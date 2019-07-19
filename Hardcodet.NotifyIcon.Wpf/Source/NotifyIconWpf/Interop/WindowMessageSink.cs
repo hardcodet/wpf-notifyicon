@@ -225,76 +225,89 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         {
             if (msg != CallbackMessageId) return;
 
-            switch (lParam.ToInt32())
+            var message = (WindowsMessages) lParam.ToInt32();
+            Debug.WriteLine("Got message " + message);
+            switch (message)
             {
-                case 0x200:
-                    MouseEventReceived(MouseEvent.MouseMove);
+                case WindowsMessages.WM_CONTEXTMENU:
+                    // TODO: Handle WM_CONTEXTMENU, see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+                    Debug.WriteLine("Unhandled WM_CONTEXTMENU");
                     break;
 
-                case 0x201:
-                    MouseEventReceived(MouseEvent.IconLeftMouseDown);
+                case WindowsMessages.WM_MOUSEMOVE:
+                    MouseEventReceived?.Invoke(MouseEvent.MouseMove);
                     break;
 
-                case 0x202:
+                case WindowsMessages.WM_LBUTTONDOWN:
+                    MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseDown);
+                    break;
+
+                case WindowsMessages.WM_LBUTTONUP:
                     if (!isDoubleClick)
                     {
-                        MouseEventReceived(MouseEvent.IconLeftMouseUp);
+                        MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseUp);
                     }
                     isDoubleClick = false;
                     break;
 
-                case 0x203:
+                case WindowsMessages.WM_LBUTTONDBLCLK:
                     isDoubleClick = true;
-                    MouseEventReceived(MouseEvent.IconDoubleClick);
+                    MouseEventReceived?.Invoke(MouseEvent.IconDoubleClick);
                     break;
 
-                case 0x204:
-                    MouseEventReceived(MouseEvent.IconRightMouseDown);
+                case WindowsMessages.WM_RBUTTONDOWN:
+                    MouseEventReceived?.Invoke(MouseEvent.IconRightMouseDown);
                     break;
 
-                case 0x205:
-                    MouseEventReceived(MouseEvent.IconRightMouseUp);
+                case WindowsMessages.WM_RBUTTONUP:
+                    MouseEventReceived?.Invoke(MouseEvent.IconRightMouseUp);
                     break;
 
-                case 0x206:
+                case WindowsMessages.WM_RBUTTONDBLCLK:
                     //double click with right mouse button - do not trigger event
                     break;
 
-                case 0x207:
-                    MouseEventReceived(MouseEvent.IconMiddleMouseDown);
+                case WindowsMessages.WM_MBUTTONDOWN:
+                    MouseEventReceived?.Invoke(MouseEvent.IconMiddleMouseDown);
                     break;
 
-                case 520:
-                    MouseEventReceived(MouseEvent.IconMiddleMouseUp);
+                case WindowsMessages.WM_MBUTTONUP:
+                    MouseEventReceived?.Invoke(MouseEvent.IconMiddleMouseUp);
                     break;
 
-                case 0x209:
+                case WindowsMessages.WM_MBUTTONDBLCLK:
                     //double click with middle mouse button - do not trigger event
                     break;
 
-                case 0x402:
-                    var listener = BalloonToolTipChanged;
-                    listener?.Invoke(true);
+                case WindowsMessages.NIN_BALLOONSHOW:
+                    BalloonToolTipChanged?.Invoke(true);
                     break;
 
-                case 0x403:
-                case 0x404:
-                    listener = BalloonToolTipChanged;
-                    listener?.Invoke(false);
+                case WindowsMessages.NIN_BALLOONHIDE:
+                case WindowsMessages.NIN_BALLOONTIMEOUT:
+                    BalloonToolTipChanged?.Invoke(false);
                     break;
 
-                case 0x405:
-                    MouseEventReceived(MouseEvent.BalloonToolTipClicked);
+                case WindowsMessages.NIN_BALLOONUSERCLICK:
+                    MouseEventReceived?.Invoke(MouseEvent.BalloonToolTipClicked);
                     break;
 
-                case 0x406:
-                    listener = ChangeToolTipStateRequest;
-                    listener?.Invoke(true);
+                case WindowsMessages.NIN_POPUPOPEN:
+                    ChangeToolTipStateRequest?.Invoke(true);
                     break;
 
-                case 0x407:
-                    listener = ChangeToolTipStateRequest;
-                    listener?.Invoke(false);
+                case WindowsMessages.NIN_POPUPCLOSE:
+                    ChangeToolTipStateRequest?.Invoke(false);
+                    break;
+
+                case WindowsMessages.NIN_SELECT:
+                    // TODO: Handle NIN_SELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+                    Debug.WriteLine("Unhandled NIN_SELECT");
+                    break;
+
+                case WindowsMessages.NIN_KEYSELECT:
+                    // TODO: Handle NIN_KEYSELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
+                    Debug.WriteLine("Unhandled NIN_KEYSELECT");
                     break;
 
                 default:
@@ -344,7 +357,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         {
             Dispose(false);
         }
-
 
         /// <summary>
         /// Removes the windows hook that receives window
