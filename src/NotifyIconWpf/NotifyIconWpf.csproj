@@ -1,16 +1,16 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <RootNamespace>Hardcodet.Wpf.TaskbarNotification</RootNamespace>
     <AssemblyName>Hardcodet.Wpf.TaskbarNotification</AssemblyName>
     <AssemblyTitle>NotifyIcon for WPF</AssemblyTitle>
-    <Company>hardcodet.net</Company>
     <Product>NotifyIcon WPF</Product>
-    <Description>NotifyIcon implementation for the WPF platform.</Description>
-    <Copyright>Copyright © Philipp Sumi 2013</Copyright>
-    <AssemblyVersion>1.0.8.0</AssemblyVersion>
-    <FileVersion>1.0.8.0</FileVersion>
-    <ExtrasEnableWpfProjectSetup>true</ExtrasEnableWpfProjectSetup>
+    <TargetFrameworks>net45;net472;netcoreapp3.0</TargetFrameworks>
+    
   </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
+    <PackageReference Include="System.Resources.Extensions" Version="4.6.0" PrivateAssets="All"/>
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />

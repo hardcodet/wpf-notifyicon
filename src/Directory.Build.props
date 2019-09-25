@@ -1,0 +1,73 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>7.3</LangVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+	  <UseWPF>true</UseWPF>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
+    <Copyright>Copyright (c) 2016 Philipp Sumi</Copyright>
+    <Company>hardcodet.net</Company>
+    <Authors>Philipp Sumi</Authors>
+    <PackageIconUrl>http://www.hardcodet.net/wp-content/themes/inove/favicon.ico</PackageIconUrl>
+    <RepositoryUrl>https://github.com/hardcodet/wpf-notifyicon</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>hhttp://www.hardcodet.net/projects/wpf-notifyicon</PackageProjectUrl>
+    <PackageLicenseExpression>CPOL-1.02</PackageLicenseExpression>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <Description>This is an implementation of a NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform. It does not just rely on the Windows Forms NotifyIcon component, but is a purely independent control which leverages several features of the WPF framework in order to display rich tooltips, popups, context menus, and balloon messages. It can be used directly in code or embedded in any XAML file.
+
+Source code and extensive sample application available at http://www.hardcodet.net/projects/wpf-notifyicon</Description>
+    <Summary>NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform.</Summary>
+    <language />
+    <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugSymbols>True</DebugSymbols>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <DebugType>embedded</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <Optimize>true</Optimize>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>True</DebugSymbols>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition=" '$(IsSampleProject)' != 'true' ">
+      <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      </PropertyGroup>
+
+      <ItemGroup>
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.25">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All"/>
+      </ItemGroup>
+
+      <!-- SourceLink -->
+      <PropertyGroup>
+        <!-- Optional: Declare that the Repository URL can be published to NuSpec -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <!-- Optional: Embed source files that are not tracked by the source control manager to the PDB -->
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <!-- https://github.com/dotnet/sourcelink/blob/master/docs/README.md#embedallsources -->
+        <EmbedAllSources>true</EmbedAllSources>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <ItemGroup>
+    <None Remove="**\*.png;**\*.jpg;**\*.ico" />
+    <Resource Include="**\*.png;**\*.jpg;**\*.ico" />
+  </ItemGroup>
+
+</Project>
