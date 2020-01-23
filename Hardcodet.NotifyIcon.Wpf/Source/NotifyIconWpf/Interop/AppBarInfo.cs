@@ -6,6 +6,9 @@ using System.Runtime.InteropServices;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AppBarInfo
     {
         [DllImport("user32.dll")]
@@ -31,11 +34,17 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
         private APPBARDATA m_data;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ScreenEdge Edge
         {
             get { return (ScreenEdge) m_data.uEdge; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Rectangle WorkArea
         {
             get { return GetRectangle(m_data.rc); }
@@ -46,6 +55,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             return new Rectangle(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
         }     
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strClassName"></param>
+        /// <param name="strWindowName"></param>
         public void GetPosition(string strClassName, string strWindowName)
         {
             m_data = new APPBARDATA();
@@ -69,21 +83,41 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void GetSystemTaskBarPosition()
         {
             GetPosition("Shell_TrayWnd", null);
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public enum ScreenEdge
         {
+            /// <summary>
+            /// 
+            /// </summary>
             Undefined = -1,
+            /// <summary>
+            /// 
+            /// </summary>
             Left = ABE_LEFT,
+            /// <summary>
+            /// 
+            /// </summary>
             Top = ABE_TOP,
+            /// <summary>
+            /// 
+            /// </summary>
             Right = ABE_RIGHT,
+            /// <summary>
+            /// 
+            /// </summary>
             Bottom = ABE_BOTTOM
         }
-
 
         [StructLayout(LayoutKind.Sequential)]
         private struct APPBARDATA
@@ -95,7 +129,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             public RECT rc;
             public int lParam;
         }
-
 
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
