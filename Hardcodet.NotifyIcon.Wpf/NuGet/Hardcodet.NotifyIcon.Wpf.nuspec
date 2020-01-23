@@ -36,7 +36,7 @@ Source code and extensive sample application available at http://www.hardcodet.n
         </references>
     </metadata>	
     <files>
-        <file src="..\Source\NotifyIconWpf\bin\Debug\**\*.*" target="lib\" />
+        <file src="..\Source\NotifyIconWpf\bin\Release\**\*.*" target="lib\" />
         <file src="readme.txt" target="readme.txt" />
     </files>
 </package>
