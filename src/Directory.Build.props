@@ -1,12 +1,11 @@
 <Project>
   <PropertyGroup>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
 	  <UseWPF>true</UseWPF>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
-    <Copyright>Copyright (c) 2016 Philipp Sumi</Copyright>
+    <Copyright>Copyright (c) 2009-2020 Philipp Sumi</Copyright>
     <Company>hardcodet.net</Company>
     <Authors>Philipp Sumi</Authors>
     <PackageIconUrl>http://www.hardcodet.net/wp-content/themes/inove/favicon.ico</PackageIconUrl>
@@ -21,6 +20,10 @@ Source code and extensive sample application available at http://www.hardcodet.n
     <Summary>NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform.</Summary>
     <language />
     <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -46,11 +49,11 @@ Source code and extensive sample application available at http://www.hardcodet.n
       </PropertyGroup>
 
       <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.25">
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.50">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
       </ItemGroup>
 
       <!-- SourceLink -->

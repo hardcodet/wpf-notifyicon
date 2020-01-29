@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <RootNamespace>Samples</RootNamespace>
     <AssemblyTitle>Sample Project</AssemblyTitle>
     <Product>Sample Project</Product>
@@ -11,10 +11,10 @@
     <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
-    <PackageReference Include="System.Resources.Extensions" Version="4.6.0" PrivateAssets="All"/>
+    <PackageReference Include="System.Resources.Extensions" Version="4.7.0" PrivateAssets="All"/>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Data.DataSetExtensions" />

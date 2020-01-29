@@ -4,71 +4,88 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
 trigger:
-- master
-- feature/*
+  batch: true
+  branches:
+    include:
+    - master
+    - feature/*
+    exclude:
+    - gh-pages
 
-pr:
-- master
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'Windows-latest'
 
-pool:
-  vmImage: 'windows-latest'
+    variables:
+      solution: '**/src/*.sln'
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
 
-variables:
-  solution: '**/src/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+    steps:
 
-steps:
-- task: DotNetCoreInstaller@2
-  displayName: 'Use .NET Core sdk 3.0'
-  inputs:
-    version: '3.0.100'
+    - task: NuGetToolInstaller@1
 
-- task: NuGetToolInstaller@0
-  displayName: 'Use NuGet 5.2.0'
-  inputs:
-    versionSpec: 5.2.0
-    checkLatest: true
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 3.1'
+      inputs:
+        packageType: sdk
+        version: 3.1.101
 
-- task: NuGetCommand@2
-  displayName: NuGet restore
-  inputs:
-    restoreSolution: '$(solution)'
-    feedsToUse: config
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: test
+        projects: '$(solution)'
+        arguments: '--configuration Debug /p:Platform="$(buildPlatform)" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
 
-- task: VSBuild@1
-  displayName: 'Build solution **\src\*.sln'
-  inputs:
-    vsVersion: 'latest'
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: build
+        projects: '$(solution)'
+        arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)"'
 
-- task: replacetokens@3
-  inputs:
-    rootDirectory: 'templates\Dapplo.Microsoft.Extensions.Hosting.CaliburnMicro.Template\content'
-    targetFiles: '*.csproj'
-    encoding: 'auto'
-    writeBOM: true
-    actionOnMissing: 'fail'
-    keepToken: false
-    tokenPrefix: '#{'
-    tokenSuffix: '}#'
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: |
+          **\bin\$(buildConfiguration)\*.nupkg
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        flattenFolders: true
 
-- script: nuget pack templates\Dapplo.Microsoft.Extensions.Hosting.CaliburnMicro.Template\Dapplo.Microsoft.Extensions.Hosting.CaliburnMicro.Template.nuspec -Version $(Build.BuildNumber)
+    - publish: $(Build.ArtifactStagingDirectory)
+      artifact: drop
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-  inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: |
-     **\bin\$(BuildConfiguration)\*.nupkg
-     *Template*.nupkg
-     **\TestResults\**\*.coverage
-    TargetFolder: '$(build.artifactstagingdirectory)'
-    flattenFolders: true
+- stage: Deploy
+  jobs:
+  - deployment: DeployNuGet
+    pool:
+      vmImage: 'Windows-2019'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
+    environment: 'NuGet'
+    strategy:
+      # default deployment strategy
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifact: 'drop'
+
+          - task: NuGetToolInstaller@0
+            displayName: 'Use NuGet 5.4.0'
+            inputs:
+              versionSpec: 5.4.0
+              checkLatest: true
+
+          - task: NuGetCommand@2
+            displayName: 'NuGet push'
+            inputs:
+              command: push
+              packagesToPush: '$(Pipeline.Workspace)/drop/*.nupkg;!$(Pipeline.Workspace)/drop/*.symbols.nupkg'
+              nuGetFeedType: external
+              publishFeedCredentials: 'NotifyIcon nuget push'
