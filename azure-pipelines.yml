@@ -88,4 +88,4 @@ stages:
               command: push
               packagesToPush: '$(Pipeline.Workspace)/drop/*.nupkg;!$(Pipeline.Workspace)/drop/*.symbols.nupkg'
               nuGetFeedType: external
-              publishFeedCredentials: 'NotifyIcon nuget push'
+              # publishFeedCredentials: 'NotifyIcon nuget push'
