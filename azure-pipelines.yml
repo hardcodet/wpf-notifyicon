@@ -27,6 +27,8 @@ stages:
     steps:
 
     - task: NuGetToolInstaller@1
+      inputs:
+        versionSpec: '5.5.1'
 
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 3.1.2'
