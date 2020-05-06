@@ -8,7 +8,7 @@
     <Copyright>Copyright (c) 2009-2020 Philipp Sumi</Copyright>
     <Company>hardcodet.net</Company>
     <Authors>Philipp Sumi</Authors>
-    <PackageIconUrl>http://www.hardcodet.net/wp-content/themes/inove/favicon.ico</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/hardcodet/wpf-notifyicon</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>hhttp://www.hardcodet.net/projects/wpf-notifyicon</PackageProjectUrl>
@@ -49,11 +49,12 @@ Source code and extensive sample application available at http://www.hardcodet.n
       </PropertyGroup>
 
       <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.50">
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.91">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+        <None Include="$(SolutionDir)\icon.png" Pack="true" PackagePath="\"/>
       </ItemGroup>
 
       <!-- SourceLink -->
