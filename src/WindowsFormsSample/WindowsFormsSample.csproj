@@ -1,14 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <StartupObject>WindowsFormsSample.Program</StartupObject>
     <AssemblyTitle>WindowsFormsSample</AssemblyTitle>
     <Product>WindowsFormsSample</Product>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
+    <PackageReference Include="System.Resources.Extensions" Version="4.7.0" PrivateAssets="All"/>
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -45,7 +50,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Exclude="**\bin\**\*.xaml;**\obj\**\*.xaml" Generator="MSBuild:Compile" Include="**\*.xaml" SubType="Designer" />
     <Compile DependentUpon="%(Filename)" Update="**\*.xaml.cs" />
   </ItemGroup>
   <ItemGroup>

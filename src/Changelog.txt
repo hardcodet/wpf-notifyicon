@@ -1,6 +1,18 @@
 hardcodet.net NotifyIcon for WPF - Changelog
-Copyright (c) 2009-2016 Philipp Sumi
+Copyright (c) 2009-2020 Philipp Sumi
 Contact and Information: http://www.hardcodet.net
+
+1.0.9 (2020.xx.xx)
+*****
+
+ADD   Added dotnet core 3.0 and 3.1 support
+
+
+1.0.8 (2016.04.02)
+*****
+
+FIX   Delayed message sink listener causing interop issues.
+
 
 1.0.7 (2016.04.01)
 *****
