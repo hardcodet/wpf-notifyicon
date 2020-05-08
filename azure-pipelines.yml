@@ -60,6 +60,7 @@ stages:
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       inputs:
         command: 'push'
+        versioningScheme: byBuildNumber
         packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
         nuGetFeedType: 'internal'
         publishVstsFeed: '941c79f1-9c6d-429b-b1a2-32150f672910/4ecb6591-758f-46ad-ace7-a5505d87eee1'
