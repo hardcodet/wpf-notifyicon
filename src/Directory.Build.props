@@ -48,6 +48,12 @@ Source code and extensive sample application available at http://www.hardcodet.n
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       </PropertyGroup>
 
+      <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>..\NotifyIconWpf.snk</AssemblyOriginatorKeyFile>
+        <DelaySign>false</DelaySign>
+      </PropertyGroup>
+
       <ItemGroup>
         <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.91">
           <PrivateAssets>all</PrivateAssets>
