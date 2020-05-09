@@ -58,7 +58,7 @@ stages:
 
     - task: NuGetCommand@2
       displayName: 'Publish to wpf-notifyicon feed'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      condition: succeeded()
       inputs:
         command: 'push'
         versioningScheme: byBuildNumber
