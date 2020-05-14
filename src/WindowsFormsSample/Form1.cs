@@ -19,12 +19,14 @@ namespace WindowsFormsSample
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            notifyIcon = new TaskbarIcon();
-            notifyIcon.Icon = Resources.Led;
-            notifyIcon.ToolTipText = "Left-click to open popup";
-            notifyIcon.Visibility = Visibility.Visible;
+            notifyIcon = new TaskbarIcon
+            {
+                Icon = Resources.Led,
+                ToolTipText = "Left-click to open popup",
+                Visibility = Visibility.Visible,
+                TrayPopup = new FancyPopup()
+            };
 
-            notifyIcon.TrayPopup = new FancyPopup();
         }
 
         protected override void OnClosed(EventArgs e)
