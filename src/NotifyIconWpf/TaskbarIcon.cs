@@ -931,7 +931,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// </summary>
         private void OnTaskbarCreated()
         {
-            IsTaskbarIconCreated = false;
+            RemoveTaskbarIcon();
             CreateTaskbarIcon();
         }
 
