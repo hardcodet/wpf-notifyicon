@@ -22,19 +22,15 @@ Source code and extensive sample application available at http://www.hardcodet.n
     <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>
   </PropertyGroup>
 
-  <PropertyGroup Condition="!$(TargetFramework.StartsWith('net45'))">
+  <PropertyGroup Condition="!$(TargetFramework.StartsWith('net4'))">
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <GenerateResourceUsePreserializedResources>false</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-
-  <PropertyGroup Condition="$(TargetFramework.StartsWith('netcore'))">
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-  </PropertyGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('netcore'))">
-    <PackageReference Include="System.Resources.Extensions" Version="4.7.1" PrivateAssets="All" />
-  </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>

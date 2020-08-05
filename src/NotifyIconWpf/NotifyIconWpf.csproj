@@ -4,11 +4,15 @@
     <AssemblyName>Hardcodet.NotifyIcon.Wpf</AssemblyName>
     <AssemblyTitle>NotifyIcon for WPF</AssemblyTitle>
     <Product>NotifyIcon WPF</Product>
-    <TargetFrameworks>net45;net472;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net45;net472;netcoreapp3.1</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>NotifyIconWpf.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
+
+  <ItemGroup Condition="!$(TargetFramework.StartsWith('net4'))">
+    <PackageReference Include="System.Resources.Extensions" Version="4.7.1" />
+  </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <Reference Include="System.Xaml" />
