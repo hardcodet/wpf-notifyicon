@@ -37,6 +37,13 @@ stages:
         packageType: sdk
         version: 3.1.302
 
+    - task: NuGetCommand@2
+      displayName: NuGet restore
+      inputs:
+        command: 'restore'
+        restoreSolution: '$(solution)'
+        feedsToUse: config
+
     - task: MSBuild@1
       displayName: Build and package
       inputs:
