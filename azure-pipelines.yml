@@ -32,17 +32,24 @@ stages:
         versionSpec: '5.5.1'
 
     - task: UseDotNet@2
-      displayName: 'Use .NET Core sdk 3.1.2'
+      displayName: 'Use .NET Core sdk 3.1.6'
       inputs:
         packageType: sdk
-        version: 3.1.201
+        version: 3.1.302
 
-    - task: DotNetCoreCLI@2
-      displayName: Build
+    - task: NuGetCommand@2
+      displayName: NuGet restore
       inputs:
-        command: build
-        projects: '$(solution)'
-        arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)"'
+        command: 'restore'
+        restoreSolution: '$(solution)'
+        feedsToUse: config
+
+    - task: MSBuild@1
+      displayName: Build and package
+      inputs:
+        solution: '$(solution)'
+        platform: $(buildPlatform)
+        configuration: $(buildConfiguration)
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
@@ -58,7 +65,7 @@ stages:
 
     - task: NuGetCommand@2
       displayName: 'Publish to wpf-notifyicon feed'
-      condition: succeeded()
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         command: 'push'
         versioningScheme: byBuildNumber
