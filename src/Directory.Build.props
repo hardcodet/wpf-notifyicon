@@ -22,6 +22,9 @@ Source code and extensive sample application available at http://www.hardcodet.n
     <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>
   </PropertyGroup>
 
+  <PropertyGroup Condition="!$(TargetFramework.StartsWith('net45'))">
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
@@ -62,7 +65,7 @@ Source code and extensive sample application available at http://www.hardcodet.n
       </PropertyGroup>
 
       <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.91">
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.31">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

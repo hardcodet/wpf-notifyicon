@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net45;net472;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net45;net472;netcoreapp3.1</TargetFrameworks>
     <RootNamespace>Windowless_Sample</RootNamespace>
     <AssemblyTitle>Windowless Sample</AssemblyTitle>
     <Product>Windowless Sample</Product>
