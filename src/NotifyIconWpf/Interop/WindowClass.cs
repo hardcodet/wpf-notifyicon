@@ -9,7 +9,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     /// </summary>
     public delegate IntPtr WindowProcedureHandler(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
 
-
     /// <summary>
     /// Win API WNDCLASS struct - represents a single window.
     /// Used to receive window messages.

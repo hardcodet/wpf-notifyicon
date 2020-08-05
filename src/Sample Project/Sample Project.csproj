@@ -5,6 +5,7 @@
     <RootNamespace>Samples</RootNamespace>
     <AssemblyTitle>Sample Project</AssemblyTitle>
     <Product>Sample Project</Product>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />

@@ -6,6 +6,7 @@
     <AssemblyTitle>WindowsFormsSample</AssemblyTitle>
     <Product>WindowsFormsSample</Product>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />
