@@ -65,7 +65,7 @@ stages:
 
     - task: NuGetCommand@2
       displayName: 'Publish to wpf-notifyicon feed'
-      condition: succeeded()
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         command: 'push'
         versioningScheme: byBuildNumber
