@@ -37,12 +37,12 @@ stages:
         packageType: sdk
         version: 3.1.302
 
-    - task: DotNetCoreCLI@2
-      displayName: Build
+    - task: MSBuild@1
+      displayName: Build and package
       inputs:
-        command: build
-        projects: '$(solution)'
-        arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)"'
+        solution: '$(solution)'
+        platform: $(buildPlatform)
+        configuration: $(buildConfiguration)
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
