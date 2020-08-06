@@ -13,9 +13,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// Gets the position of the system tray.
         /// </summary>
         /// <returns>Tray coordinates.</returns>
-        public static Point GetTrayLocation()
+        public static Point GetTrayLocation(int space = 2)
         {
-            int space = 2;
             var info = new AppBarInfo();
             info.GetSystemTaskBarPosition();
 

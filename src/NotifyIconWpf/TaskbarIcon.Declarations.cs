@@ -522,6 +522,85 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         #endregion
 
+        #region PopupPlacement dependency property
+
+        /// <summary>
+        /// Defines popup placement mode <see cref="TrayPopup" />.
+        /// Default is <see cref="PlacementMode.AbsolutePoint" />.
+        /// </summary>
+        public static readonly DependencyProperty PopupPlacementProperty =
+            DependencyProperty.Register(nameof(PopupPlacement),
+                typeof(PlacementMode),
+                typeof(TaskbarIcon),
+                new FrameworkPropertyMetadata(PlacementMode.AbsolutePoint));
+
+        /// <summary>
+        /// A property wrapper for the <see cref="PopupPlacementProperty"/>
+        /// dependency property:<br/>
+        /// Defines popup placement mode <see cref="TrayPopup" />.
+        /// Default is <see cref="PlacementMode.AbsolutePoint" />.
+        /// </summary>
+        [Category(CategoryName)]
+        [Description("Defines popup placement mode of TaskbarIconPopup.")]
+        public PlacementMode PopupPlacement
+        {
+            get { return (PlacementMode)GetValue(PopupPlacementProperty); }
+            set { SetValue(PopupPlacementProperty, value); }
+        }
+
+        #endregion
+
+        #region PopupHorizontalOffset dependency property
+
+        /// <summary>
+        /// Defines popup HorizontalOffset <see cref="TrayPopup" />.
+        /// </summary>
+        public static readonly DependencyProperty PopupHorizontalOffsetProperty =
+            DependencyProperty.Register(nameof(PopupHorizontalOffset),
+                typeof(double),
+                typeof(TaskbarIcon),
+                new FrameworkPropertyMetadata(0d));
+
+        /// <summary>
+        /// A property wrapper for the <see cref="PopupHorizontalOffsetProperty"/>
+        /// dependency property:<br/>
+        /// Defines popup HorizontalOffset<see cref="TrayPopup" />.
+        /// </summary>
+        [Category(CategoryName)]
+        [Description("Defines popup HorizontalOffset of TaskbarIconPopup.")]
+        public double PopupHorizontalOffset
+        {
+            get { return (double)GetValue(PopupHorizontalOffsetProperty); }
+            set { SetValue(PopupHorizontalOffsetProperty, value); }
+        }
+
+        #endregion
+
+        #region PopupVerticalOffset dependency property
+
+        /// <summary>
+        /// Defines popup VerticalOffset <see cref="TrayPopup" />.
+        /// </summary>
+        public static readonly DependencyProperty PopupVerticalOffsetProperty =
+           DependencyProperty.Register(nameof(PopupVerticalOffset),
+               typeof(double),
+               typeof(TaskbarIcon),
+               new FrameworkPropertyMetadata(0d));
+
+        /// <summary>
+        /// A property wrapper for the <see cref="PopupVerticalOffsetProperty"/>
+        /// dependency property:<br/>
+        /// Defines popup VerticalOffset <see cref="TrayPopup" />.
+        /// </summary>
+        [Category(CategoryName)]
+        [Description("Defines popup VerticalOffset of TaskbarIconPopup.")]
+        public double PopupVerticalOffset
+        {
+            get { return (double)GetValue(PopupVerticalOffsetProperty); }
+            set { SetValue(PopupVerticalOffsetProperty, value); }
+        }
+        #endregion
+
         #region Visibility dependency property override
 
         /// <summary>
