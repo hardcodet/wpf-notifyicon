@@ -7,8 +7,7 @@ trigger:
   batch: true
   branches:
     include:
-    - develop
-    - release/*
+    - master
     - feature/*
     exclude:
     - gh-pages
@@ -32,24 +31,17 @@ stages:
         versionSpec: '5.5.1'
 
     - task: UseDotNet@2
-      displayName: 'Use .NET Core sdk 3.1.6'
+      displayName: 'Use .NET Core sdk 5.0'
       inputs:
         packageType: sdk
-        version: 3.1.302
+        version: 5.0.100
 
-    - task: NuGetCommand@2
-      displayName: NuGet restore
+    - task: DotNetCoreCLI@2
+      displayName: Build
       inputs:
-        command: 'restore'
-        restoreSolution: '$(solution)'
-        feedsToUse: config
-
-    - task: MSBuild@1
-      displayName: Build and package
-      inputs:
-        solution: '$(solution)'
-        platform: $(buildPlatform)
-        configuration: $(buildConfiguration)
+        command: build
+        projects: '$(solution)'
+        arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)"'
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'

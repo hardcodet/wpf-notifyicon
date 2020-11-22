@@ -1,20 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <RootNamespace>Hardcodet.Wpf.TaskbarNotification</RootNamespace>
-    <AssemblyName>Hardcodet.NotifyIcon.Wpf</AssemblyName>
-    <AssemblyTitle>NotifyIcon for WPF</AssemblyTitle>
-    <Product>NotifyIcon WPF</Product>
+    <OutputType>WinExe</OutputType>
     <TargetFrameworks>net45;net472;netcoreapp3.1;net5.0-windows</TargetFrameworks>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
+    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" PrivateAssets="All"/>
+  </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Diagrams\TaskbarIcon Overview.cd" />
   </ItemGroup>
   <ItemGroup>
     <Compile DependentUpon="%(Filename)" SubType="Code" Update="**\obj\**\*.g$(DefaultLanguageSourceExtension)" />
