@@ -4,18 +4,12 @@
     <AssemblyName>Hardcodet.NotifyIcon.Wpf</AssemblyName>
     <AssemblyTitle>NotifyIcon for WPF</AssemblyTitle>
     <Product>NotifyIcon WPF</Product>
-    <TargetFrameworks>net45;net472;netcoreapp3.1;net5.0-windows</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
   <ItemGroup>
     <None Include="Diagrams\TaskbarIcon Overview.cd" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile DependentUpon="%(Filename)" SubType="Code" Update="**\obj\**\*.g$(DefaultLanguageSourceExtension)" />
     <Compile DependentUpon="%(Filename)" SubType="Designer" Update="**\*.xaml$(DefaultLanguageSourceExtension)" />

@@ -117,7 +117,13 @@ namespace NotifyIconWpf.Sample.ShowCases
 
         private void OnNavigationRequest(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            Process.Start(e.Uri.ToString());
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = e.Uri.ToString(),
+                // UseShellExecute is default to false on .NET Core while true on .NET Framework.
+                // Only this value is set to true, the url link can be opened.
+                UseShellExecute = true
+            });
             e.Handled = true;
         }
     }
