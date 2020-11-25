@@ -4,15 +4,17 @@
     <AssemblyName>Hardcodet.NotifyIcon.Wpf</AssemblyName>
     <AssemblyTitle>NotifyIcon for WPF</AssemblyTitle>
     <Product>NotifyIcon WPF</Product>
-    <TargetFrameworks>net45;net472;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net30;net45;net472;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
+  <ItemGroup Condition="('$(TargetFramework)' != 'net45') And ('$(TargetFramework)' != 'net30')">
     <PackageReference Include="System.Resources.Extensions" Version="4.7.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <Reference Include="System.Xaml" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net3')) Or $(TargetFramework.StartsWith('net4'))">
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

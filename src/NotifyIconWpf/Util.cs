@@ -32,6 +32,24 @@ using System.Windows.Resources;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 
+#if NET30
+/// <summary>
+/// Implement the generic Action type which only appeared in .NET 3.5
+/// </summary>
+public delegate void Action();
+
+namespace System.Runtime.CompilerServices
+{
+    /// <summary>
+    /// Make the ExtensionAttribute compiler feature visible
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    internal class ExtensionAttribute : Attribute
+    {
+    }
+}
+#endif
+
 namespace Hardcodet.Wpf.TaskbarNotification
 {
     /// <summary>

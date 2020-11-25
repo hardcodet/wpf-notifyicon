@@ -22,6 +22,10 @@ Source code and extensive sample application available at http://www.hardcodet.n
     <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(TargetFramework.StartsWith('net3'))">
+    <EmitThisAssemblyClass>false</EmitThisAssemblyClass>
+  </PropertyGroup>
+
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
@@ -49,12 +53,13 @@ Source code and extensive sample application available at http://www.hardcodet.n
       </PropertyGroup>
 
       <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.91">
+        <PackageReference Condition="!$(TargetFramework.StartsWith('net3'))"
+                          Include="Nerdbank.GitVersioning" Version="3.1.91">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
-        <None Include="$(SolutionDir)\icon.png" Pack="true" PackagePath="\"/>
+        <None Include="..\icon.png" Pack="true" PackagePath="\"/>
       </ItemGroup>
 
       <!-- SourceLink -->
