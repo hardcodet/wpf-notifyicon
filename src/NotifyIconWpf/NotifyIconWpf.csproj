@@ -4,7 +4,7 @@
     <AssemblyName>Hardcodet.NotifyIcon.Wpf</AssemblyName>
     <AssemblyTitle>NotifyIcon for WPF</AssemblyTitle>
     <Product>NotifyIcon WPF</Product>
-    <TargetFrameworks>net30;net45;net472;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net30</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup Condition="('$(TargetFramework)' != 'net45') And ('$(TargetFramework)' != 'net30')">
