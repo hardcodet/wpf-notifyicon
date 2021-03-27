@@ -9,6 +9,7 @@ trigger:
     include:
     - master
     - feature/*
+    - release/*
     exclude:
     - gh-pages
 
