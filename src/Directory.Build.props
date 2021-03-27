@@ -9,7 +9,7 @@
     <DebugSymbols>True</DebugSymbols>
     <DebugType>embedded</DebugType>
     
-    <Copyright>Copyright (c) 2009-2020 Philipp Sumi</Copyright>
+    <Copyright>Copyright (c) 2009-2021 Philipp Sumi</Copyright>
     <Company>hardcodet.net</Company>
     <Authors>Philipp Sumi, Robin Krom, Jan Karger</Authors>
     <PackageIcon>icon.png</PackageIcon>
