@@ -28,13 +28,13 @@ stages:
 
     - task: NuGetToolInstaller@1
       inputs:
-        versionSpec: '5.5.1'
+        versionSpec: '5.8.0'
 
     - task: UseDotNet@2
-      displayName: 'Use .NET Core sdk 3.1.2'
+      displayName: 'Install .NET Core SDK 5.0'
       inputs:
         packageType: sdk
-        version: 3.1.201
+        version: 5.0.100
 
     - task: DotNetCoreCLI@2
       displayName: Build
@@ -57,7 +57,7 @@ stages:
 
     - task: NuGetCommand@2
       displayName: 'Publish to wpf-notifyicon feed'
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
       inputs:
         command: 'push'
         versioningScheme: byBuildNumber

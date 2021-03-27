@@ -1,15 +1,15 @@
 ﻿// hardcodet.net NotifyIcon for WPF
-// Copyright (c) 2009 - 2013 Philipp Sumi
+// Copyright (c) 2009 - 2020 Philipp Sumi
 // Contact and Information: http://www.hardcodet.net
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Code Project Open License (CPOL);
 // either version 1.0 of the License, or (at your option) any later
 // version.
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 // OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND

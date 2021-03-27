@@ -1,15 +1,15 @@
 ﻿// hardcodet.net NotifyIcon for WPF
-// Copyright (c) 2009 - 2013 Philipp Sumi
+// Copyright (c) 2009 - 2020 Philipp Sumi
 // Contact and Information: http://www.hardcodet.net
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Code Project Open License (CPOL);
 // either version 1.0 of the License, or (at your option) any later
 // version.
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 // OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -37,8 +37,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// <summary>
         /// Notifies a window that the user clicked the right mouse button (right-clicked) in the window.
         /// See <a href="https://docs.microsoft.com/en-us/windows/win32/menurc/wm-contextmenu">WM_CONTEXTMENU message</a>
-        /// 
-        /// In case of a notify icon: 
+        ///
+        /// In case of a notify icon:
         /// If a user selects a notify icon's shortcut menu with the keyboard, the Shell now sends the associated application a WM_CONTEXTMENU message. Earlier versions send WM_RBUTTONDOWN and WM_RBUTTONUP messages.
         /// See <a href="https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw">Shell_NotifyIcon function</a>
         /// </summary>
@@ -57,7 +57,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// Posted when the user presses the left mouse button while the cursor is in the client area of a window.
         /// If the mouse is not captured, the message is posted to the window beneath the cursor.
         /// Otherwise, the message is posted to the window that has captured the mouse.
-        /// 
+        ///
         /// See <a href="https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondown">WM_LBUTTONDOWN message</a>
         /// </summary>
         WM_LBUTTONDOWN = 0x0201,
@@ -133,6 +133,13 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// See <a href="https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-mbuttondblclk">WM_MBUTTONDBLCLK message</a>
         /// </summary>
         WM_MBUTTONDBLCLK = 0x0209,
+
+        /// <summary>
+        /// Sent when the effective dots per inch (dpi) for a window has changed.
+        /// The DPI is the scale factor for a window.
+        /// There are multiple events that can cause the DPI to change.
+        /// </summary>
+        WM_DPICHANGED = 0x02e0,
 
         /// <summary>
         /// Used to define private messages for use by private window classes, usually of the form WM_USER+x, where x is an integer value.

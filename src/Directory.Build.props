@@ -1,13 +1,17 @@
 <Project>
   <PropertyGroup>
+    <TargetFrameworks>net45;net462;net472;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
 	  <UseWPF>true</UseWPF>
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
-    <Copyright>Copyright (c) 2009-2020 Philipp Sumi</Copyright>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>embedded</DebugType>
+    
+    <Copyright>Copyright (c) 2009-2021 Philipp Sumi</Copyright>
     <Company>hardcodet.net</Company>
-    <Authors>Philipp Sumi</Authors>
+    <Authors>Philipp Sumi, Robin Krom, Jan Karger</Authors>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/hardcodet/wpf-notifyicon</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -18,7 +22,6 @@
 
 Source code and extensive sample application available at http://www.hardcodet.net/projects/wpf-notifyicon</Description>
     <Summary>NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform.</Summary>
-    <language />
     <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>
   </PropertyGroup>
 
@@ -27,18 +30,15 @@ Source code and extensive sample application available at http://www.hardcodet.n
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugSymbols>True</DebugSymbols>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <DebugType>embedded</DebugType>
-    <Optimize>false</Optimize>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <Optimize>true</Optimize>
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>True</DebugSymbols>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <Choose>
     <When Condition=" '$(IsSampleProject)' != 'true' ">
@@ -48,11 +48,14 @@ Source code and extensive sample application available at http://www.hardcodet.n
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       </PropertyGroup>
 
+      <PropertyGroup>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>..\NotifyIconWpf.snk</AssemblyOriginatorKeyFile>
+        <DelaySign>false</DelaySign>
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+      </PropertyGroup>
+
       <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.91">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
         <None Include="$(SolutionDir)\icon.png" Pack="true" PackagePath="\"/>
       </ItemGroup>
