@@ -87,5 +87,15 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
         [DllImport(User32, SetLastError = true)]
         public static extern bool GetCursorPos(ref Point lpPoint);
+
+        public static int Low16(IntPtr value)
+        {
+            return (short)((nint)value & 0xFFFF);
+        }
+
+        public static int High16(IntPtr value)
+        {
+            return (short)((nint)value >> 16 & 0xFFFF);
+        }
     }
 }

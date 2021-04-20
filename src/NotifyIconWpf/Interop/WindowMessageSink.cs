@@ -95,6 +95,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         public event Action<MouseEvent> MouseEventReceived;
 
         /// <summary>
+        /// Fired in case the user uses the WM_CONTEXTMENU-key
+        /// on the taskbar icon.
+        /// </summary>
+        public event Action<Point> ContextMenuReceived;
+
+        /// <summary>
         /// Fired if a balloon ToolTip was either displayed
         /// or closed (indicated by the boolean flag).
         /// </summary>
@@ -242,8 +248,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             switch (message)
             {
                 case WindowsMessages.WM_CONTEXTMENU:
-                    // TODO: Handle WM_CONTEXTMENU, see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled WM_CONTEXTMENU");
+                    this.ContextMenuReceived(new Point()
+                    {
+                        X = WinApi.Low16(wParam),
+                        Y = WinApi.High16(wParam)
+                    });
                     break;
 
                 case WindowsMessages.WM_MOUSEMOVE:

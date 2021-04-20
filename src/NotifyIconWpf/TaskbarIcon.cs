@@ -132,6 +132,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // register event listeners
             messageSink.MouseEventReceived += OnMouseEvent;
+            messageSink.ContextMenuReceived += OnContextMenuEvent;
             messageSink.TaskbarCreated += OnTaskbarCreated;
             messageSink.ChangeToolTipStateRequest += OnToolTipChange;
             messageSink.BalloonToolTipChanged += OnBalloonToolTipChanged;
@@ -719,6 +720,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #endregion
 
         #region Context Menu
+
+        private void OnContextMenuEvent(Point p)
+        {
+            ShowContextMenu(p);
+        }
 
         /// <summary>
         /// Displays the <see cref="ContextMenu"/> if it was set.
