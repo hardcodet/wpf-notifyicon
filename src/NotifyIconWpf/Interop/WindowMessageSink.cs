@@ -250,8 +250,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                 case WindowsMessages.WM_CONTEXTMENU:
                     ContextMenuReceived?.Invoke(new Point()
                     {
-                        X = WinApi.Low16(wParam),
-                        Y = WinApi.High16(wParam)
+                        X = (short)((nint)wParam & 0xFFFF),
+                        Y = (short)((nint)wParam >> 16 & 0xFFFF)
                     });
                     break;
 
