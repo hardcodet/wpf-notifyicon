@@ -252,7 +252,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                 case WindowsMessages.NIN_KEYSELECT:
                     /*
                      * GET_X_LPARAM should be used to retrieve anchor X-coordinate, this is defined as
-                     *  ((int)(short)LOWORD(((WORD)(((ULONG_PTR)(wParam)) & 0xffff))))
+                     *  ((int)(short)((WORD)(((ULONG_PTR)(wParam)) & 0xffff)))
                      * GET_Y_LPARAM should be used to retrieve anchor Y-coordinate, this is defined as
                      *  ((int)(short)((WORD)((((ULONG_PTR)(wParam)) >> 16) & 0xffff)))
                      */
