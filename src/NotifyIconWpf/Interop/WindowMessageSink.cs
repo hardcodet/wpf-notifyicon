@@ -248,6 +248,14 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             switch (message)
             {
                 case WindowsMessages.WM_CONTEXTMENU:
+                case WindowsMessages.NIN_SELECT:
+                case WindowsMessages.NIN_KEYSELECT:
+                    /*
+                     * GET_X_LPARAM should be used to retrieve anchor X-coordinate, this is defined as
+                     *  ((int)(short)LOWORD(((WORD)(((ULONG_PTR)(wParam)) & 0xffff))))
+                     * GET_Y_LPARAM should be used to retrieve anchor Y-coordinate, this is defined as
+                     *  ((int)(short)((WORD)((((ULONG_PTR)(wParam)) >> 16) & 0xffff)))
+                     */
                     ContextMenuReceived?.Invoke(new Point()
                     {
                         X = (short)((nint)wParam & 0xFFFF),
@@ -319,16 +327,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
                 case WindowsMessages.NIN_POPUPCLOSE:
                     ChangeToolTipStateRequest?.Invoke(false);
-                    break;
-
-                case WindowsMessages.NIN_SELECT:
-                    // TODO: Handle NIN_SELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled NIN_SELECT");
-                    break;
-
-                case WindowsMessages.NIN_KEYSELECT:
-                    // TODO: Handle NIN_KEYSELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled NIN_KEYSELECT");
                     break;
 
                 default:
