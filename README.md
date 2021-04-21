@@ -50,3 +50,9 @@ The sample below shows some of the properties of the control. For a more compreh
 </Window>
 ```
 
+## Contributors and Thanks
+
+Hi, I'm Philipp! This little library was originally written by me, but is currently mostly maintained by [Robin Krom](https://github.com/Lakritzator) and [Jan Karger](https://github.com/punker76). Big, big kudos to the two of you, and everybody else who [contributed](https://github.com/hardcodet/wpf-notifyicon/graphs/contributors) to this library. You rock!
+
+Check out Robin's great [GreenShot](https://getgreenshot.org/) tool (that I use on a daily basis), and Jan's [MahApps](https://github.com/MahApps)
+
