@@ -132,6 +132,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // register event listeners
             messageSink.MouseEventReceived += OnMouseEvent;
+            messageSink.ContextMenuReceived += ShowContextMenu;
             messageSink.TaskbarCreated += OnTaskbarCreated;
             messageSink.ChangeToolTipStateRequest += OnToolTipChange;
             messageSink.BalloonToolTipChanged += OnBalloonToolTipChanged;
