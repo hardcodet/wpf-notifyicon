@@ -1186,6 +1186,126 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         #endregion
 
+        #region TrayKeyboardContextMenu
+
+        /// <summary>
+        /// TrayKeyboardContextMenu Routed Event
+        /// </summary>
+        public static readonly RoutedEvent TrayKeyboardContextMenuEvent = EventManager.RegisterRoutedEvent("TrayKeyboardContextMenu",
+            RoutingStrategy.Bubble, typeof (RoutedEventHandler), typeof (TaskbarIcon));
+
+        /// <summary>
+        /// Occurs when the user moves the mouse over the taskbar icon.
+        /// </summary>
+        public event RoutedEventHandler TrayKeyboardContextMenu
+        {
+            add { AddHandler(TrayKeyboardContextMenuEvent, value); }
+            remove { RemoveHandler(TrayKeyboardContextMenuEvent, value); }
+        }
+
+        /// <summary>
+        /// A helper method to raise the TrayKeyboardContextMenu event.
+        /// </summary>
+        protected RoutedEventArgs RaiseTrayKeyboardContextMenuEvent()
+        {
+            return RaiseTrayKeyboardContextMenuEvent(this);
+        }
+
+        /// <summary>
+        /// A static helper method to raise the TrayKeyboardContextMenu event on a target element.
+        /// </summary>
+        /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+        internal static RoutedEventArgs RaiseTrayKeyboardContextMenuEvent(DependencyObject target)
+        {
+            if (target == null) return null;
+
+            RoutedEventArgs args = new RoutedEventArgs(TrayKeyboardContextMenuEvent);
+            RoutedEventHelper.RaiseEvent(target, args);
+            return args;
+        }
+
+        #endregion
+
+        #region TrayKeyboardKeySelect
+
+        /// <summary>
+        /// TrayKeyboardKeySelect Routed Event
+        /// </summary>
+        public static readonly RoutedEvent TrayKeyboardKeySelectEvent = EventManager.RegisterRoutedEvent("TrayKeyboardKeySelect",
+            RoutingStrategy.Bubble, typeof (RoutedEventHandler), typeof (TaskbarIcon));
+
+        /// <summary>
+        /// Occurs when the user moves the mouse over the taskbar icon.
+        /// </summary>
+        public event RoutedEventHandler TrayKeyboardKeySelect
+        {
+            add { AddHandler(TrayKeyboardKeySelectEvent, value); }
+            remove { RemoveHandler(TrayKeyboardKeySelectEvent, value); }
+        }
+
+        /// <summary>
+        /// A helper method to raise the TrayKeyboardKeySelect event.
+        /// </summary>
+        protected RoutedEventArgs RaiseTrayKeyboardKeySelectEvent()
+        {
+            return RaiseTrayKeyboardKeySelectEvent(this);
+        }
+
+        /// <summary>
+        /// A static helper method to raise the TrayKeyboardKeySelect event on a target element.
+        /// </summary>
+        /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+        internal static RoutedEventArgs RaiseTrayKeyboardKeySelectEvent(DependencyObject target)
+        {
+            if (target == null) return null;
+
+            RoutedEventArgs args = new RoutedEventArgs(TrayKeyboardKeySelectEvent);
+            RoutedEventHelper.RaiseEvent(target, args);
+            return args;
+        }
+
+        #endregion
+
+        #region TrayKeyboardSelect
+
+        /// <summary>
+        /// TrayKeyboardSelect Routed Event
+        /// </summary>
+        public static readonly RoutedEvent TrayKeyboardSelectEvent = EventManager.RegisterRoutedEvent("TrayKeyboardSelect",
+            RoutingStrategy.Bubble, typeof (RoutedEventHandler), typeof (TaskbarIcon));
+
+        /// <summary>
+        /// Occurs when the user moves the mouse over the taskbar icon.
+        /// </summary>
+        public event RoutedEventHandler TrayKeyboardSelect
+        {
+            add { AddHandler(TrayKeyboardSelectEvent, value); }
+            remove { RemoveHandler(TrayKeyboardSelectEvent, value); }
+        }
+
+        /// <summary>
+        /// A helper method to raise the TrayKeyboardSelect event.
+        /// </summary>
+        protected RoutedEventArgs RaiseTrayKeyboardSelectEvent()
+        {
+            return RaiseTrayKeyboardSelectEvent(this);
+        }
+
+        /// <summary>
+        /// A static helper method to raise the TrayKeyboardSelect event on a target element.
+        /// </summary>
+        /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+        internal static RoutedEventArgs RaiseTrayKeyboardSelectEvent(DependencyObject target)
+        {
+            if (target == null) return null;
+
+            RoutedEventArgs args = new RoutedEventArgs(TrayKeyboardSelectEvent);
+            RoutedEventHelper.RaiseEvent(target, args);
+            return args;
+        }
+
+        #endregion
+
         #region TrayBalloonTipShown
 
         /// <summary>
