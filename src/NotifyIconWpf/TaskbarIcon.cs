@@ -132,6 +132,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // register event listeners
             messageSink.MouseEventReceived += OnMouseEvent;
+            messageSink.KeyboardEventReceived += OnKeyboardEvent;
             messageSink.TaskbarCreated += OnTaskbarCreated;
             messageSink.ChangeToolTipStateRequest += OnToolTipChange;
             messageSink.BalloonToolTipChanged += OnBalloonToolTipChanged;
@@ -481,6 +482,37 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         #endregion
 
+        #region Process Incoming Keyboard Events
+
+        /// <summary>
+        /// Processes keyboard events, which are bubbled
+        /// through the class' routed events, trigger
+        /// certain actions (e.g. show a popup), or
+        /// both.
+        /// </summary>
+        /// <param name="ke">Event flag.</param>
+        private void OnKeyboardEvent(KeyboardEvent ke)
+        {
+            if (IsDisposed) return;
+
+            switch (ke)
+            {
+                case KeyboardEvent.ContextMenu:
+                    RaiseTrayKeyboardContextMenuEvent();
+                    break;
+                case KeyboardEvent.KeySelect:
+                    RaiseTrayKeyboardKeySelectEvent();
+                    break;
+                case KeyboardEvent.Select:
+                    RaiseTrayKeyboardSelectEvent();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(ke), "Missing handler for keyboard event flag: " + ke);
+            }
+        }
+
+        #endregion
+
         #region ToolTips
 
         /// <summary>
@@ -761,6 +793,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
             // does not close if the user clicks somewhere else. With the message window
             // fallback, the context menu can't receive keyboard events - should not happen though
             WinApi.SetForegroundWindow(handle);
+
+            ContextMenu.Focus();
 
             // bubble event
             RaiseTrayContextMenuOpenEvent();

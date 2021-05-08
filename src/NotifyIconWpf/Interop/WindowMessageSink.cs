@@ -95,6 +95,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         public event Action<MouseEvent> MouseEventReceived;
 
         /// <summary>
+        /// Fired in case the user interacted with the taskbar
+        /// icon area with keyboard shortcuts.
+        /// </summary>
+        public event Action<KeyboardEvent> KeyboardEventReceived;
+
+        /// <summary>
         /// Fired if a balloon ToolTip was either displayed
         /// or closed (indicated by the boolean flag).
         /// </summary>
@@ -242,8 +248,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             switch (message)
             {
                 case WindowsMessages.WM_CONTEXTMENU:
-                    // TODO: Handle WM_CONTEXTMENU, see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled WM_CONTEXTMENU");
+                    KeyboardEventReceived?.Invoke(KeyboardEvent.ContextMenu);
                     break;
 
                 case WindowsMessages.WM_MOUSEMOVE:
@@ -313,13 +318,11 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     break;
 
                 case WindowsMessages.NIN_SELECT:
-                    // TODO: Handle NIN_SELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled NIN_SELECT");
+                    KeyboardEventReceived?.Invoke(KeyboardEvent.Select);
                     break;
 
                 case WindowsMessages.NIN_KEYSELECT:
-                    // TODO: Handle NIN_KEYSELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled NIN_KEYSELECT");
+                    KeyboardEventReceived?.Invoke(KeyboardEvent.KeySelect);
                     break;
 
                 default:
