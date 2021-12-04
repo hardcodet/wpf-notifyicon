@@ -197,11 +197,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
             var enc = new BmpBitmapEncoder();
             enc.Frames.Add(BitmapFrame.Create(bitmap));
 
-            var stream = new MemoryStream();
+            using var stream = new MemoryStream();
             enc.Save(stream);
 
-            var bmp = new Bitmap(stream);
-            return Icon.FromHandle(bmp.GetHicon());
+            using var bmp = new Bitmap(stream);
+            using var icon = Icon.FromHandle(bmp.GetHicon());
+            return icon;
         }
 
         #endregion
