@@ -92,8 +92,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         {
             return new Size
             {
-                Height = (int)(size.Height / DpiFactorX),
-                Width = (int)(size.Width / DpiFactorY)
+                Height = (int)(size.Height / DpiFactorY),
+                Width = (int)(size.Width / DpiFactorX)
             };
         }
 
