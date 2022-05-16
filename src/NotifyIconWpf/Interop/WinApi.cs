@@ -87,5 +87,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
         [DllImport(User32, SetLastError = true)]
         public static extern bool GetCursorPos(ref Point lpPoint);
+
+
+        /// <summary>
+        /// Gets the specified system metric.
+        /// </summary>
+        [DllImport(User32)]
+        internal static extern int GetSystemMetrics(int nIndex);
     }
 }
