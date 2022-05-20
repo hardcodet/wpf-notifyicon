@@ -89,12 +89,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         public static extern bool GetCursorPos(ref Point lpPoint);
 
         /// <summary>
-        /// Gets the specified system metric.
-        /// </summary>
-        [DllImport(User32)]
-        internal static extern int GetSystemMetrics(int nIndex);
-
-        /// <summary>
         /// Gets the screen coordinates of the current mouse position.
         /// in device coordinates
         /// </summary>
@@ -116,5 +110,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
             return TrayInfo.GetDeviceCoordinates(cursorPosition);
         }
+
+
+        /// <summary>
+        /// Gets the specified system metric.
+        /// </summary>
+        [DllImport(User32)]
+        internal static extern int GetSystemMetrics(int nIndex);
     }
 }
