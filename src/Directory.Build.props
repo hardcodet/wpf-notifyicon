@@ -1,24 +1,27 @@
 <Project>
   <PropertyGroup>
+    <TargetFrameworks>net45;net462;net472;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
 	  <UseWPF>true</UseWPF>
     <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
-    <Copyright>Copyright (c) 2009-2020 Philipp Sumi</Copyright>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>embedded</DebugType>
+    
+    <Copyright>Copyright (c) 2009-2021 Philipp Sumi</Copyright>
     <Company>hardcodet.net</Company>
-    <Authors>Philipp Sumi</Authors>
+    <Authors>Philipp Sumi, Robin Krom, Jan Karger</Authors>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/hardcodet/wpf-notifyicon</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>hhttp://www.hardcodet.net/projects/wpf-notifyicon</PackageProjectUrl>
-    <PackageLicenseExpression>CPOL-1.02</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/hardcodet/wpf-notifyicon</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <Description>This is an implementation of a NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform. It does not just rely on the Windows Forms NotifyIcon component, but is a purely independent control which leverages several features of the WPF framework in order to display rich tooltips, popups, context menus, and balloon messages. It can be used directly in code or embedded in any XAML file.
 
 Source code and extensive sample application available at http://www.hardcodet.net/projects/wpf-notifyicon</Description>
     <Summary>NotifyIcon (aka system tray icon or taskbar icon) for the WPF platform.</Summary>
-    <language />
     <tags>NotifyIcon WPF Tray Notify ToolTip Popup Balloon Toast</tags>
   </PropertyGroup>
 
@@ -27,18 +30,15 @@ Source code and extensive sample application available at http://www.hardcodet.n
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugSymbols>True</DebugSymbols>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <DebugType>embedded</DebugType>
-    <Optimize>false</Optimize>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <Optimize>true</Optimize>
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>True</DebugSymbols>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <Choose>
     <When Condition=" '$(IsSampleProject)' != 'true' ">
@@ -48,11 +48,14 @@ Source code and extensive sample application available at http://www.hardcodet.n
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       </PropertyGroup>
 
+      <PropertyGroup>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>..\NotifyIconWpf.snk</AssemblyOriginatorKeyFile>
+        <DelaySign>false</DelaySign>
+        <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+      </PropertyGroup>
+
       <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.1.91">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
         <None Include="$(SolutionDir)\icon.png" Pack="true" PackagePath="\"/>
       </ItemGroup>
@@ -72,6 +75,7 @@ Source code and extensive sample application available at http://www.hardcodet.n
   <ItemGroup>
     <None Remove="**\*.png;**\*.jpg;**\*.ico" />
     <Resource Include="**\*.png;**\*.jpg;**\*.ico" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

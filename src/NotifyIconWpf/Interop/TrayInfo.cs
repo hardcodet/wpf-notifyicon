@@ -50,13 +50,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// </summary>
         /// <param name="point">Point</param>
         /// <returns>Point</returns>
-        public static Point GetDeviceCoordinates(Point point)
-        {
-          return new Point
-          {
-              X = (int)(point.X / SystemInfo.DpiFactorX),
-              Y = (int)(point.Y / SystemInfo.DpiFactorY)
-          };
-        }
+        public static Point GetDeviceCoordinates(Point point) => point.ScaleWithDpi();
     }
 }
