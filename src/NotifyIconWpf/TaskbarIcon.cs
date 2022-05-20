@@ -238,7 +238,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             //TaskbarIcon's parent is hidden, too...
             //popup.PlacementTarget = this;
 
-            popup.Placement = PlacementMode.AbsolutePoint;
+            popup.Placement = PopupPlacement;
             popup.StaysOpen = true;
 
 
@@ -407,20 +407,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     throw new ArgumentOutOfRangeException(nameof(me), "Missing handler for mouse event flag: " + me);
             }
 
-
-            // get mouse coordinates
-            Point cursorPosition = new Point();
-            if (messageSink.Version == NotifyIconVersion.Vista)
-            {
-                // physical cursor position is supported for Vista and above
-                WinApi.GetPhysicalCursorPos(ref cursorPosition);
-            }
-            else
-            {
-                WinApi.GetCursorPos(ref cursorPosition);
-            }
-
-            cursorPosition = TrayInfo.GetDeviceCoordinates(cursorPosition);
+            var cursorPosition = WinApi.GetCursorPosition(messageSink.Version);
 
             bool isLeftClickCommandInvoked = false;
 
@@ -433,7 +420,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     singleClickTimerAction = () =>
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
-                        ShowTrayPopup(cursorPosition);
+                        ShowTrayPopup();
                     };
                     singleClickTimer.Change(DoubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
@@ -441,7 +428,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 else
                 {
                     // show popup immediately
-                    ShowTrayPopup(cursorPosition);
+                    ShowTrayPopup();
                 }
             }
 
@@ -652,7 +639,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     // the ParentTaskbarIcon attached dependency property:
                     // PlacementTarget = this;
 
-                    Placement = PlacementMode.AbsolutePoint,
+                    Placement = PopupPlacement,
                     StaysOpen = false
                 };
             }
@@ -668,11 +655,25 @@ namespace Hardcodet.Wpf.TaskbarNotification
             SetTrayPopupResolved(popup);
         }
 
+        /// <summary>
+        /// Hide the <see cref="TrayPopup"/> control if it was visible.
+        /// </summary>
+        public void CloseTrayPopup()
+        {
+            if (IsDisposed) return;
+
+            var args = RaisePreviewTrayPopupOpenEvent();
+            if (args.Handled) return;
+
+            if (TrayPopup == null) return;
+
+            TrayPopupResolved.IsOpen = false;
+        }
 
         /// <summary>
         /// Displays the <see cref="TrayPopup"/> control if it was set.
         /// </summary>
-        private void ShowTrayPopup(Point cursorPosition)
+        public void ShowTrayPopup()
         {
             if (IsDisposed) return;
 
@@ -681,15 +682,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
             var args = RaisePreviewTrayPopupOpenEvent();
             if (args.Handled) return;
 
-            if (TrayPopup == null)
-            {
-                return;
-            }
+            if (TrayPopup == null) return;
 
-            // use absolute position, but place the popup centered above the icon
-            TrayPopupResolved.Placement = PlacementMode.AbsolutePoint;
-            TrayPopupResolved.HorizontalOffset = cursorPosition.X;
-            TrayPopupResolved.VerticalOffset = cursorPosition.Y;
+            // place the popup
+            PlacePopup(PopupPlacement);
 
             // open popup
             TrayPopupResolved.IsOpen = true;
@@ -715,6 +711,30 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // bubble routed event
             RaiseTrayPopupOpenEvent();
+        }
+
+        void PlacePopup(PlacementMode placementMode)
+        {
+            TrayPopupResolved.Placement = placementMode;
+
+            if (placementMode == PlacementMode.Bottom)
+            {
+                // place popup above system taskbar
+                var point = TrayInfo.GetTrayLocation(0);
+                TrayPopupResolved.Placement = PlacementMode.AbsolutePoint;
+                TrayPopupResolved.HorizontalOffset = point.X;
+                TrayPopupResolved.VerticalOffset = point.Y;
+            }
+            else if (placementMode == PlacementMode.AbsolutePoint)
+            {
+                // place popup near mouse cursor
+                var point = WinApi.GetCursorPosition(messageSink.Version);
+                TrayPopupResolved.HorizontalOffset = point.X;
+                TrayPopupResolved.VerticalOffset = point.Y;
+            }
+
+            TrayPopupResolved.HorizontalOffset += PopupHorizontalOffset;
+            TrayPopupResolved.VerticalOffset += PopupVerticalOffset;
         }
 
         #endregion
