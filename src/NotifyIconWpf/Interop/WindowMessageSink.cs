@@ -95,6 +95,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         public event Action<MouseEvent> MouseEventReceived;
 
         /// <summary>
+        /// Fired in case the user uses the WM_CONTEXTMENU-key
+        /// on the taskbar icon.
+        /// </summary>
+        public event Action<Point> ContextMenuReceived;
+
+        /// <summary>
         /// Fired if a balloon ToolTip was either displayed
         /// or closed (indicated by the boolean flag).
         /// </summary>
@@ -242,8 +248,19 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             switch (message)
             {
                 case WindowsMessages.WM_CONTEXTMENU:
-                    // TODO: Handle WM_CONTEXTMENU, see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled WM_CONTEXTMENU");
+                case WindowsMessages.NIN_SELECT:
+                case WindowsMessages.NIN_KEYSELECT:
+                    /*
+                     * GET_X_LPARAM should be used to retrieve anchor X-coordinate, this is defined as
+                     *  ((int)(short)((WORD)(((ULONG_PTR)(wParam)) & 0xffff)))
+                     * GET_Y_LPARAM should be used to retrieve anchor Y-coordinate, this is defined as
+                     *  ((int)(short)((WORD)((((ULONG_PTR)(wParam)) >> 16) & 0xffff)))
+                     */
+                    ContextMenuReceived?.Invoke(new Point()
+                    {
+                        X = (short)((nint)wParam & 0xFFFF),
+                        Y = (short)((nint)wParam >> 16 & 0xFFFF)
+                    });
                     break;
 
                 case WindowsMessages.WM_MOUSEMOVE:
@@ -310,16 +327,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
                 case WindowsMessages.NIN_POPUPCLOSE:
                     ChangeToolTipStateRequest?.Invoke(false);
-                    break;
-
-                case WindowsMessages.NIN_SELECT:
-                    // TODO: Handle NIN_SELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled NIN_SELECT");
-                    break;
-
-                case WindowsMessages.NIN_KEYSELECT:
-                    // TODO: Handle NIN_KEYSELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled NIN_KEYSELECT");
                     break;
 
                 default:

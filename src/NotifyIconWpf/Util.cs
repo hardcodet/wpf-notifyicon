@@ -240,6 +240,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 case PopupActivationMode.All:
                     //return true for everything except mouse movements
                     return me != MouseEvent.MouseMove;
+                case PopupActivationMode.None:
+                    return false;
                 default:
                     throw new ArgumentOutOfRangeException("activationMode");
             }
