@@ -110,5 +110,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
             return TrayInfo.GetDeviceCoordinates(cursorPosition);
         }
+
+
+        /// <summary>
+        /// Gets the specified system metric.
+        /// </summary>
+        [DllImport(User32)]
+        internal static extern int GetSystemMetrics(int nIndex);
     }
 }

@@ -179,7 +179,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 throw new ArgumentException(msg);
             }
 
-            return new Icon(streamInfo.Stream);
+            Interop.Size iconSize = SystemInfo.SmallIconSize;
+            return new Icon(streamInfo.Stream, new System.Drawing.Size(iconSize.Width, iconSize.Height));
         }
 
         #endregion
