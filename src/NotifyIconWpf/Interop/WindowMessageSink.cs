@@ -248,7 +248,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             switch (message)
             {
                 case WindowsMessages.WM_CONTEXTMENU:
-                case WindowsMessages.NIN_SELECT:
                 case WindowsMessages.NIN_KEYSELECT:
                     /*
                      * GET_X_LPARAM should be used to retrieve anchor X-coordinate, this is defined as
@@ -271,6 +270,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseDown);
                     break;
 
+                case WindowsMessages.NIN_SELECT:
+                    //Sent when the icon is selected with the left mouse button.
                 case WindowsMessages.WM_LBUTTONUP:
                     if (!isDoubleClick)
                     {
