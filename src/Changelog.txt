@@ -2,6 +2,11 @@ hardcodet.net NotifyIcon for WPF - Changelog
 Copyright (c) 2009-2021 Philipp Sumi
 Contact and Information: http://www.hardcodet.net
 
+2.0.0 (2022.09.20)
+*****
+CHG   Migratd to a new license, this project is now using the MIT License
+
+
 1.1.0 (2021.03.27)
 *****
 
