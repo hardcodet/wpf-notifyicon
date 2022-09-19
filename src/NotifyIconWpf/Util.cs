@@ -25,9 +25,11 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
@@ -156,7 +158,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         #endregion
 
-        #region ImageSource to Icon
+        #region ToIcon Extensions
 
         /// <summary>
         /// Reads a given image resource into a WinForms icon.
@@ -168,6 +170,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
         public static Icon ToIcon(this ImageSource imageSource)
         {
             if (imageSource == null) return null;
+
+            if (imageSource is BitmapImage bmp) return bmp.ToIcon();
 
             Uri uri = new Uri(imageSource.ToString());
             StreamResourceInfo streamInfo = Application.GetResourceStream(uri);
@@ -181,6 +185,25 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             Interop.Size iconSize = SystemInfo.SmallIconSize;
             return new Icon(streamInfo.Stream, new System.Drawing.Size(iconSize.Width, iconSize.Height));
+        }
+
+        /// <summary>
+        /// Converts a System.Windows.Media.Imaging.BitmapSource to
+        /// a System.Drawing.Icon.
+        /// </summary>
+        /// <param name="bitmap">The System.Windows.Media.Imaging bitmap.</param>
+        /// <returns>System.Drawing.Icon.</returns>
+        public static Icon ToIcon(this BitmapSource bitmap)
+        {
+            var enc = new BmpBitmapEncoder();
+            enc.Frames.Add(BitmapFrame.Create(bitmap));
+
+            using var stream = new MemoryStream();
+            enc.Save(stream);
+
+            using var bmp = new Bitmap(stream);
+            using var icon = Icon.FromHandle(bmp.GetHicon());
+            return icon;
         }
 
         #endregion
