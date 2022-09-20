@@ -179,7 +179,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 throw new ArgumentException(msg);
             }
 
-            return new Icon(streamInfo.Stream);
+            Interop.Size iconSize = SystemInfo.SmallIconSize;
+            return new Icon(streamInfo.Stream, new System.Drawing.Size(iconSize.Width, iconSize.Height));
         }
 
         #endregion
@@ -239,6 +240,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 case PopupActivationMode.All:
                     //return true for everything except mouse movements
                     return me != MouseEvent.MouseMove;
+                case PopupActivationMode.None:
+                    return false;
                 default:
                     throw new ArgumentOutOfRangeException("activationMode");
             }

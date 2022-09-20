@@ -69,6 +69,8 @@
             MenuActivation="{Binding Path=SelectedItem, ElementName=lstMenuTrigger, Mode=Default}"
             PopupActivation="{Binding Path=SelectedItem, ElementName=lstPopupTrigger, Mode=Default}"
             DoubleClickCommand="{commands:ShowSampleWindowCommand}"
+            PopupPlacement="Bottom"
+            PopupHorizontalOffset="-20"
             DoubleClickCommandParameter="{Binding RelativeSource={RelativeSource Self}}">
 
             <tb:TaskbarIcon.TrayPopup>

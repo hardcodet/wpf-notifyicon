@@ -95,6 +95,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         public event Action<MouseEvent> MouseEventReceived;
 
         /// <summary>
+        /// Fired in case the user uses the WM_CONTEXTMENU-key
+        /// on the taskbar icon.
+        /// </summary>
+        public event Action<Point> ContextMenuReceived;
+
+        /// <summary>
         /// Fired in case the user interacted with the taskbar
         /// icon area with keyboard shortcuts.
         /// </summary>
