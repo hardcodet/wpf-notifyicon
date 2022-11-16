@@ -447,11 +447,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     singleClickTimer.Change(DoubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
                 }
-                else
-                {
-                    // show context menu immediately
-                    ShowContextMenu(cursorPosition);
-                }
+                //else
+                //{
+                //    // show context menu immediately
+                //    ShowContextMenu(cursorPosition);
+                //}
             }
 
             // make sure the left click command is invoked on mouse clicks
