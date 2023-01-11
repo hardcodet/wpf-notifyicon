@@ -42,7 +42,7 @@ The sample below shows some of the properties of the control. For a more compreh
                     IconSource="/Images/TrayIcons/Logo.ico"
                     ContextMenu="{StaticResource TrayMenu}"
                     MenuActivation="LeftOrRightClick"
-                    TrayPopup="{StaticResoure TrayStatusPopup}"
+                    TrayPopup="{StaticResource TrayStatusPopup}"
                     PopupActivation="DoubleClick"
                     TrayToolTip="{StaticResource TrayToolTip}"
       />
