@@ -1092,7 +1092,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// be disposed.</param>
         /// <remarks>Check the <see cref="IsDisposed"/> property to determine whether
         /// the method has already been called.</remarks>
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             // don't do anything if the component is already disposed
             if (IsDisposed || !disposing) return;
