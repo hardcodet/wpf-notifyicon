@@ -1104,7 +1104,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 // de-register application event listener
                 if (Application.Current != null)
                 {
-                    Application.Current.Exit -= OnExit;
+                    // Dispose may be called by any thread, so we need to dispatch the event access to the correct thread.
+                    Application.Current.Dispatcher.Invoke(() => Application.Current.Exit -= OnExit);
                 }
 
                 // stop timers
