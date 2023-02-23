@@ -574,6 +574,21 @@ namespace Hardcodet.Wpf.TaskbarNotification
             SetTrayToolTipResolved(tt);
         }
 
+        /// <summary>
+        /// Shell_NotifyIcon requires NIF_SHOWTIP to be specified for every call to Shell_NotifyIcon.
+        /// This modifies <paramref name="flags"/> to include this if required.
+        /// </summary>
+        /// <param name="flags">Passed through flags fo Shell_NotifyIcon.</param>
+        /// <returns>Flags amended with NIF_SHOWTIP if required.</returns>
+        private IconDataMembers WithTrayToolTip(IconDataMembers flags)
+        {
+            if (TrayToolTip is null)
+            {
+                flags |= IconDataMembers.UseLegacyToolTips;
+            }
+
+            return flags;
+        }
 
         /// <summary>
         /// Sets tooltip settings for the class depending on defined
@@ -597,7 +612,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
 
             // update the tooltip text
-            Util.WriteIconData(ref iconData, NotifyCommand.Modify, flags);
+            Util.WriteIconData(ref iconData, NotifyCommand.Modify, WithTrayToolTip(flags));
         }
 
         #endregion
@@ -871,7 +886,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             iconData.BalloonFlags = flags;
             iconData.CustomBalloonIconHandle = balloonIconHandle;
-            Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Info | IconDataMembers.Icon);
+            Util.WriteIconData(ref iconData, NotifyCommand.Modify, WithTrayToolTip(IconDataMembers.Info | IconDataMembers.Icon));
         }
 
 
@@ -884,7 +899,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // reset balloon by just setting the info to an empty string
             iconData.BalloonText = iconData.BalloonTitle = string.Empty;
-            Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Info);
+            Util.WriteIconData(ref iconData, NotifyCommand.Modify, WithTrayToolTip(IconDataMembers.Info));
         }
 
         #endregion
@@ -975,7 +990,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                                                 | IconDataMembers.Tip;
 
                 //write initial configuration
-                var status = Util.WriteIconData(ref iconData, NotifyCommand.Add, members);
+                var status = Util.WriteIconData(ref iconData, NotifyCommand.Add, WithTrayToolTip(members));
                 if (!status)
                 {
                     // couldn't create the icon - we can assume this is because explorer is not running (yet!)
@@ -1007,7 +1022,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     return;
                 }
 
-                Util.WriteIconData(ref iconData, NotifyCommand.Delete, IconDataMembers.Message);
+                Util.WriteIconData(ref iconData, NotifyCommand.Delete, WithTrayToolTip(IconDataMembers.Message));
                 IsTaskbarIconCreated = false;
             }
         }

@@ -189,7 +189,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 icon = value;
                 iconData.IconHandle = value == null ? IntPtr.Zero : icon.Handle;
 
-                Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Icon);
+                Util.WriteIconData(ref iconData, NotifyCommand.Modify, WithTrayToolTip(IconDataMembers.Icon));
             }
         }
 
