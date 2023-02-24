@@ -91,6 +91,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// </summary>
         public bool SupportsCustomToolTips => messageSink.Version == NotifyIconVersion.Vista;
 
+        /// <summary>
+        /// Indicates that ToolTipText should be displayed.
+        /// </summary>
+        private bool showSystemToolTip = false;
+
 
         /// <summary>
         /// Checks whether a non-tooltip popup is currently opened.
@@ -554,14 +559,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     Content = TrayToolTip
                 };
             }
-            else if (tt == null && !string.IsNullOrEmpty(ToolTipText))
-            {
-                // create a simple tooltip for the ToolTipText string
-                tt = new ToolTip
-                {
-                    Content = ToolTipText
-                };
-            }
 
             // the tooltip explicitly gets the DataContext of this instance.
             // If there is no DataContext, the TaskbarIcon assigns itself
@@ -582,7 +579,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// <returns>Flags amended with NIF_SHOWTIP if required.</returns>
         private IconDataMembers WithTrayToolTip(IconDataMembers flags)
         {
-            if (TrayToolTip is null)
+            if (showSystemToolTip)
             {
                 flags |= IconDataMembers.UseLegacyToolTips;
             }
@@ -598,6 +595,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             const IconDataMembers flags = IconDataMembers.Tip;
             iconData.ToolTipText = ToolTipText;
+            showSystemToolTip = TrayToolTip is null;
 
             if (messageSink.Version == NotifyIconVersion.Vista)
             {
