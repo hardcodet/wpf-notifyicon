@@ -1,4 +1,9 @@
-﻿using System;
+﻿// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Contact and Information: http://www.hardcodet.net
+
+using System;
 using System.Runtime.InteropServices;
 
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
@@ -16,7 +21,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
     [StructLayout(LayoutKind.Sequential)]
     public struct WindowClass
     {
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public uint style;
         public WindowProcedureHandler lpfnWndProc;
@@ -29,6 +34,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         [MarshalAs(UnmanagedType.LPWStr)] public string lpszMenuName;
         [MarshalAs(UnmanagedType.LPWStr)] public string lpszClassName;
 
-        #pragma warning restore 1591
+#pragma warning restore 1591
     }
 }
