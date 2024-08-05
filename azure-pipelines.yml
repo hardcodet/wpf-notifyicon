@@ -29,13 +29,13 @@ stages:
 
     - task: NuGetToolInstaller@1
       inputs:
-        versionSpec: '6.1.0'
+        versionSpec: '6.3.0'
 
     - task: UseDotNet@2
       displayName: 'Install .NET Core SDK 6.0'
       inputs:
         packageType: sdk
-        version: 6.0.300
+        version: 6.0.400
 
     - task: DotNetCoreCLI@2
       displayName: Build
