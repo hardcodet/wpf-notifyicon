@@ -1073,7 +1073,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// be disposed.</param>
         /// <remarks>Check the <see cref="IsDisposed"/> property to determine whether
         /// the method has already been called.</remarks>
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             // don't do anything if the component is already disposed
             if (IsDisposed || !disposing) return;
@@ -1085,7 +1085,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 // de-register application event listener
                 if (Application.Current != null)
                 {
-                    Application.Current.Exit -= OnExit;
+                    // Dispose may be called by any thread, so we need to dispatch the event access to the correct thread.
+                    Application.Current.Dispatcher.Invoke(() => Application.Current.Exit -= OnExit);
                 }
 
                 // stop timers
