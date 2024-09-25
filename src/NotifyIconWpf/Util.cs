@@ -196,7 +196,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 throw new InvalidDataException("The ICO file contains no images.");
 
             // Read ICONDIRENTRYs
-            List<IconEntry> iconEntries = [];
+            var iconEntries = new List<IconEntry>();
             for (var i = 0; i < idCount; i++)
             {
                 var entry = new IconEntry
