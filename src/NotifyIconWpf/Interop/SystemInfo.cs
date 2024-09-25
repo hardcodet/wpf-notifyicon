@@ -64,24 +64,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             };
         }
 
-        /// <summary>
-        /// Scale the supplied size to the current DPI settings
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns>Size</returns>
-        [Pure]
-        public static Size ScaleWithDpi(this Size size)
-        {
-            return new Size
-            {
-                Height = (int)(size.Height / DpiFactorY),
-                Width = (int)(size.Width / DpiFactorX)
-            };
-        }
-
         #region SmallIconSize
-
-        private static Size? _smallIconSize = null;
 
         private const int CXSMICON = 49;
         private const int CYSMICON = 50;
@@ -89,23 +72,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// <summary>
         /// Gets a value indicating the recommended size, in pixels, of a small icon
         /// </summary>
-        public static Size SmallIconSize
-        {
-            get
+        public static Size SmallIconSize =>
+            new()
             {
-                if (!_smallIconSize.HasValue)
-                {
-                    Size smallIconSize = new Size
-                    {
-                        Height = WinApi.GetSystemMetrics(CYSMICON),
-                        Width = WinApi.GetSystemMetrics(CXSMICON)
-                    };
-                    _smallIconSize = smallIconSize.ScaleWithDpi();
-                }
-
-                return _smallIconSize.Value;
-            }
-        }
+                Height = WinApi.GetSystemMetrics(CYSMICON),
+                Width = WinApi.GetSystemMetrics(CXSMICON)
+            };
 
         #endregion
     }
