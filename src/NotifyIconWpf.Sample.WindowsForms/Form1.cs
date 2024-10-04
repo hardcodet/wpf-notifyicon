@@ -6,14 +6,28 @@
 using System;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using Hardcodet.Wpf.TaskbarNotification;
-using NotifyIconWpf.Sample.WindowsForms.Properties;
 
 namespace NotifyIconWpf.Sample.WindowsForms
 {
     public partial class Form1 : Form
     {
         private TaskbarIcon notifyIcon;
+
+        private static BitmapSource GetSourceForOnRender(string name)
+        {
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+            var bitmap = new BitmapImage();
+            using var stream = assembly.GetManifestResourceStream(name);
+            bitmap.BeginInit();
+            bitmap.StreamSource = stream;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+
+            return bitmap;
+        }
 
         public Form1()
         {
@@ -23,14 +37,38 @@ namespace NotifyIconWpf.Sample.WindowsForms
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            notifyIcon = new TaskbarIcon
+
+            var contextMenu = new System.Windows.Controls.ContextMenu()
             {
-                Icon = Resources.Led,
-                ToolTipText = "Left-click to open popup",
-                Visibility = Visibility.Visible,
-                TrayPopup = new FancyPopup()
+                Items =
+                {
+                    new System.Windows.Controls.MenuItem()
+                    {
+                        Header = "Menu 1",
+                        Icon = new System.Windows.Controls.Image
+                        {
+                            Source = GetSourceForOnRender("NotifyIconWpf.Sample.WindowsForms.Icon.Bulb.ico")
+                        }
+                    },
+                    new System.Windows.Controls.MenuItem()
+                    {
+                        Header = "Menu 2",
+                        Icon = new System.Windows.Controls.Image
+                        {
+                            Source = GetSourceForOnRender("NotifyIconWpf.Sample.WindowsForms.Icon.Computers.ico")
+                        }
+                    },
+                }
             };
 
+            notifyIcon = new TaskbarIcon
+            {
+                IconSource = GetSourceForOnRender("NotifyIconWpf.Sample.WindowsForms.Images.Preferences.png"),
+                ToolTipText = "Left-click to open popup",
+                Visibility = Visibility.Visible,
+                TrayPopup = new FancyPopup(),
+                ContextMenu = contextMenu
+            };
         }
 
         protected override void OnClosed(EventArgs e)

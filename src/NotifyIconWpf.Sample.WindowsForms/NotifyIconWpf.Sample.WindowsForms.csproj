@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Resource Remove="Icon\Bulb.ico" />
+    <Resource Remove="Icon\Computers.ico" />
+    <Resource Remove="Images\Preferences.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icon\Bulb.ico" />
+    <EmbeddedResource Include="Icon\Computers.ico" />
+    <EmbeddedResource Include="Images\Preferences.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />
   </ItemGroup>
 
