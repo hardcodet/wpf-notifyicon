@@ -29,13 +29,12 @@ stages:
 
     - task: NuGetToolInstaller@1
       inputs:
-        versionSpec: '6.3.0'
+        versionSpec: '6.11.1'
 
     - task: UseDotNet@2
-      displayName: 'Install .NET Core SDK 6.0'
+      displayName: 'Install .NET Core SDK by GlobalJson'
       inputs:
-        packageType: sdk
-        version: 6.0.400
+        useGlobalJson: true
 
     - task: DotNetCoreCLI@2
       displayName: Build

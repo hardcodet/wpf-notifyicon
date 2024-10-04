@@ -2,15 +2,15 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <GenerateResourceUsePreserializedResources Condition="'$(TargetFramework)' != 'net45'">true</GenerateResourceUsePreserializedResources>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
-    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" PrivateAssets="All" />
+  <ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
   
   <ItemGroup>
