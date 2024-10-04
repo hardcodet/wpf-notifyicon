@@ -7,9 +7,4 @@
   <ItemGroup>
     <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile DependentUpon="%(Filename)" SubType="Code" Update="**\obj\**\*.g$(DefaultLanguageSourceExtension)" />
-    <Compile DependentUpon="%(Filename)" SubType="Designer" Update="**\*.xaml$(DefaultLanguageSourceExtension)" />
-  </ItemGroup>
 </Project>

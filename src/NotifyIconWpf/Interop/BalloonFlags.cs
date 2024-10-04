@@ -3,8 +3,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // Contact and Information: http://www.hardcodet.net
 
-using System;
-
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
     /// <summary>
