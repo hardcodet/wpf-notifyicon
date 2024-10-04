@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -221,8 +220,10 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 throw new ArgumentNullException(nameof(frameworkElement));
             }
 
+            Interop.Size iconSize = SystemInfo.SmallIconSize;
             using var memoryStream = frameworkElement.ToIconMemoryStream(size.HasValue ? new[] { size.Value } : null);
-            return new Icon(memoryStream);
+            var bestIcon = GetBestFitIcon(memoryStream, new System.Drawing.Size(iconSize.Width, iconSize.Height));
+            return bestIcon;
         }
 
         /// <summary>
@@ -351,15 +352,16 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 size = bounds != Rect.Empty ? bounds.Size : new Size(16, 16);
             }
 
-            // Create a viewbox to render the frameworkElement in the correct size
-            var viewbox = new Viewbox
+            // Create a Viewbox to render the frameworkElement in the correct size
+            var vb = new Viewbox
             {
                 //frameworkElement to render
-                Child = frameworkElement
+                Child = frameworkElement,
+                Stretch = Stretch.Uniform,
             };
-            viewbox.Measure(size.Value);
-            viewbox.Arrange(new Rect(new Point(), size.Value));
-            viewbox.UpdateLayout();
+            vb.Measure(size.Value);
+            vb.Arrange(new Rect(new Point(), size.Value));
+            vb.UpdateLayout();
 
             var renderTargetBitmap = new RenderTargetBitmap((int)(size.Value.Width * dpiX / 96.0),
                 (int)(size.Value.Height * dpiY / 96.0),
@@ -369,13 +371,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
             var drawingVisual = new DrawingVisual();
             using (var drawingContext = drawingVisual.RenderOpen())
             {
-                var visualBrush = new VisualBrush(viewbox);
+                var visualBrush = new VisualBrush(vb);
                 drawingContext.DrawRectangle(visualBrush, null, new Rect(new Point(), size.Value));
             }
 
             renderTargetBitmap.Render(drawingVisual);
             // Disassociate the frameworkElement from the viewbox, so the frameworkElement could be used elsewhere
-            viewbox.RemoveChild(frameworkElement);
+            vb.RemoveChild(frameworkElement);
             return renderTargetBitmap;
         }
 
