@@ -176,13 +176,25 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
 
         /// <summary>
-        /// Resolves an image source and updates the <see cref="Icon" /> property accordingly.
+        /// Resolves an <see cref="ImageSource"/> and updates the <see cref="Icon" /> property accordingly.
         /// </summary>
         public static readonly DependencyProperty IconSourceProperty =
             DependencyProperty.Register(nameof(IconSource),
                 typeof (ImageSource),
                 typeof (TaskbarIcon),
-                new FrameworkPropertyMetadata(null, IconSourcePropertyChanged));
+                new FrameworkPropertyMetadata(null, IconPropertyChanged, CoerceIconSourceValueCallback));
+
+        private static object CoerceIconSourceValueCallback(DependencyObject d, object basevalue)
+        {
+            TaskbarIcon owner = (TaskbarIcon)d;
+
+            if (owner.IconFrameworkElementSource != null)
+            {
+                return null;
+            }
+
+            return basevalue;
+        }
 
         /// <summary>
         /// A property wrapper for the <see cref="IconSourceProperty"/>
@@ -199,33 +211,73 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
 
         /// <summary>
-        /// A static callback listener which is being invoked if the
-        /// <see cref="IconSourceProperty"/> dependency property has
-        /// been changed. Invokes the <see cref="OnIconSourcePropertyChanged"/>
-        /// instance method of the changed instance.
+        /// Resolves a <see cref="FrameworkElement"/> and updates the <see cref="Icon" /> property accordingly.
         /// </summary>
-        /// <param name="d">The currently processed owner of the property.</param>
-        /// <param name="e">Provides information about the updated property.</param>
-        private static void IconSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        public static readonly DependencyProperty IconFrameworkElementSourceProperty =
+            DependencyProperty.Register(nameof(IconFrameworkElementSource),
+                typeof(FrameworkElement),
+                typeof(TaskbarIcon),
+                new FrameworkPropertyMetadata(null, IconPropertyChanged, CoerceIconFrameworkElementSourceValueCallback));
+
+        private static object CoerceIconFrameworkElementSourceValueCallback(DependencyObject d, object basevalue)
         {
-            TaskbarIcon owner = (TaskbarIcon) d;
-            owner.OnIconSourcePropertyChanged(e);
+            TaskbarIcon owner = (TaskbarIcon)d;
+
+            if (owner.IconSource != null)
+            {
+                return null;
+            }
+
+            return basevalue;
+        }
+
+        /// <summary>
+        /// A property wrapper for the <see cref="IconFrameworkElementSourceProperty"/> dependency property:<br/>
+        /// Renders a FrameworkElement to an Icon and updates the <see cref="Icon" /> property accordingly.
+        /// </summary>
+        [Category(CategoryName)]
+        [Description("Sets the displayed taskbar icon via a FrameworkElement.")]
+        public FrameworkElement IconFrameworkElementSource
+        {
+            get { return (FrameworkElement)GetValue(IconFrameworkElementSourceProperty); }
+            set { SetValue(IconFrameworkElementSourceProperty, value); }
         }
 
 
         /// <summary>
-        /// Handles changes of the <see cref="IconSourceProperty"/> dependency property. As
+        /// A static callback listener which is being invoked if the
+        /// <see cref="IconSourceProperty"/> dependency property has
+        /// been changed. Invokes the <see cref="IconPropertyChanged"/>
+        /// instance method of the changed instance.
+        /// </summary>
+        /// <param name="d">The currently processed owner of the property.</param>
+        /// <param name="e">Provides information about the updated property.</param>
+        private static void IconPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            TaskbarIcon owner = (TaskbarIcon)d;
+            owner.OnIconPropertyChanged(e);
+        }
+
+
+        /// <summary>
+        /// Handles changes of the <see cref="IconSourceProperty"/> and <see cref="IconFrameworkElementSourceProperty"/> dependency property. As
         /// WPF internally uses the dependency property system and bypasses the
         /// <see cref="IconSource"/> property wrapper, updates of the property's value
         /// should be handled here.
         /// </summary>
         /// <param name="e">Provides information about the updated property.</param>
-        private void OnIconSourcePropertyChanged(DependencyPropertyChangedEventArgs e)
+        private void OnIconPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
-            ImageSource newValue = (ImageSource) e.NewValue;
-
-            //resolving the ImageSource at design time is unlikely to work
-            if (!Util.IsDesignMode) Icon = newValue.ToIcon();
+            if (e.NewValue is ImageSource imageSource)
+            {
+                //resolving the ImageSource at design time is unlikely to work
+                if (!Util.IsDesignMode) Icon = imageSource.ToIcon();
+            }
+            else if (e.NewValue is FrameworkElement frameworkElement)
+            {
+                //resolving the FrameworkElement at design time is unlikely to work
+                if (!Util.IsDesignMode) Icon = frameworkElement.ToIcon();
+            }
         }
 
         #endregion

@@ -4,15 +4,9 @@
 // Contact and Information: http://www.hardcodet.net
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Resources;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 
@@ -46,7 +40,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             isDesignMode =
                 (bool)
                 DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
-                        typeof (FrameworkElement))
+                        typeof(FrameworkElement))
                     .Metadata.DefaultValue;
         }
 
@@ -136,163 +130,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 default:
                     throw new ArgumentOutOfRangeException("icon");
             }
-        }
-
-        #endregion
-
-        #region ImageSource to Icon
-
-        /// <summary>
-        /// Reads a given image resource into a WinForms icon.
-        /// </summary>
-        /// <param name="imageSource">Image source pointing to
-        /// an icon file (*.ico).</param>
-        /// <returns>An icon object that can be used with the
-        /// taskbar area.</returns>
-        public static Icon ToIcon(this ImageSource imageSource)
-        {
-            if (imageSource == null) return null;
-
-            Uri uri = new Uri(imageSource.ToString());
-            StreamResourceInfo streamInfo = Application.GetResourceStream(uri);
-
-            if (streamInfo == null)
-            {
-                string msg = "The supplied image source '{0}' could not be resolved.";
-                msg = string.Format(msg, imageSource);
-                throw new ArgumentException(msg);
-            }
-
-            Interop.Size iconSize = SystemInfo.SmallIconSize;
-
-            using var stream = streamInfo.Stream;
-            var bestIcon = GetBestFitIcon(stream, new System.Drawing.Size(iconSize.Width, iconSize.Height));
-            return bestIcon;
-        }
-
-        /// <summary>
-        /// Finds the best fitting icon from a stream based on the desired size.
-        /// </summary>
-        /// <param name="iconStream">The stream containing the icon data.</param>
-        /// <param name="desiredSize">The desired size of the icon.</param>
-        /// <returns>The best fitting icon as an <see cref="Icon"/> object.</returns>
-        /// <exception cref="InvalidDataException">Thrown if the ICO file header is invalid or contains no images.</exception>
-        /// <exception cref="EndOfStreamException">Thrown if the complete icon image data could not be read.</exception>
-        private static Icon GetBestFitIcon(Stream iconStream, System.Drawing.Size desiredSize)
-        {
-            // Read the icon entries
-            iconStream.Seek(0, SeekOrigin.Begin);
-            using var reader = new BinaryReader(iconStream);
-
-            // Read and validate the ICONDIR header
-            var idReserved = reader.ReadUInt16(); // Reserved (must be 0)
-            var idType = reader.ReadUInt16();     // Resource Type (1 for icons)
-            var idCount = reader.ReadUInt16();          // Number of images
-
-            if (idReserved != 0 || idType != 1)
-                throw new InvalidDataException("Invalid ICO file header.");
-
-            if (idCount == 0)
-                throw new InvalidDataException("The ICO file contains no images.");
-
-            // Read ICONDIRENTRYs
-            var iconEntries = new List<IconEntry>();
-            for (var i = 0; i < idCount; i++)
-            {
-                var entry = new IconEntry
-                {
-                    Width = reader.ReadByte(),
-                    Height = reader.ReadByte(),
-                    ColorCount = reader.ReadByte(),
-                    Reserved = reader.ReadByte(),
-                    Planes = reader.ReadUInt16(),
-                    BitCount = reader.ReadUInt16(),
-                    BytesInRes = reader.ReadUInt32(),
-                    ImageOffset = reader.ReadUInt32()
-                };
-
-                // Adjust for 256x256 icons, which are stored with width and height as 0
-                if (entry.Width == 0) entry.Width = 256;
-                if (entry.Height == 0) entry.Height = 256;
-
-                iconEntries.Add(entry);
-            }
-
-            // Find icons greater than or equal to the desired size
-            IconEntry bestEntry;
-            var largerOrEqualIcons = iconEntries
-                .Where(entry => entry.Width >= desiredSize.Width && entry.Height >= desiredSize.Height)
-                .OrderBy(entry => entry.Width * entry.Height)
-                .ThenBy(entry => entry.Width)
-                .ThenBy(entry => entry.Height)
-                .ToList();
-
-            if (largerOrEqualIcons.Any())
-            {
-                // Select the smallest icon among those larger or equal to the desired size
-                bestEntry = largerOrEqualIcons.First();
-            }
-            else
-            {
-                // No larger icons; select the largest icon smaller than the desired size
-                var smallerIcons = iconEntries
-                    .Where(entry => entry.Width < desiredSize.Width && entry.Height < desiredSize.Height)
-                    .OrderByDescending(entry => entry.Width * entry.Height)
-                    .ThenByDescending(entry => entry.Width)
-                    .ThenByDescending(entry => entry.Height)
-                    .ToList();
-
-                // If no icons are smaller or larger, select any available icon (unlikely case)
-                bestEntry = smallerIcons.Any() ? smallerIcons.First() : iconEntries.FirstOrDefault();
-            }
-
-            if (bestEntry == null)
-                return null;
-
-            // Read the image data of the selected icon
-            var iconImageData = new byte[bestEntry.BytesInRes];
-            iconStream.Seek(bestEntry.ImageOffset, SeekOrigin.Begin);
-            var bytesRead = iconStream.Read(iconImageData, 0, (int)bestEntry.BytesInRes);
-            if (bytesRead != bestEntry.BytesInRes)
-                throw new EndOfStreamException("Could not read the complete icon image data.");
-
-            // Create a new .ico file with the single best-matching image
-            using var destStream = new MemoryStream();
-            using var writer = new BinaryWriter(destStream);
-
-            writer.Write((ushort)0); // idReserved
-            writer.Write((ushort)1); // idType
-            writer.Write((ushort)1); // idCount
-
-            writer.Write(bestEntry.Width == 256 ? (byte)0 : (byte)bestEntry.Width);
-            writer.Write(bestEntry.Height == 256 ? (byte)0 : (byte)bestEntry.Height);
-            writer.Write(bestEntry.ColorCount);
-            writer.Write(bestEntry.Reserved);
-            writer.Write(bestEntry.Planes);
-            writer.Write(bestEntry.BitCount);
-            writer.Write(bestEntry.BytesInRes);
-            writer.Write((uint)(6 + 16)); // Image data offset
-
-            // Write the image data
-            writer.Write(iconImageData);
-
-            destStream.Seek(0, SeekOrigin.Begin);
-            return new Icon(destStream);
-        }
-
-        /// <summary>
-        /// Represents an entry in the icon directory.
-        /// </summary>
-        private class IconEntry
-        {
-            public int Width;
-            public int Height;
-            public byte ColorCount;
-            public byte Reserved;
-            public ushort Planes;
-            public ushort BitCount;
-            public uint BytesInRes;
-            public uint ImageOffset;
         }
 
         #endregion
