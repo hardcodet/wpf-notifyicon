@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <TargetFrameworks>net462;net472;netcoreapp3.1;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net8.0-windows;net6.0-windows;net472;net462</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
 	  <UseWPF>true</UseWPF>
