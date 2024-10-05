@@ -244,6 +244,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             // fire attached event
             RaiseBalloonShowingEvent(balloon, this);
 
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            popup.UpdateDefaultStyle();
+
             // display item
             popup.IsOpen = true;
 
@@ -676,6 +679,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             // place the popup
             PlacePopup(PopupPlacement);
 
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            TrayPopupResolved.UpdateDefaultStyle();
+
             // open popup
             TrayPopupResolved.IsOpen = true;
 
@@ -746,6 +752,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             {
                 return;
             }
+
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            ContextMenu.UpdateDefaultStyle();
 
             // use absolute positioning. We need to set the coordinates, or a delayed opening
             // (e.g. when left-clicked) opens the context menu at the wrong place if the mouse
