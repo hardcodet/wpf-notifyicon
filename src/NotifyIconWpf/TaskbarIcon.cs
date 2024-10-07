@@ -1,4 +1,4 @@
-﻿// hardcodet.net NotifyIcon for WPF
+// hardcodet.net NotifyIcon for WPF
 // Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // Contact and Information: http://www.hardcodet.net
@@ -782,6 +782,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             // does not close if the user clicks somewhere else. With the message window
             // fallback, the context menu can't receive keyboard events - should not happen though
             WinApi.SetForegroundWindow(handle);
+
+            // set also the focus to the context menu, so that the keyboard works (using ESC if mouse is not over context menu).
+            ContextMenu.Focus();
 
             // bubble event
             RaiseTrayContextMenuOpenEvent();
