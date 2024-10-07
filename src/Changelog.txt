@@ -2,9 +2,24 @@ hardcodet.net NotifyIcon for WPF - Changelog
 Copyright (c) 2009-2021 Philipp Sumi
 Contact and Information: http://www.hardcodet.net
 
-2.0.0 (2022.09.20)
+2.0.0 (2024.07.10)
 *****
+
 CHG   Migratd to a new license, this project is now using the MIT License
+CHG   Remove dotnet core 3.1 and .Net 5 support.
+ADD   Added .Net 8 support.
+ADD   Add ability to place popup not only near the mouse cursor. Add also new properties PopupHorizontalOffset and PopupVerticalOffset.
+      Add ability to show and close popup from code behind.
+ADD   Implement WM_ContextMenu message to show context menu on right click.
+FIX   Improve icon selection to pick the best-fitting icon size from ICO files.
+CHG   Changed NIN_SELECT to trigger the left mouse click event.
+FIX   Don't show the context menu twice.
+FIX   Improve disposing of the NotifyIcon.
+FIX   Fix side-effect of Microsoft bringing back support for pre-Windows 11 custom tooltips.
+ADD   Add support for different types of ImageSource.
+FIX   Fix trayicon theme change detection.
+ADD   Add BalloonClosed event for custom balloon.
+FIX   Set focus to context menu to allow using esc when not focused.
 
 
 1.1.0 (2021.03.27)

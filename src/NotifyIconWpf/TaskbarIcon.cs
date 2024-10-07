@@ -89,9 +89,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 var menu = ContextMenu;
                 var balloon = CustomBalloon;
 
-                return popup != null && popup.IsOpen ||
-                       menu != null && menu.IsOpen ||
-                       balloon != null && balloon.IsOpen;
+                return popup is { IsOpen: true } ||
+                       menu is { IsOpen: true } ||
+                       balloon is { IsOpen: true };
             }
         }
 
@@ -137,6 +137,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #endregion
 
         #region Custom Balloons
+
         /// <summary>
         /// A delegate to handle customer popup positions.
         /// </summary>
@@ -177,7 +178,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
 
             if (balloon == null) throw new ArgumentNullException(nameof(balloon));
-            if (timeout.HasValue && timeout < 500)
+            if (timeout is < 500)
             {
                 string msg = "Invalid timeout of {0} milliseconds. Timeout must be at least 500 ms";
                 msg = string.Format(msg, timeout);
@@ -213,7 +214,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             if (parent != null)
             {
-                string msg = "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
+                string msg =
+                    "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
                 msg = string.Format(msg, balloon);
                 throw new InvalidOperationException(msg);
             }
@@ -228,7 +230,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             popup.StaysOpen = true;
 
 
-            Point position = CustomPopupPosition != null ? CustomPopupPosition() : GetPopupTrayPosition();
+            Point position = CustomPopupPosition?.Invoke() ?? GetPopupTrayPosition();
             popup.HorizontalOffset = position.X - 1;
             popup.VerticalOffset = position.Y - 1;
 
@@ -584,7 +586,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 // taskbar icon
                 if (string.IsNullOrEmpty(iconData.ToolTipText) && TrayToolTipResolved != null)
                 {
-                    // if we have not tooltip text but a custom tooltip, we
+                    // if we have no tooltip text but a custom tooltip, we
                     // need to set a dummy value (we're displaying the ToolTip control, not the string)
                     iconData.ToolTipText = "ToolTip";
                 }
@@ -874,7 +876,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             iconData.BalloonFlags = flags;
             iconData.CustomBalloonIconHandle = balloonIconHandle;
-            Util.WriteIconData(ref iconData, NotifyCommand.Modify, WithTrayToolTip(IconDataMembers.Info | IconDataMembers.Icon));
+            Util.WriteIconData(ref iconData, NotifyCommand.Modify,
+                WithTrayToolTip(IconDataMembers.Info | IconDataMembers.Icon));
         }
 
 
@@ -1018,7 +1021,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #endregion
 
 
-
         #region Dispose / Exit
 
         /// <summary>
@@ -1090,7 +1092,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// can be disposed.
         /// </summary>
         /// <param name="disposing">If disposing equals <c>false</c>, the method
-        /// has been called by the runtime from inside the finalizer and you
+        /// has been called by the runtime from inside the finalizer, and you
         /// should not reference other objects. Only unmanaged resources can
         /// be disposed.</param>
         /// <remarks>Check the <see cref="IsDisposed"/> property to determine whether
