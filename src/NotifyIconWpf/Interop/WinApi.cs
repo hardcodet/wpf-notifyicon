@@ -1,3 +1,8 @@
+// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Contact and Information: http://www.hardcodet.net
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -87,5 +92,35 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
         [DllImport(User32, SetLastError = true)]
         public static extern bool GetCursorPos(ref Point lpPoint);
+
+        /// <summary>
+        /// Gets the screen coordinates of the current mouse position.
+        /// in device coordinates
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public static Point GetCursorPosition(NotifyIconVersion version)
+        {
+            // get mouse coordinates
+            Point cursorPosition = new Point();
+            if (version == NotifyIconVersion.Vista)
+            {
+                // physical cursor position is supported for Vista and above
+                WinApi.GetPhysicalCursorPos(ref cursorPosition);
+            }
+            else
+            {
+                WinApi.GetCursorPos(ref cursorPosition);
+            }
+
+            return TrayInfo.GetDeviceCoordinates(cursorPosition);
+        }
+
+
+        /// <summary>
+        /// Gets the specified system metric.
+        /// </summary>
+        [DllImport(User32)]
+        internal static extern int GetSystemMetrics(int nIndex);
     }
 }

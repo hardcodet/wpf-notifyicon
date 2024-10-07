@@ -1,4 +1,9 @@
-﻿using System.Windows;
+﻿// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Contact and Information: http://www.hardcodet.net
+
+using System.Windows;
 using System.Windows.Input;
 
 namespace NotifyIconWpf.Sample.Windowless
@@ -10,6 +15,11 @@ namespace NotifyIconWpf.Sample.Windowless
     /// </summary>
     public class NotifyIconViewModel
     {
+        private MainWindow GetMainWindow()
+        {
+            return Application.Current.MainWindow as MainWindow;
+        }
+
         /// <summary>
         /// Shows a window, if none is already open.
         /// </summary>
@@ -19,7 +29,7 @@ namespace NotifyIconWpf.Sample.Windowless
             {
                 return new DelegateCommand
                 {
-                    CanExecuteFunc = () => Application.Current.MainWindow == null,
+                    CanExecuteFunc = () => this.GetMainWindow() == null,
                     CommandAction = () =>
                     {
                         Application.Current.MainWindow = new MainWindow();
@@ -38,8 +48,8 @@ namespace NotifyIconWpf.Sample.Windowless
             {
                 return new DelegateCommand
                 {
-                    CommandAction = () => Application.Current.MainWindow.Close(),
-                    CanExecuteFunc = () => Application.Current.MainWindow != null
+                    CommandAction = () => this.GetMainWindow()?.Close(),
+                    CanExecuteFunc = () => this.GetMainWindow() != null
                 };
             }
         }
@@ -50,10 +60,7 @@ namespace NotifyIconWpf.Sample.Windowless
         /// </summary>
         public ICommand ExitApplicationCommand
         {
-            get
-            {
-                return new DelegateCommand {CommandAction = () => Application.Current.Shutdown()};
-            }
+            get { return new DelegateCommand { CommandAction = () => Application.Current.Shutdown() }; }
         }
     }
 }

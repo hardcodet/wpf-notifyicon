@@ -1,26 +1,7 @@
-﻿// hardcodet.net NotifyIcon for WPF
-// Copyright (c) 2009 - 2020 Philipp Sumi
+// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // Contact and Information: http://www.hardcodet.net
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the Code Project Open License (CPOL);
-// either version 1.0 of the License, or (at your option) any later
-// version.
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
-//
-// THIS COPYRIGHT NOTICE MAY NOT BE REMOVED FROM THIS FILE
-
 
 using System;
 using System.Diagnostics;
@@ -91,6 +72,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// </summary>
         public bool SupportsCustomToolTips => messageSink.Version == NotifyIconVersion.Vista;
 
+        /// <summary>
+        /// Indicates that ToolTipText should be displayed.
+        /// </summary>
+        private bool showSystemToolTip = false;
+
 
         /// <summary>
         /// Checks whether a non-tooltip popup is currently opened.
@@ -103,9 +89,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 var menu = ContextMenu;
                 var balloon = CustomBalloon;
 
-                return popup != null && popup.IsOpen ||
-                       menu != null && menu.IsOpen ||
-                       balloon != null && balloon.IsOpen;
+                return popup is { IsOpen: true } ||
+                       menu is { IsOpen: true } ||
+                       balloon is { IsOpen: true };
             }
         }
 
@@ -132,6 +118,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // register event listeners
             messageSink.MouseEventReceived += OnMouseEvent;
+            messageSink.ContextMenuReceived += ShowContextMenu;
             messageSink.TaskbarCreated += OnTaskbarCreated;
             messageSink.ChangeToolTipStateRequest += OnToolTipChange;
             messageSink.BalloonToolTipChanged += OnBalloonToolTipChanged;
@@ -150,6 +137,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #endregion
 
         #region Custom Balloons
+
         /// <summary>
         /// A delegate to handle customer popup positions.
         /// </summary>
@@ -190,7 +178,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
 
             if (balloon == null) throw new ArgumentNullException(nameof(balloon));
-            if (timeout.HasValue && timeout < 500)
+            if (timeout is < 500)
             {
                 string msg = "Invalid timeout of {0} milliseconds. Timeout must be at least 500 ms";
                 msg = string.Format(msg, timeout);
@@ -226,7 +214,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             if (parent != null)
             {
-                string msg = "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
+                string msg =
+                    "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
                 msg = string.Format(msg, balloon);
                 throw new InvalidOperationException(msg);
             }
@@ -237,11 +226,11 @@ namespace Hardcodet.Wpf.TaskbarNotification
             //TaskbarIcon's parent is hidden, too...
             //popup.PlacementTarget = this;
 
-            popup.Placement = PlacementMode.AbsolutePoint;
+            popup.Placement = PopupPlacement;
             popup.StaysOpen = true;
 
 
-            Point position = CustomPopupPosition != null ? CustomPopupPosition() : GetPopupTrayPosition();
+            Point position = CustomPopupPosition?.Invoke() ?? GetPopupTrayPosition();
             popup.HorizontalOffset = position.X - 1;
             popup.VerticalOffset = position.Y - 1;
 
@@ -256,6 +245,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // fire attached event
             RaiseBalloonShowingEvent(balloon, this);
+
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            popup.UpdateDefaultStyle();
 
             // display item
             popup.IsOpen = true;
@@ -326,6 +318,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
                     // close the popup
                     popup.IsOpen = false;
+
+                    RaiseBalloonClosedEvent(element, this);
 
                     // remove the reference of the popup to the balloon in case we want to reuse
                     // the balloon (then added to a new popup)
@@ -406,20 +400,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     throw new ArgumentOutOfRangeException(nameof(me), "Missing handler for mouse event flag: " + me);
             }
 
-
-            // get mouse coordinates
-            Point cursorPosition = new Point();
-            if (messageSink.Version == NotifyIconVersion.Vista)
-            {
-                // physical cursor position is supported for Vista and above
-                WinApi.GetPhysicalCursorPos(ref cursorPosition);
-            }
-            else
-            {
-                WinApi.GetCursorPos(ref cursorPosition);
-            }
-
-            cursorPosition = TrayInfo.GetDeviceCoordinates(cursorPosition);
+            var cursorPosition = WinApi.GetCursorPosition(messageSink.Version);
 
             bool isLeftClickCommandInvoked = false;
 
@@ -432,7 +413,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     singleClickTimerAction = () =>
                     {
                         LeftClickCommand.ExecuteIfEnabled(LeftClickCommandParameter, LeftClickCommandTarget ?? this);
-                        ShowTrayPopup(cursorPosition);
+                        ShowTrayPopup();
                     };
                     singleClickTimer.Change(DoubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
@@ -440,7 +421,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 else
                 {
                     // show popup immediately
-                    ShowTrayPopup(cursorPosition);
+                    ShowTrayPopup();
                 }
             }
 
@@ -458,11 +439,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     };
                     singleClickTimer.Change(DoubleClickWaitTime, Timeout.Infinite);
                     isLeftClickCommandInvoked = true;
-                }
-                else
-                {
-                    // show context menu immediately
-                    ShowContextMenu(cursorPosition);
                 }
             }
 
@@ -566,14 +542,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     Content = TrayToolTip
                 };
             }
-            else if (tt == null && !string.IsNullOrEmpty(ToolTipText))
-            {
-                // create a simple tooltip for the ToolTipText string
-                tt = new ToolTip
-                {
-                    Content = ToolTipText
-                };
-            }
 
             // the tooltip explicitly gets the DataContext of this instance.
             // If there is no DataContext, the TaskbarIcon assigns itself
@@ -586,6 +554,21 @@ namespace Hardcodet.Wpf.TaskbarNotification
             SetTrayToolTipResolved(tt);
         }
 
+        /// <summary>
+        /// Shell_NotifyIcon requires NIF_SHOWTIP to be specified for every call to Shell_NotifyIcon.
+        /// This modifies <paramref name="flags"/> to include this if required.
+        /// </summary>
+        /// <param name="flags">Passed through flags fo Shell_NotifyIcon.</param>
+        /// <returns>Flags amended with NIF_SHOWTIP if required.</returns>
+        private IconDataMembers WithTrayToolTip(IconDataMembers flags)
+        {
+            if (showSystemToolTip)
+            {
+                flags |= IconDataMembers.UseLegacyToolTips;
+            }
+
+            return flags;
+        }
 
         /// <summary>
         /// Sets tooltip settings for the class depending on defined
@@ -595,6 +578,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             const IconDataMembers flags = IconDataMembers.Tip;
             iconData.ToolTipText = ToolTipText;
+            showSystemToolTip = TrayToolTip is null;
 
             if (messageSink.Version == NotifyIconVersion.Vista)
             {
@@ -602,14 +586,14 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 // taskbar icon
                 if (string.IsNullOrEmpty(iconData.ToolTipText) && TrayToolTipResolved != null)
                 {
-                    // if we have not tooltip text but a custom tooltip, we
+                    // if we have no tooltip text but a custom tooltip, we
                     // need to set a dummy value (we're displaying the ToolTip control, not the string)
                     iconData.ToolTipText = "ToolTip";
                 }
             }
 
             // update the tooltip text
-            Util.WriteIconData(ref iconData, NotifyCommand.Modify, flags);
+            Util.WriteIconData(ref iconData, NotifyCommand.Modify, WithTrayToolTip(flags));
         }
 
         #endregion
@@ -651,7 +635,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     // the ParentTaskbarIcon attached dependency property:
                     // PlacementTarget = this;
 
-                    Placement = PlacementMode.AbsolutePoint,
+                    Placement = PopupPlacement,
                     StaysOpen = false
                 };
             }
@@ -667,11 +651,25 @@ namespace Hardcodet.Wpf.TaskbarNotification
             SetTrayPopupResolved(popup);
         }
 
+        /// <summary>
+        /// Hide the <see cref="TrayPopup"/> control if it was visible.
+        /// </summary>
+        public void CloseTrayPopup()
+        {
+            if (IsDisposed) return;
+
+            var args = RaisePreviewTrayPopupOpenEvent();
+            if (args.Handled) return;
+
+            if (TrayPopup == null) return;
+
+            TrayPopupResolved.IsOpen = false;
+        }
 
         /// <summary>
         /// Displays the <see cref="TrayPopup"/> control if it was set.
         /// </summary>
-        private void ShowTrayPopup(Point cursorPosition)
+        public void ShowTrayPopup()
         {
             if (IsDisposed) return;
 
@@ -680,15 +678,13 @@ namespace Hardcodet.Wpf.TaskbarNotification
             var args = RaisePreviewTrayPopupOpenEvent();
             if (args.Handled) return;
 
-            if (TrayPopup == null)
-            {
-                return;
-            }
+            if (TrayPopup == null) return;
 
-            // use absolute position, but place the popup centered above the icon
-            TrayPopupResolved.Placement = PlacementMode.AbsolutePoint;
-            TrayPopupResolved.HorizontalOffset = cursorPosition.X;
-            TrayPopupResolved.VerticalOffset = cursorPosition.Y;
+            // place the popup
+            PlacePopup(PopupPlacement);
+
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            TrayPopupResolved.UpdateDefaultStyle();
 
             // open popup
             TrayPopupResolved.IsOpen = true;
@@ -716,6 +712,30 @@ namespace Hardcodet.Wpf.TaskbarNotification
             RaiseTrayPopupOpenEvent();
         }
 
+        void PlacePopup(PlacementMode placementMode)
+        {
+            TrayPopupResolved.Placement = placementMode;
+
+            if (placementMode == PlacementMode.Bottom)
+            {
+                // place popup above system taskbar
+                var point = TrayInfo.GetTrayLocation(0);
+                TrayPopupResolved.Placement = PlacementMode.AbsolutePoint;
+                TrayPopupResolved.HorizontalOffset = point.X;
+                TrayPopupResolved.VerticalOffset = point.Y;
+            }
+            else if (placementMode == PlacementMode.AbsolutePoint)
+            {
+                // place popup near mouse cursor
+                var point = WinApi.GetCursorPosition(messageSink.Version);
+                TrayPopupResolved.HorizontalOffset = point.X;
+                TrayPopupResolved.VerticalOffset = point.Y;
+            }
+
+            TrayPopupResolved.HorizontalOffset += PopupHorizontalOffset;
+            TrayPopupResolved.VerticalOffset += PopupVerticalOffset;
+        }
+
         #endregion
 
         #region Context Menu
@@ -736,6 +756,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             {
                 return;
             }
+
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            ContextMenu.UpdateDefaultStyle();
 
             // use absolute positioning. We need to set the coordinates, or a delayed opening
             // (e.g. when left-clicked) opens the context menu at the wrong place if the mouse
@@ -761,6 +784,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             // does not close if the user clicks somewhere else. With the message window
             // fallback, the context menu can't receive keyboard events - should not happen though
             WinApi.SetForegroundWindow(handle);
+
+            // set also the focus to the context menu, so that the keyboard works (using ESC if mouse is not over context menu).
+            ContextMenu.Focus();
 
             // bubble event
             RaiseTrayContextMenuOpenEvent();
@@ -850,7 +876,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             iconData.BalloonFlags = flags;
             iconData.CustomBalloonIconHandle = balloonIconHandle;
-            Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Info | IconDataMembers.Icon);
+            Util.WriteIconData(ref iconData, NotifyCommand.Modify,
+                WithTrayToolTip(IconDataMembers.Info | IconDataMembers.Icon));
         }
 
 
@@ -863,7 +890,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // reset balloon by just setting the info to an empty string
             iconData.BalloonText = iconData.BalloonTitle = string.Empty;
-            Util.WriteIconData(ref iconData, NotifyCommand.Modify, IconDataMembers.Info);
+            Util.WriteIconData(ref iconData, NotifyCommand.Modify, WithTrayToolTip(IconDataMembers.Info));
         }
 
         #endregion
@@ -954,7 +981,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                                                 | IconDataMembers.Tip;
 
                 //write initial configuration
-                var status = Util.WriteIconData(ref iconData, NotifyCommand.Add, members);
+                var status = Util.WriteIconData(ref iconData, NotifyCommand.Add, WithTrayToolTip(members));
                 if (!status)
                 {
                     // couldn't create the icon - we can assume this is because explorer is not running (yet!)
@@ -986,13 +1013,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     return;
                 }
 
-                Util.WriteIconData(ref iconData, NotifyCommand.Delete, IconDataMembers.Message);
+                Util.WriteIconData(ref iconData, NotifyCommand.Delete, WithTrayToolTip(IconDataMembers.Message));
                 IsTaskbarIconCreated = false;
             }
         }
 
         #endregion
-
 
 
         #region Dispose / Exit
@@ -1066,12 +1092,12 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// can be disposed.
         /// </summary>
         /// <param name="disposing">If disposing equals <c>false</c>, the method
-        /// has been called by the runtime from inside the finalizer and you
+        /// has been called by the runtime from inside the finalizer, and you
         /// should not reference other objects. Only unmanaged resources can
         /// be disposed.</param>
         /// <remarks>Check the <see cref="IsDisposed"/> property to determine whether
         /// the method has already been called.</remarks>
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             // don't do anything if the component is already disposed
             if (IsDisposed || !disposing) return;
@@ -1083,7 +1109,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 // de-register application event listener
                 if (Application.Current != null)
                 {
-                    Application.Current.Exit -= OnExit;
+                    // Dispose may be called by any thread, so we need to dispatch the event access to the correct thread.
+                    Application.Current.Dispatcher.Invoke(() => Application.Current.Exit -= OnExit);
                 }
 
                 // stop timers

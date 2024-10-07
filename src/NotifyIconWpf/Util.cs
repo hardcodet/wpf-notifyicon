@@ -1,34 +1,12 @@
 ﻿// hardcodet.net NotifyIcon for WPF
-// Copyright (c) 2009 - 2020 Philipp Sumi
+// Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // Contact and Information: http://www.hardcodet.net
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the Code Project Open License (CPOL);
-// either version 1.0 of the License, or (at your option) any later
-// version.
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
-//
-// THIS COPYRIGHT NOTICE MAY NOT BE REMOVED FROM THIS FILE
-
 
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Resources;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 
@@ -61,9 +39,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
         {
             isDesignMode =
                 (bool)
-                    DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
-                        typeof (FrameworkElement))
-                        .Metadata.DefaultValue;
+                DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty,
+                        typeof(FrameworkElement))
+                    .Metadata.DefaultValue;
         }
 
         #endregion
@@ -156,34 +134,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         #endregion
 
-        #region ImageSource to Icon
-
-        /// <summary>
-        /// Reads a given image resource into a WinForms icon.
-        /// </summary>
-        /// <param name="imageSource">Image source pointing to
-        /// an icon file (*.ico).</param>
-        /// <returns>An icon object that can be used with the
-        /// taskbar area.</returns>
-        public static Icon ToIcon(this ImageSource imageSource)
-        {
-            if (imageSource == null) return null;
-
-            Uri uri = new Uri(imageSource.ToString());
-            StreamResourceInfo streamInfo = Application.GetResourceStream(uri);
-
-            if (streamInfo == null)
-            {
-                string msg = "The supplied image source '{0}' could not be resolved.";
-                msg = string.Format(msg, imageSource);
-                throw new ArgumentException(msg);
-            }
-
-            return new Icon(streamInfo.Stream);
-        }
-
-        #endregion
-
         #region evaluate listings
 
         /// <summary>
@@ -192,7 +142,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value">The evaluated value.</param>
-        /// <param name="candidates">A liste of possible values that are
+        /// <param name="candidates">A list of possible values that are
         /// regarded valid.</param>
         /// <returns>True if one of the submitted <paramref name="candidates"/>
         /// matches the evaluated value. If the <paramref name="candidates"/>
@@ -239,6 +189,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 case PopupActivationMode.All:
                     //return true for everything except mouse movements
                     return me != MouseEvent.MouseMove;
+                case PopupActivationMode.None:
+                    return false;
                 default:
                     throw new ArgumentOutOfRangeException("activationMode");
             }

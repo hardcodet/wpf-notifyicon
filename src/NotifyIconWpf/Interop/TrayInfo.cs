@@ -1,4 +1,8 @@
-﻿// Some interop code taken from Mike Marshall's AnyForm
+﻿// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Contact and Information: http://www.hardcodet.net
+// Some interop code taken from Mike Marshall's AnyForm
 
 using System.Drawing;
 
@@ -13,9 +17,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// Gets the position of the system tray.
         /// </summary>
         /// <returns>Tray coordinates.</returns>
-        public static Point GetTrayLocation()
+        public static Point GetTrayLocation(int space = 2)
         {
-            int space = 2;
             var info = new AppBarInfo();
             info.GetSystemTaskBarPosition();
 

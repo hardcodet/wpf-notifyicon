@@ -22,8 +22,7 @@
                     Background="White"
                     BorderBrush="Orange"
                     BorderThickness="2"
-                    CornerRadius="4"
-                    Width="160">
+                    CornerRadius="4">
                     <StackPanel>
                         <TextBox
                             x:Name="popupText"

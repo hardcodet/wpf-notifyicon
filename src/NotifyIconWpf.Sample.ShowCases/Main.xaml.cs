@@ -1,4 +1,9 @@
-﻿using System;
+﻿// hardcodet.net NotifyIcon for WPF
+// Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Contact and Information: http://www.hardcodet.net
+
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
@@ -98,10 +103,10 @@ namespace NotifyIconWpf.Sample.ShowCases
             ShowDialog(new DataBoundToolTipWindow());
         }
 		
-		private void BtnMvvm_Click(object sender, RoutedEventArgs e)
-		{
-			ShowDialog(new MvvmSampleWindow());
-		}
+        private void BtnMvvm_Click(object sender, RoutedEventArgs e)
+        {
+            ShowDialog(new MvvmSampleWindow());
+        }
 
         private void BtnMainSample_Click(object sender, RoutedEventArgs e)
         {

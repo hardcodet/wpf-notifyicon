@@ -1,27 +1,25 @@
-// hardcodet.net NotifyIcon for WPF
+﻿// hardcodet.net NotifyIcon for WPF
 // Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // Contact and Information: http://www.hardcodet.net
 
+using System.Runtime.InteropServices;
+
 namespace Hardcodet.Wpf.TaskbarNotification.Interop
 {
     /// <summary>
-    /// The state of the icon - can be set to
-    /// hide the icon.
+    /// Win API struct representing a size with width and height.
     /// </summary>
-    public enum IconState
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Size
     {
         /// <summary>
-        /// The icon is visible.
+        /// Width.
         /// </summary>
-        Visible = 0x00,
-
+        public int Width;
         /// <summary>
-        /// Hide the icon.
+        /// Height.
         /// </summary>
-        Hidden = 0x01,
-
-        // The icon is shared - currently not supported, thus commented out.
-        //Shared = 0x02
+        public int Height;
     }
 }

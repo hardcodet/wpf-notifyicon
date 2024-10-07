@@ -1,26 +1,7 @@
 ﻿// hardcodet.net NotifyIcon for WPF
-// Copyright (c) 2009 - 2020 Philipp Sumi
+// Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // Contact and Information: http://www.hardcodet.net
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the Code Project Open License (CPOL);
-// either version 1.0 of the License, or (at your option) any later
-// version.
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
-//
-// THIS COPYRIGHT NOTICE MAY NOT BE REMOVED FROM THIS FILE
-
 
 using System;
 using System.ComponentModel;
@@ -93,6 +74,12 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
         /// the taskbar icon area.
         /// </summary>
         public event Action<MouseEvent> MouseEventReceived;
+
+        /// <summary>
+        /// Fired in case the user uses the WM_CONTEXTMENU-key
+        /// on the taskbar icon.
+        /// </summary>
+        public event Action<Point> ContextMenuReceived;
 
         /// <summary>
         /// Fired if a balloon ToolTip was either displayed
@@ -242,8 +229,18 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
             switch (message)
             {
                 case WindowsMessages.WM_CONTEXTMENU:
-                    // TODO: Handle WM_CONTEXTMENU, see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled WM_CONTEXTMENU");
+                case WindowsMessages.NIN_KEYSELECT:
+                    /*
+                     * GET_X_LPARAM should be used to retrieve anchor X-coordinate, this is defined as
+                     *  ((int)(short)((WORD)(((ULONG_PTR)(wParam)) & 0xffff)))
+                     * GET_Y_LPARAM should be used to retrieve anchor Y-coordinate, this is defined as
+                     *  ((int)(short)((WORD)((((ULONG_PTR)(wParam)) >> 16) & 0xffff)))
+                     */
+                    ContextMenuReceived?.Invoke(new Point()
+                    {
+                        X = (short)((nint)wParam & 0xFFFF),
+                        Y = (short)((nint)wParam >> 16 & 0xFFFF)
+                    });
                     break;
 
                 case WindowsMessages.WM_MOUSEMOVE:
@@ -254,6 +251,8 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseDown);
                     break;
 
+                case WindowsMessages.NIN_SELECT:
+                    //Sent when the icon is selected with the left mouse button.
                 case WindowsMessages.WM_LBUTTONUP:
                     if (!isDoubleClick)
                     {
@@ -310,16 +309,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
                 case WindowsMessages.NIN_POPUPCLOSE:
                     ChangeToolTipStateRequest?.Invoke(false);
-                    break;
-
-                case WindowsMessages.NIN_SELECT:
-                    // TODO: Handle NIN_SELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled NIN_SELECT");
-                    break;
-
-                case WindowsMessages.NIN_KEYSELECT:
-                    // TODO: Handle NIN_KEYSELECT see https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shell_notifyiconw
-                    Debug.WriteLine("Unhandled NIN_KEYSELECT");
                     break;
 
                 default:

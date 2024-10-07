@@ -1,17 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFrameworks>net462;net472;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <OutputType>WinExe</OutputType>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <GenerateResourceUsePreserializedResources Condition="'$(TargetFramework)' != 'net45'">true</GenerateResourceUsePreserializedResources>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Remove="Icon\Bulb.ico" />
+    <Resource Remove="Icon\Computers.ico" />
+    <Resource Remove="Images\Preferences.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icon\Bulb.ico" />
+    <EmbeddedResource Include="Icon\Computers.ico" />
+    <EmbeddedResource Include="Images\Preferences.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NotifyIconWpf\NotifyIconWpf.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'net45'">
-    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" PrivateAssets="All" />
+  <ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,10 +47,5 @@
 
   <ItemGroup>
     <Compile DependentUpon="%(Filename)" Update="**\*.xaml.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile DependentUpon="%(Filename)" SubType="Code" Update="**\obj\**\*.g$(DefaultLanguageSourceExtension)" />
-    <Compile DependentUpon="%(Filename)" SubType="Designer" Update="**\*.xaml$(DefaultLanguageSourceExtension)" />
   </ItemGroup>
 </Project>
