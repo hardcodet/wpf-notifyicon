@@ -1949,6 +1949,50 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
         #endregion
 
+        #region BalloonClosed
+
+        /// <summary>
+        /// BalloonClosed Attached Routed Event
+        /// </summary>
+        public static readonly RoutedEvent BalloonClosedEvent = EventManager.RegisterRoutedEvent("BalloonClosed",
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TaskbarIcon));
+
+        /// <summary>
+        /// Adds a handler for the BalloonClosed attached event
+        /// </summary>
+        /// <param name="element">UIElement or ContentElement that listens to the event</param>
+        /// <param name="handler">Event handler to be added</param>
+        public static void AddBalloonClosedHandler(DependencyObject element, RoutedEventHandler handler)
+        {
+            RoutedEventHelper.AddHandler(element, BalloonClosedEvent, handler);
+        }
+
+        /// <summary>
+        /// Removes a handler for the BalloonClosed attached event
+        /// </summary>
+        /// <param name="element">UIElement or ContentElement that listens to the event</param>
+        /// <param name="handler">Event handler to be removed</param>
+        public static void RemoveBalloonClosedHandler(DependencyObject element, RoutedEventHandler handler)
+        {
+            RoutedEventHelper.RemoveHandler(element, BalloonClosedEvent, handler);
+        }
+
+        /// <summary>
+        /// A static helper method to raise the BalloonClosed event on a target element.
+        /// </summary>
+        /// <param name="target">UIElement or ContentElement on which to raise the event</param>
+        /// <param name="source">The <see cref="TaskbarIcon"/> instance that manages the balloon.</param>
+        internal static RoutedEventArgs RaiseBalloonClosedEvent(DependencyObject target, TaskbarIcon source)
+        {
+            if (target == null) return null;
+
+            RoutedEventArgs args = new RoutedEventArgs(BalloonClosedEvent, source);
+            RoutedEventHelper.RaiseEvent(target, args);
+            return args;
+        }
+
+        #endregion
+
         //ATTACHED PROPERTIES
 
         #region ParentTaskbarIcon
