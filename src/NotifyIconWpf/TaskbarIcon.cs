@@ -317,6 +317,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
                     // close the popup
                     popup.IsOpen = false;
 
+                    RaiseBalloonClosedEvent(element, this);
+
                     // remove the reference of the popup to the balloon in case we want to reuse
                     // the balloon (then added to a new popup)
                     popup.Child = null;
