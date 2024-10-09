@@ -242,9 +242,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
 
             // Use the supplied or default values for the icon sizes
-            var iconSizes = optionalIconSizes != null
-                ? new List<int>(optionalIconSizes)
-                : new List<int> { 16, 32, 48, 256 };
+
+            var iconSizes = new List<int>(optionalIconSizes ?? [16, 32, 48, 256]);
 
             var bitmapFrames = new List<BitmapFrame>();
             foreach (var iconSize in iconSizes)

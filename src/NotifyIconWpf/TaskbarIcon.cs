@@ -1,4 +1,4 @@
-﻿// hardcodet.net NotifyIcon for WPF
+// hardcodet.net NotifyIcon for WPF
 // Copyright (c) 2009 - 2022 Philipp Sumi. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // Contact and Information: http://www.hardcodet.net
@@ -89,9 +89,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 var menu = ContextMenu;
                 var balloon = CustomBalloon;
 
-                return popup != null && popup.IsOpen ||
-                       menu != null && menu.IsOpen ||
-                       balloon != null && balloon.IsOpen;
+                return popup is { IsOpen: true } ||
+                       menu is { IsOpen: true } ||
+                       balloon is { IsOpen: true };
             }
         }
 
@@ -137,6 +137,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #endregion
 
         #region Custom Balloons
+
         /// <summary>
         /// A delegate to handle customer popup positions.
         /// </summary>
@@ -177,7 +178,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
 
             if (balloon == null) throw new ArgumentNullException(nameof(balloon));
-            if (timeout.HasValue && timeout < 500)
+            if (timeout is < 500)
             {
                 string msg = "Invalid timeout of {0} milliseconds. Timeout must be at least 500 ms";
                 msg = string.Format(msg, timeout);
@@ -213,7 +214,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             if (parent != null)
             {
-                string msg = "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
+                string msg =
+                    "Cannot display control [{0}] in a new balloon popup - that control already has a parent. You may consider creating new balloons every time you want to show one.";
                 msg = string.Format(msg, balloon);
                 throw new InvalidOperationException(msg);
             }
@@ -228,7 +230,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             popup.StaysOpen = true;
 
 
-            Point position = CustomPopupPosition != null ? CustomPopupPosition() : GetPopupTrayPosition();
+            Point position = CustomPopupPosition?.Invoke() ?? GetPopupTrayPosition();
             popup.HorizontalOffset = position.X - 1;
             popup.VerticalOffset = position.Y - 1;
 
@@ -243,6 +245,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             // fire attached event
             RaiseBalloonShowingEvent(balloon, this);
+
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            popup.UpdateDefaultStyle();
 
             // display item
             popup.IsOpen = true;
@@ -313,6 +318,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
                     // close the popup
                     popup.IsOpen = false;
+
+                    RaiseBalloonClosedEvent(element, this);
 
                     // remove the reference of the popup to the balloon in case we want to reuse
                     // the balloon (then added to a new popup)
@@ -579,7 +586,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 // taskbar icon
                 if (string.IsNullOrEmpty(iconData.ToolTipText) && TrayToolTipResolved != null)
                 {
-                    // if we have not tooltip text but a custom tooltip, we
+                    // if we have no tooltip text but a custom tooltip, we
                     // need to set a dummy value (we're displaying the ToolTip control, not the string)
                     iconData.ToolTipText = "ToolTip";
                 }
@@ -676,6 +683,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             // place the popup
             PlacePopup(PopupPlacement);
 
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            TrayPopupResolved.UpdateDefaultStyle();
+
             // open popup
             TrayPopupResolved.IsOpen = true;
 
@@ -747,6 +757,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
                 return;
             }
 
+            // To apply DynamicResource changes (related to issue on GitHub for TaskbarIcon: https://github.com/hardcodet/wpf-notifyicon/issues/19)
+            ContextMenu.UpdateDefaultStyle();
+
             // use absolute positioning. We need to set the coordinates, or a delayed opening
             // (e.g. when left-clicked) opens the context menu at the wrong place if the mouse
             // is moved!
@@ -771,6 +784,9 @@ namespace Hardcodet.Wpf.TaskbarNotification
             // does not close if the user clicks somewhere else. With the message window
             // fallback, the context menu can't receive keyboard events - should not happen though
             WinApi.SetForegroundWindow(handle);
+
+            // set also the focus to the context menu, so that the keyboard works (using ESC if mouse is not over context menu).
+            ContextMenu.Focus();
 
             // bubble event
             RaiseTrayContextMenuOpenEvent();
@@ -860,7 +876,8 @@ namespace Hardcodet.Wpf.TaskbarNotification
 
             iconData.BalloonFlags = flags;
             iconData.CustomBalloonIconHandle = balloonIconHandle;
-            Util.WriteIconData(ref iconData, NotifyCommand.Modify, WithTrayToolTip(IconDataMembers.Info | IconDataMembers.Icon));
+            Util.WriteIconData(ref iconData, NotifyCommand.Modify,
+                WithTrayToolTip(IconDataMembers.Info | IconDataMembers.Icon));
         }
 
 
@@ -1004,7 +1021,6 @@ namespace Hardcodet.Wpf.TaskbarNotification
         #endregion
 
 
-
         #region Dispose / Exit
 
         /// <summary>
@@ -1076,7 +1092,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// can be disposed.
         /// </summary>
         /// <param name="disposing">If disposing equals <c>false</c>, the method
-        /// has been called by the runtime from inside the finalizer and you
+        /// has been called by the runtime from inside the finalizer, and you
         /// should not reference other objects. Only unmanaged resources can
         /// be disposed.</param>
         /// <remarks>Check the <see cref="IsDisposed"/> property to determine whether

@@ -142,7 +142,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value">The evaluated value.</param>
-        /// <param name="candidates">A liste of possible values that are
+        /// <param name="candidates">A list of possible values that are
         /// regarded valid.</param>
         /// <returns>True if one of the submitted <paramref name="candidates"/>
         /// matches the evaluated value. If the <paramref name="candidates"/>
