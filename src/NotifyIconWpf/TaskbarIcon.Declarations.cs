@@ -273,6 +273,46 @@ namespace Hardcodet.Wpf.TaskbarNotification
         }
 
         #endregion
+            
+        #region IconInMemory
+
+        /// <summary>
+        /// Updates the <see cref="Icon" /> property.
+        /// </summary>
+        public static readonly DependencyProperty IconInMemoryProperty =
+            DependencyProperty.Register(nameof(IconInMemory),
+                typeof(Icon),
+                typeof(TaskbarIcon),
+                new FrameworkPropertyMetadata(null, IconInMemoryPropertyChanged));
+
+        /// <summary>
+        /// A property wrapper for the <see cref="IconInMemory"/>
+        /// dependency property:<br/>
+        /// Updates the <see cref="Icon" /> property.
+        /// </summary>
+        [Category(CategoryName)]
+        [Description("Sets the displayed taskbar icon.")]
+        public Icon IconInMemory
+        {
+            get { return (Icon)GetValue(IconInMemoryProperty); }
+            set { SetValue(IconInMemoryProperty, value); }
+        }
+
+        private static void IconInMemoryPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            TaskbarIcon owner = (TaskbarIcon)d;
+            owner.OnIconInMemoryPropertyChanged(e);
+        }
+
+        private void OnIconInMemoryPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            Icon newValue = (Icon)e.NewValue;
+
+            //resolving the ImageSource at design time is unlikely to work
+            if (!Util.IsDesignMode) Icon = newValue;
+        }
+
+        #endregion
 
         #region ToolTipText dependency property
 
