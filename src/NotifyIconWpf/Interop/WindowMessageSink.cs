@@ -252,8 +252,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     break;
 
                 case WindowsMessages.NIN_SELECT:
-                    //Sent when the icon is selected with the left mouse button.
-                case WindowsMessages.WM_LBUTTONUP:
+                    // Sent when the icon is selected with the left mouse button.
                     if (!isDoubleClick)
                     {
                         MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseUp);
