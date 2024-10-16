@@ -9,7 +9,7 @@
     <DebugSymbols>True</DebugSymbols>
     <DebugType>embedded</DebugType>
     
-    <Copyright>Copyright (c) 2009-2022 Philipp Sumi</Copyright>
+    <Copyright>Copyright (c) 2009 - 2019 Philipp Sumi, 2019 - $([System.DateTime]::Today.ToString(yyyy)) Philipp Sumi, Robin Krom, Jan Karger</Copyright>
     <Company>hardcodet.net</Company>
     <Authors>Philipp Sumi, Robin Krom, Jan Karger</Authors>
     <PackageIcon>icon.png</PackageIcon>
@@ -34,7 +34,7 @@ Source code and extensive sample application available at http://www.hardcodet.n
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.109">
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.143">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -56,7 +56,10 @@ Source code and extensive sample application available at http://www.hardcodet.n
       </PropertyGroup>
 
       <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
         <None Include="$(SolutionDir)\icon.png" Pack="true" PackagePath="\"/>
       </ItemGroup>
 

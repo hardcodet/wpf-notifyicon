@@ -240,7 +240,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     {
                         X = (short)((nint)wParam & 0xFFFF),
                         Y = (short)((nint)wParam >> 16 & 0xFFFF)
-                    });
+                    }.ScaleWithDpi());
                     break;
 
                 case WindowsMessages.WM_MOUSEMOVE:
@@ -251,9 +251,9 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseDown);
                     break;
 
-                case WindowsMessages.NIN_SELECT:
-                    //Sent when the icon is selected with the left mouse button.
-                case WindowsMessages.WM_LBUTTONUP:
+                case WindowsMessages.NIN_SELECT when Version == NotifyIconVersion.Vista:
+                    // Sent when the icon is selected with the left mouse button.
+                case WindowsMessages.WM_LBUTTONUP when Version != NotifyIconVersion.Vista:
                     if (!isDoubleClick)
                     {
                         MouseEventReceived?.Invoke(MouseEvent.IconLeftMouseUp);
