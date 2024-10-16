@@ -240,7 +240,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
                     {
                         X = (short)((nint)wParam & 0xFFFF),
                         Y = (short)((nint)wParam >> 16 & 0xFFFF)
-                    });
+                    }.ScaleWithDpi());
                     break;
 
                 case WindowsMessages.WM_MOUSEMOVE:
