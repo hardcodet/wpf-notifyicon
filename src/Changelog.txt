@@ -2,6 +2,12 @@ hardcodet.net NotifyIcon for WPF - Changelog
 Copyright (c) 2009-2021 Philipp Sumi
 Contact and Information: http://www.hardcodet.net
 
+2.0.1 (2024.10.16)
+*****
+
+FIX   Fix double execution of LeftClickCommand
+FIX   Fix context menu position acording to dpi setting
+
 2.0.0 (2024.07.10)
 *****
 

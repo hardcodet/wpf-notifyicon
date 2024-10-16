@@ -9,7 +9,7 @@
     <DebugSymbols>True</DebugSymbols>
     <DebugType>embedded</DebugType>
     
-    <Copyright>Copyright (c) 2009-2022 Philipp Sumi</Copyright>
+    <Copyright>Copyright (c) 2009 - 2019 Philipp Sumi, 2019 - $([System.DateTime]::Today.ToString(yyyy)) Philipp Sumi, Robin Krom, Jan Karger</Copyright>
     <Company>hardcodet.net</Company>
     <Authors>Philipp Sumi, Robin Krom, Jan Karger</Authors>
     <PackageIcon>icon.png</PackageIcon>
